@@ -90,7 +90,7 @@
 	\usepackage[autostyle=true, english=american]{csquotes}
 
 % Title page
-\author{Vojtěch Zeisek}
+\author[Vojtěch Zeisek]{Vojtěch Zeisek, Roswitha Elisabeth Schmickl and Tomáš Fér}
 \institute[\url{https://trapa.cz/}]{Department of Botany, Faculty of Science, Charles University, Prague\\Institute of Botany, Czech Academy of Sciences, Průhonice\\\url{https://trapa.cz/}, \href{mailto:zeisek@natur.cuni.cz}{zeisek@natur.cuni.cz}}
 \title{HybSeq course}
 \subtitle{Practical processing of HybSeq target enrichment sequencing data on computing grids like MetaCentrum}
@@ -122,7 +122,7 @@
 \begin{frame}{HybSeq and its data}
 	\begin{itemize}
 		\item \href{https://bsapubs.onlinelibrary.wiley.com/doi/full/10.3732/apps.1400042}{HybSeq} combines target enrichment and genome skimming (see lesson by RS) and especially in lager plant genomes it allows to select only $\sim$1000 single/low copy genes
-		\item It requires sequencing probes, preferably group specific (can be design using pipelines like \href{https://github.com/V-Z/sondovac/wiki}{Sondovač})
+		\item It requires sequencing probes, general or group specific (can be design using pipelines like \href{https://github.com/V-Z/sondovac/wiki}{Sondovač})
 		\item From sequencing laboratory we get demultiplexed raw FASTQ files
 		\item Steps leading to lists of gene trees require plenty of computing resources and disk space
 		\begin{itemize}
@@ -633,7 +633,7 @@
 
 \begin{frame}[allowframebreaks]{Understanding how presented scripts run HybPiper}
 	\begin{itemize}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh} goes to directory set by \texttt{WORKDIR} and for every sample (forward and reverse FASTQ files) listed in \texttt{samples\_list.txt} (variable \texttt{SAMPLES}, created by \texttt{hybseq\_2\_hybpiper.sh}) submits via \texttt{qsub} individual task
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every sample (forward and reverse FASTQ files) listed in \texttt{samples\_list.txt} (variable \texttt{SAMPLES}, created by \texttt{hybseq\_2\_hybpiper.sh}) submits via \texttt{qsub} individual task
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_2\_hybpiper.sh} and copy results back
 		\item Script \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} runs all HybPiper steps for individual samples (as submitted by previous scripts)
 		\item Outputs of \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} should be checked and moved into special directory (\texttt{oxalis/2\_seqs}) where new list of samples must be created
@@ -644,6 +644,7 @@
 
 \begin{frame}[fragile]{Submitting jobs to run HybPiper}
 	\begin{itemize}
+		\item To retrieve probe sequences from every input FASTQ file
 		\item \alert{\texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh} must be edited before running it}
 		\item After submission of all input files is done, it is possible to change \texttt{DATADIR} and submit processing of the second library
 		\item It will start job for every sample, so that output of \texttt{qstat} will notably prolong\ldots
@@ -735,54 +736,95 @@
 
 \section{Alignments}
 
-\begin{frame}[fragile]{}
+\begin{frame}[allowframebreaks]{Alignment of all contigs}
 	\begin{itemize}
-		\item 
+		\item All sequences retrieved in the previous step with HybPiper must be aligned (by any aligner)
+		\item Alignments must be post-processed
+		\begin{itemize}
+			\item Rows (individuals) and/or colums (positions within alignment) with more than $\sim$10--20\% of missing data must be removed (e.g. beginning and the end of the alignment)
+			\item Too short alignments or alignments with too few variable sites or too few individuals should be removed
+			\item Exact thresholds are to be discussed
+		\end{itemize}
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_run\_3\_hybpiper\_postprocess.sh}) submits via \texttt{qsub} individual alignment task
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment.r} \texttt{R} script and copy results back
+		\item \texttt{R} script \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} alignes every input contig with \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT}, trimms the alignment, creates NJ tree (NWK and PNG), creates image of alignment and reports alignment details
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
 	\end{itemize}
-	\begin{spluscode}
-    
-	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Submitting alignment jobs}
+	\begin{itemize}
+		\item To align all retrieved contigs (sequences)
+		\item \alert{\texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} must be edited before running it}
+		\item It will start job for every sample, so that output of \texttt{qstat} will be very long (3 jobs --- respective exon, intron and supercontig --- for every of $\sim$1000 probes)\ldots
+	\end{itemize}
 	\begin{bashcode}
-    
+    # After edition of WORKDIR and DATADIR run simply
+    ~/bin/hybseq_run_4_alignment_1_submitter.sh
+    # Monitor running $USER's tasks with details
+    qstat -w -n -1 -u $USER # Last column contains machine name
+    # See your processes running the machine (from above list)
+    ssh exec_node "ps ux" # Replace exec_host by hostname!
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{}
-	\begin{itemize}
-		\item 
-	\end{itemize}
-	\begin{spluscode}
-    
-	\end{spluscode}
-	\begin{bashcode}
-    
-	\end{bashcode}
+\begin{frame}{Running alignments}
+	\begin{exampleblock}{Run alignments}
+		\begin{enumerate}
+			\item Inspect scripts \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh}, \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} and \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} and be sure to understand what they are doing, including syntax used.
+			\item Edit declarations of variables \texttt{WORKDIR} and \texttt{DATADIR} in \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} so that they point to correct locations.
+			\item Process all \texttt{*.FNA} and \texttt{*.fasta} files.
+			\item Monitor progress of the jobs
+			\item Inspect outputs (including images) and log files.
+		\end{enumerate}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Other tasks with alignments}
+	\begin{exampleblock}{Alignment tasks for advanced users}
+		\begin{enumerate}
+			\item Think how to process all samples on single computer. Use \texttt{find} to list all \texttt{*.FNA} and \texttt{*.fasta} files and pass them to \href{https://www.gnu.org/software/parallel/}{GNU Parallel}. How would such script look like? What had to be changed in \texttt{qsub}?
+			\item Check requirements of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} and/or another aligners and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
+			\item Replace usage of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} in \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} by another aligner like e.g. \href{https://www.drive5.com/muscle/}{MUSCLE} or \href{http://clustal.org/}{Clustal}.
+			\item Think about parameters for functions \texttt{deleteGaps()}, \texttt{del.rowgapsonly()} and \texttt{del.colgapsonly()}. How do they influence output (\texttt{*.aln.fasta} files)?
+		\end{enumerate}
+	\end{exampleblock}
 \end{frame}
 
 \subsection{Sorting alignments}
 
-\begin{frame}[fragile]{}
+\begin{frame}{After all alignment jobs are done}
 	\begin{itemize}
-		\item 
+		\item Results (alignments named \texttt{*.aln.fasta} and other files) are in newly created \texttt{aligned} directory created by \texttt{hybseq\_run\_4\_alignment\_1\_submitter.sh} in \texttt{DATADIR}
+		\item Other outputs are images with alignment checks (\texttt{*.aln.check.png} and \texttt{*.aln.png}), NJ trees (\texttt{*.nwk} and \texttt{*.tree.png}) and logs (\texttt{*.log} from \texttt{R} and \texttt{HybSeq.alignment.*.[eo]*} from \texttt{qsub})
+		\item Outputs should be sorted by \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh} --- it requires only path to the \texttt{aligned} directory
 	\end{itemize}
-	\begin{spluscode}
-    
-	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Sorting data after running HybPiper for all samples}
+	\begin{itemize}
+		\item Outputs of alignments are in directory \texttt{aligned} which was created in the input directory, files with alignments itself are named \texttt{*.aln.fasta}
+		\item It should be sorted by \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh}
+		\item All outputs should be then moved to dedicated directory (cf. slide~\ref{datastructure})
+		\item \alert{Code below is exemplary and requires edits}
+	\end{itemize}
 	\begin{bashcode}
-    
+    # Post-process (sort into subdirectories and get simple
+    # statistics) all alignments - provide path to directory
+    # with aligned files
+    ~/bin/hybseq_run_4_alignment_3_postprocess.sh oxalis/
+      2_seqs/aligned/
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{}
-	\begin{itemize}
-		\item 
-	\end{itemize}
-	\begin{spluscode}
-    
-	\end{spluscode}
-	\begin{bashcode}
-    
-	\end{bashcode}
+\begin{frame}{Post-processing of alignments}
+	\begin{exampleblock}{Tasks to post-process alignments}
+		\begin{enumerate}
+			\item Inspect \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
+			\item Run \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh}  with correct path to post-process all aligned outputs.
+			\item Inspect outputs of, including statistics, images and logs. Open in spreadsheet (e.g. \href{https://www.libreoffice.org/}{LibreOffice Calc}) the \texttt{*.tsv} tables. What do they show?
+		\end{enumerate}
+	\end{exampleblock}
 \end{frame}
 
 \section{Gene trees}
