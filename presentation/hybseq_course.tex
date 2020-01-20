@@ -190,7 +190,7 @@
 		\item Post-processing of gene trees
 		\begin{itemize}
 			\item Identification, inspection and possible removal of gene trees with significantly different topology (e.g. by \href{https://www.r-project.org/}{R} and packages \href{https://cran.r-project.org/package=ape}{ape} and \href{https://cran.r-project.org/package=kdetrees}{kdetrees}, \href{https://github.com/uym2/TreeShrink}{TreeShrink})
-			\item Comparison of gene trees (e.g. heatmaps and PCA by \href{https://www.r-project.org/}{R} and packages \href{https://cran.r-project.org/package=ade4}{ade4}, \href{https://cran.r-project.org/package=ape}{ape}, \href{https://cran.r-project.org/package=distory}{distory}, \href{https://cran.r-project.org/package=phytools}{phytools})
+			\item Comparison of gene trees (e.g. heatmaps and PCoA by \href{https://www.r-project.org/}{R} and packages \href{https://cran.r-project.org/package=ade4}{ade4}, \href{https://cran.r-project.org/package=ape}{ape}, \href{https://cran.r-project.org/package=distory}{distory}, \href{https://cran.r-project.org/package=phytools}{phytools})
 			\item Comparison of (several) (species) trees (e.g.by \href{https://www.r-project.org/}{R} and packages \href{https://cran.r-project.org/package=ape}{ape} or \href{https://cran.r-project.org/package=phytools}{phytools})
 		\end{itemize}
 		\item Construction of species trees (e.g. by \href{https://github.com/smirarab/ASTRAL}{ASTRAL})
@@ -667,9 +667,9 @@
 	\begin{exampleblock}{Run HybPiper}
 		\begin{enumerate}
 			\item Inspect scripts \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh}, \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} and \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} and be sure to understand what they are doing, including syntax used.
+			\item In \texttt{$\sim$/bin/HybPiper/} check \texttt{./reads\_first.py -h}.
 			\item Edit declarations of variables \texttt{HYBPIPDIR}, \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES} and \texttt{BAITFILE} in \texttt{hybseq\_run\_2\_hybpiper\_1\_submitter.sh} so that they point to correct locations.
-			\item Process both libraries.
-			\item Inspect outputs and log files.
+			\item Process both libraries and inspect outputs and log files.
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
@@ -680,6 +680,7 @@
 			\item Think how to process all samples on single computer. Use \texttt{while} BASH loop and feed it by \texttt{samples\_data.txt}. How would such script look like? What had to be changed in \texttt{qsub}?
 			\item Check requirements of software used by HybPiper (BWA, SPAdes,~\ldots) and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
 			\item See \texttt{man qsub} and think if there is another option how to pass options from \texttt{hybseq\_run\_2\_hybpiper\_1\_submitter.sh} for individual \texttt{qsub} commands (apart of usage of exported variables as is used now).
+			\item Think about \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} parameters in \texttt{hybseq\_2\_hybpiper.sh}.
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
@@ -702,9 +703,9 @@
 	\end{itemize}
 	\begin{bashcode}
     # Move from both directories oxalis/1_data/lib_0[12]/2_dedup
-    # all outputs of HybPiper to oxalis/2_seqs for next steps
+    # all outputs of HybPiper to oxalis/2_seqs/ for next steps
     mv HybPiper.* hybseq_hybpiper.* *.dedup ../../../2_seqs/
-    # Create in directory oxalis/2_seqs new samples_list
+    # Create in directory oxalis/2_seqs new samples_list.txt
     find . -maxdepth 1 -type d | sed 's/^\.\///' | sort |
       tail -n+2 > samples_list.txt
     # Edit HYBPIPDIR, WORKDIR, BAITFILE and DATADIR in
@@ -746,7 +747,7 @@
 		\begin{itemize}
 			\item Rows (individuals) and/or colums (positions within alignment) with more than $\sim$10--20\% of missing data must be removed (e.g. beginning and the end of the alignment)
 			\item Too short alignments or alignments with too few variable sites or too few individuals should be removed
-			\item Exact thresholds are to be discussed
+			\item Exact thresholds are to be discussed\ldots
 		\end{itemize}
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_run\_3\_hybpiper\_postprocess.sh}) submits via \texttt{qsub} individual alignment task
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment.r} \texttt{R} script and copy results back
@@ -931,14 +932,15 @@
 
 \begin{frame}{Seeing trees in forest}
 	\begin{itemize}
-		\item First step in comparisons os gene trees is to identify trees with significantly different topology --- and inspect them
-		\item There are several distance matrices allowing compare topological differences among trees (and subsequently plot heatmap, PCA, etc.)
+		\item First step in comparisons of gene trees is to identify trees with significantly different topology --- and inspect them
+		\item There are several distance matrices allowing compare topological differences among trees (and subsequently plot heatmap, PCoA, etc.)
 	\end{itemize}
 	\begin{block}{How to recognize artifact and real biologial feature?}
 		\begin{itemize}
 			\item Without good reference genome it is hard to tell if long branches, weird topologies, etc. are some artifacts or biological reality\ldots
 			\item Problems commonly start with low-quality DNA in lab and subsequent high number of missing data
 			\item Statistically, most of \enquote{weird} gene trees topologies are rather from technical issues, so that most of people filter them out\ldots
+			\item Results can vary according to strictness with trimming raw FASTQ, sensitivity of various HybPiper settings, settings of aligner and tree builder\ldots
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -964,7 +966,7 @@
 			\item If the difference is very close to root, RF value can be large, even there are not much differences in the tree at all --- \texttt{dist.multiPhylo} from package \href{https://CRAN.R-project.org/package=distory}{distory} can be an alternative, although interpretation of that geodesic distance is sometimes not so straightforward as simple logic of RF
 		\end{itemize}
 		\item Methods implemented in \texttt{ape::dist.topo} allow comparison of trees with polytomies (\texttt{method="PH85"}) or use of squared lengths of internal branches (\texttt{method="score"})
-		\item Final matrices are commonly not \href{https://en.wikipedia.org/wiki/Euclidean_distance_matrix}{Euclidean} --- may be problematic for usage in methods like PCA
+		\item Final matrices are commonly not \href{https://en.wikipedia.org/wiki/Euclidean_distance_matrix}{Euclidean} --- may be problematic for usage in methods like PCoA
 		\begin{itemize}
 			\item Test it with \texttt{ade4::is.euclid}, can be scaled (forced to became Euclidean) by functions like \texttt{quasieuclid} or \texttt{cailliez} in \texttt{ade4} --- carefully, it can damage meaning of the data
 			\item We get matrix of pairwise differences among trees (from multiple genes), we need display and analyze it
@@ -972,28 +974,77 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{}
+\begin{frame}[fragile]{Preparing lists of trees for import into R}
 	\begin{itemize}
-		\item 
+		\item If the trees should be rooted, only trees containing the outgroup should be kept
+		\item \texttt{trees\_ml\_exons.nwk} is shown as an example, but other trees can be used as well
+		\item \texttt{grep} will easily keep only trees having outgroup \texttt{o\_purpurascens\_S482}
 	\end{itemize}
-	\begin{spluscode}
-    
-	\end{spluscode}
 	\begin{bashcode}
-    
+    # Extract only trees having particular taxon
+    grep o_purpurascens_S482 trees_ml_exons.nwk >
+      trees_ml_exons.out.nwk
+    # See how many trees were lost
+    wc -l trees_ml_exons.nwk trees_ml_exons.out.nwk
 	\end{bashcode}
 \end{frame}
 
 \begin{frame}[fragile]{}
-	\begin{itemize}
-		\item 
-	\end{itemize}
 	\begin{spluscode}
-    
+    # Load libraries
+    library(ape)
+    library(ade4)
+    library(distory)
+    library(gplots)
+    library(ggplot2)
+    library(kdetrees)
+    library(phangorn)
+    library(phytools)
+    # Set working directory
+    setwd("/home/vojta/dokumenty/vyuka/hybseq/")
+    # Load the list of trees
+    trees <- read.tree(file="trees_ml_exons.out.nwk")
+    trees # See it
+    # Root all trees
+    trees <- root.multiPhylo(phy=trees, outgroup="o_purpurascens_S482", resolve.root=TRUE)
+    # Compute distance of topological similarities
+    trees.d <- dist.topo(x=trees, method="score")
+    # Plot the heatmap
+    png(filename="trees_dist.png", width=10000, height=10000)
+      heatmap.2(x=as.matrix(trees.d), Rowv=FALSE, Colv="Rowv", dendrogram="none", symm=TRUE, scale="none", na.rm=TRUE, revC=FALSE, col=rainbow(15), cellnote=as.matrix(trees.d), notecex=1, notecol="white", trace="none", labRow=rownames(as.matrix(trees.d)), labCol=colnames(as.matrix(trees.d)), key=FALSE, main="Correlation matrix of topographical distances")
+      dev.off() # Saves the image
+    # Test if the distance matrix is Euclidean
+    is.euclid(distmat=as.dist(trees.d), plot=TRUE, tol=1e-05)
+    # PCoA
+    trees.pcoa <- dudi.pco(d=trees.d, scannf=FALSE, nf=3, full=FALSE, tol=1e-05)
+    trees.pcoa
+    # Plot PCoA
+    s.label(dfxy=trees.pcoa$li)
+    s.kde2d(dfxy=trees.pcoa$li, cpoint=0, add.plot=TRUE)
+    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomleft")
+    title("PCoA of matrix of pairwise trees distances")
+    # Run kdetrees to detect outliers
+    trees.kde <- kdetrees(trees=trees, k=0.36, distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
+    trees.kde # See text results
+    plot(x=trees.kde) # See graphical results
+    plot.multiPhylo(trees.kde[["outliers"]]) # See removed trees
+    # Save removed trees
+    write.tree(phy=trees.kde[["outliers"]], file="trees_outliers.nwk")
+    # Save kdetrees report
+    write.table(x=as.data.frame(x=trees.kde), file="trees_scores.tsv", quote=FALSE, sep="\t")
+    # Extract passing trees
+    trees.good <- trees[names(trees) %in% names(trees.kde$outliers) == FALSE]
+    trees.good
+    # Save passing trees
+    write.tree(phy=trees.good, file="trees_good.nwk")
+    # Compute parsimony super tree
+    tree.sp <- superTree(tree=trees.good, method="NNI", rooted=TRUE, trace=2, start=NULL, multicore=TRUE, mc.cores=6)
+    # Save parsimony super tree
+    write.tree(phy=tree.sp, file="parsimony_sp_tree.nwk")
+    # Plot parsimony super tree
+    plot.phylo(x=tree.sp, type="phylogram", edge.width=2, label.offset=0.01, cex=1.2)
+    add.scale.bar()
 	\end{spluscode}
-	\begin{bashcode}
-    
-	\end{bashcode}
 \end{frame}
 
 \subsection{Filtering trees}
