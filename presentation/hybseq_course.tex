@@ -216,6 +216,7 @@
 		\item \href{https://sourceforge.net/projects/bbmap/}{BBMap} --- deduplication of FASTQ
 		\item \href{ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/}{BLAST+} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
 		\item \href{https://github.com/lh3/bwa}{BWA} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
+		\item \href{https://www.wsi.uni-tuebingen.de/lehrstuehle/algorithms-in-bioinformatics/software/dendroscope/}{Dendroscope} --- visualize outputs of \href{https://bioinfocs.rice.edu/PhyloNet}{PhyloNet}
 		\item \href{https://www.ebi.ac.uk/about/vertebrate-genomics/software/exonerate}{Exonerate} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
 		\item \href{https://www.gnu.org/software/parallel/}{GNU Parallel} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} and in BASH scripts)
 		\item \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} --- recovering genes from targeted sequence capture data
@@ -364,28 +365,28 @@
 	\begin{itemize}
 		\item Specify needed time
 		\begin{itemize}
-			\item Always \texttt{hours:minutes:seconds}, so e.g. for 4~weeks use -\texttt{l~walltime=672:0:0} (28~$\cdot$~24), for two days and 12 hours -\texttt{l~walltime=60:0:0}
+			\item Always \texttt{hours:minutes:seconds}, so e.g. for 4~weeks use \texttt{-l~walltime=672:0:0} (28~$\cdot$~24), for two days and 12 hours \texttt{-l~walltime=60:0:0}
 			\item User \href{mailto:meta@cesnet.cz}{may ask} to prolong the walltime --- it is needed to write in advance
 		\end{itemize}
-		\item Ask for as much RAM as you need (e.g. -\texttt{l~mem=8gb} to request 8~GB of memory)
+		\item Ask for as much RAM as you need (e.g. \texttt{-l~mem=8gb} to request 8~GB of memory)
 		\begin{itemize}
 			\item If the task is going to require more, than allowed, system kills it\ldots
 			\item If user doesn't use all required RAM, the system temporarily lowers priority for future tasks
 			\item It can be hard to estimate\ldots
 		\end{itemize}
-		\item Disk space is relatively free resource, user can ask more to have some reserve (e.g. -\texttt{l~scratch\_local=10gb} to request 10~GB)
-		\item Specify how many physical computer(s) you are going to use (e.g. -\texttt{l~select=1} for one machine) and number of CPU threads on each machine (e.g. -\texttt{l~select=1:ncpus=8} for 1~machine with 8~cores or -\texttt{l~select=2:ncpus=4} for 2~machines, each with 4~CPU threads)
+		\item Disk space is relatively free resource, user can ask more to have some reserve (e.g. \texttt{-l~scratch\_local=10gb} to request 10~GB)
+		\item Specify how many physical computer(s) you are going to use (e.g. \texttt{-l~select=1} for one machine) and number of CPU threads on each machine (e.g. \texttt{-l~select=1:ncpus=8} for 1~machine with 8~cores or \texttt{-l~select=2:ncpus=4} for 2~machines, each with 4~CPU threads)
 		\begin{itemize}
-			\item It use to be necessary to specify correct number of threads for the application (e.g. \texttt{parallel}~-\texttt{j 4}) --- the application sees all CPUs on the machine, but can't use them
+			\item It use to be necessary to specify correct number of threads for the application (e.g. \texttt{parallel}~\texttt{-j 4}) --- the application sees all CPUs on the machine, but can't use them
 			\item If the application consumes less than required, the system temporarily lowers priority for future tasks, if it try to use more, it will be very slowed down or killed by the server
 		\end{itemize}
-		\item If requesting e-mails (e.g. -\texttt{m abe} to get mail about abort, beginning and exit of the task) and submitting plenty of tasks by some script, it can result in hundreds of mails --- receiving mail servers don't like it\ldots
+		\item If requesting e-mails (e.g. \texttt{-m abe} to get mail about abort, beginning and exit of the task) and submitting plenty of tasks by some script, it can result in hundreds of mails --- receiving mail servers don't like it\ldots
 		\item Every user has certain \href{https://metavo.metacentrum.cz/pbsmon2/users/}{priority} highered by \href{https://wiki.metacentrum.cz/wiki/Usage_rules/Acknowledgement}{acknowledgments} in publications to MetaCentrum and lowered by intensive usage of the service (the usage is calculated from past month)
 		\item After submission of the task, check in \href{https://metavo.metacentrum.cz/pbsmon2/queues/jobsQueued}{the queue} in which state it is --- sometimes it can't start because of impossible combination of resources or so
 		\item User can \href{https://metavo.metacentrum.cz/pbsmon2/nodes/physical}{check load of machines}
 		\item For more options read \url{https://wiki.metacentrum.cz/wiki/How_to_compute/Requesting_resources}
 		\begin{itemize}
-			\item Request special CPU (AMD, graphical,~\ldots), e.g. CPU with AVX2 -\texttt{l~select=cpu\_flag=avx2}
+			\item Request special CPU (AMD, graphical,~\ldots), e.g. CPU with AVX2 \texttt{-l~select=cpu\_flag=avx2}
 			\item Request particular location, ...
 			\item \url{https://metavo.metacentrum.cz/pbsmon2/qsub_pbspro} helps with preparation of \texttt{qsub} command
 		\end{itemize}
@@ -415,11 +416,11 @@
 		\item In the \texttt{metacentrum.sh} script load R \texttt{module add R-3.5.1-gcc} and start R script as usually \texttt{R CMD BATCH script.r}
 	\end{itemize}
 	\begin{enumerate}
-		\item Login to selected front node via SSH
+		\item Login to selected frontend via SSH
 		\item Go to working directory \texttt{cd workdir}
-		\item Create new directory for R packages \texttt{mkdir rpkgs}
-		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them into the \texttt{rpkgs} directory: \texttt{install.packages(pkgs=..., lib="rpkgs")}
-		\item In the R script load the packages from the \texttt{rpkgs} directory \texttt{library(package=..., lib.loc="rpkgs")}
+		\item Create new directory for R packages \texttt{mkdir rpackages}
+		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them into the \texttt{rpackages} directory: \texttt{install.packages(pkgs=..., lib="rpackages")}
+		\item In the R script load the packages from the \texttt{rpackages} directory \texttt{library(package=..., lib.loc="rpackages")}
 		\item Ensure all needed outputs are saved from the R script
 	\end{enumerate}
 \end{frame}
@@ -640,7 +641,7 @@
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_2\_hybpiper.sh} and copy results back
 		\item Script \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} runs all HybPiper steps for individual samples (as submitted by previous scripts)
 		\item Outputs of \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} should be checked and moved into special directory (\texttt{oxalis/2\_seqs}) where new list of samples must be created
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh} can be then used to run \texttt{$\sim$/hybseq/hybseq\_run\_3\_hybpiper\_postprocess.sh} which uses HybPiper to retrieve sequences of exons, introns and supercontigs, and prints statistics and creates heatmaps
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh} can be then used to run \texttt{$\sim$/hybseq/hybseq\_3\_hybpiper\_postprocess.sh} which uses HybPiper to retrieve sequences of exons, introns and supercontigs, and prints statistics and creates heatmaps
 		\item Retrieved sequences can then be aligned
 	\end{itemize}
 \end{frame}
@@ -752,7 +753,7 @@
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_run\_3\_hybpiper\_postprocess.sh}) submits via \texttt{qsub} individual alignment task
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment.r} \texttt{R} script and copy results back
 		\item \texttt{R} script \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} alignes every input contig with \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT}, trimms the alignment, creates NJ tree (NWK and PNG), creates image of alignment and reports alignment details
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
+		\item Script \texttt{$\sim$/bin/} \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
 	\end{itemize}
 \end{frame}
 
@@ -789,7 +790,7 @@
 		\begin{enumerate}
 			\item Think how to process all samples on single computer. Use \texttt{find} to list all \texttt{*.FNA} and \texttt{*.fasta} files and pass them to \href{https://www.gnu.org/software/parallel/}{GNU Parallel}. How would such script look like? What had to be changed in \texttt{qsub}?
 			\item Check requirements of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} and/or another aligners and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
-			\item Replace usage of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} in \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} by another aligner like e.g. \href{https://www.drive5.com/muscle/}{MUSCLE} or \href{http://clustal.org/}{Clustal}.
+			\item In \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} replace usage of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} by another aligner like e.g. \href{https://www.drive5.com/muscle/}{MUSCLE} or \href{http://clustal.org/}{Clustal}.
 			\item Think about parameters for functions \texttt{deleteGaps()}, \texttt{del.rowgapsonly()} and \texttt{del.colgapsonly()}. How do they influence output (\texttt{*.aln.fasta} files)?
 		\end{enumerate}
 	\end{exampleblock}
@@ -824,8 +825,8 @@
 \begin{frame}{Post-processing of alignments}
 	\begin{exampleblock}{Tasks to post-process alignments}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
-			\item Run \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh}  with correct path to post-process all aligned outputs.
+			\item Inspect \texttt{$\sim$/bin/} \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
+			\item Run \texttt{$\sim$/bin/} \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh}  with correct path to post-process all aligned outputs.
 			\item Inspect outputs of, including statistics, images and logs. Open in spreadsheet (e.g. \href{https://www.libreoffice.org/}{LibreOffice Calc}) the \texttt{*.tsv} tables. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
@@ -845,7 +846,7 @@
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every aligned contig (all \texttt{*.aln.fasta} files) in that directory (created in previous step) submits via \texttt{qsub} individual task to reconstruct gene tree
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_5\_gene\_trees.sh} and copy results back
 		\item Script \texttt{$\sim$/hybseq/hybseq\_5\_gene\_trees.sh} computes gene tree for every input file with \href{http://www.iqtree.org/}{IQ-TREE}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
+		\item Script \texttt{$\sim$/bin/} \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
 	\end{itemize}
 \end{frame}
 
@@ -921,8 +922,8 @@
 \begin{frame}{Post-processing of gene trees}
 	\begin{exampleblock}{Tasks to post-process gene trees}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
-			\item Run \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh}  with correct path to post-process all gene trees outputs.
+			\item Inspect \texttt{$\sim$/bin/} \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
+			\item Run \texttt{$\sim$/bin/} \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh}  with correct path to post-process all gene trees outputs.
 			\item Inspect outputs of, including logs. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
@@ -989,7 +990,7 @@
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{}
+\begin{frame}[fragile]{Loading trees into R}
 	\begin{spluscode}
     # Load libraries
     library(ape)
@@ -999,130 +1000,345 @@
     library(ggplot2)
     library(kdetrees)
     library(phangorn)
-    library(phytools)
     # Set working directory
     setwd("/home/vojta/dokumenty/vyuka/hybseq/")
     # Load the list of trees
     trees <- read.tree(file="trees_ml_exons.out.nwk")
     trees # See it
     # Root all trees
-    trees <- root.multiPhylo(phy=trees, outgroup="o_purpurascens_S482", resolve.root=TRUE)
+    trees <- root.multiPhylo(phy=trees,
+      outgroup="o_purpurascens_S482", resolve.root=TRUE)
+    print(trees, details=TRUE)
+	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Heatmap of topological distances}
+	\begin{itemize}
+		\item There are several heatmap functions, try also at least \texttt{heatmap} and \texttt{heatmap.plus::heatmap.plus}
+		\item Edit settings to fit your needs and preferences
+	\end{itemize}
+	\begin{spluscode}
     # Compute distance of topological similarities
     trees.d <- dist.topo(x=trees, method="score")
-    # Plot the heatmap
+    # Plot the heatmap (package gplots)
     png(filename="trees_dist.png", width=10000, height=10000)
-      heatmap.2(x=as.matrix(trees.d), Rowv=FALSE, Colv="Rowv", dendrogram="none", symm=TRUE, scale="none", na.rm=TRUE, revC=FALSE, col=rainbow(15), cellnote=as.matrix(trees.d), notecex=1, notecol="white", trace="none", labRow=rownames(as.matrix(trees.d)), labCol=colnames(as.matrix(trees.d)), key=FALSE, main="Correlation matrix of topographical distances")
+      heatmap.2(x=as.matrix(trees.d), Rowv=FALSE, Colv="Rowv",
+        dendrogram="none", symm=TRUE, scale="none", na.rm=TRUE,
+        revC=FALSE, col=rainbow(15), cellnote=as.matrix
+        (trees.d), notecex=1, notecol="white", trace="none",
+        labRow=rownames(as.matrix(trees.d)), labCol=colnames
+        (as.matrix(trees.d)), key=FALSE, main="Correlation
+        matrix of topographical distances")
       dev.off() # Saves the image
+	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{PCoA of topological distances}
+	\begin{itemize}
+		\item Requires \href{https://en.wikipedia.org/wiki/Euclidean_distance_matrix}{Euclidean distance matrix} (\texttt{is.euclid()})
+		\item Non-Euclidean matrices can be forced to became Euclidean by e.g. \texttt{quasieuclid()} or \texttt{cailliez()}
+		\item There are plenty of options how to display it
+	\end{itemize}
+	\begin{spluscode}
     # Test if the distance matrix is Euclidean
     is.euclid(distmat=as.dist(trees.d), plot=TRUE, tol=1e-05)
     # PCoA
-    trees.pcoa <- dudi.pco(d=trees.d, scannf=FALSE, nf=3, full=FALSE, tol=1e-05)
+    trees.pcoa <- dudi.pco(d=trees.d, scannf=FALSE, nf=3,
+      full=FALSE, tol=1e-05)
     trees.pcoa
     # Plot PCoA
     s.label(dfxy=trees.pcoa$li)
     s.kde2d(dfxy=trees.pcoa$li, cpoint=0, add.plot=TRUE)
-    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomleft")
+    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2,
+      posi="bottomleft")
     title("PCoA of matrix of pairwise trees distances")
-    # Run kdetrees to detect outliers
-    trees.kde <- kdetrees(trees=trees, k=0.36, distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
-    trees.kde # See text results
-    plot(x=trees.kde) # See graphical results
-    plot.multiPhylo(trees.kde[["outliers"]]) # See removed trees
-    # Save removed trees
-    write.tree(phy=trees.kde[["outliers"]], file="trees_outliers.nwk")
-    # Save kdetrees report
-    write.table(x=as.data.frame(x=trees.kde), file="trees_scores.tsv", quote=FALSE, sep="\t")
-    # Extract passing trees
-    trees.good <- trees[names(trees) %in% names(trees.kde$outliers) == FALSE]
-    trees.good
-    # Save passing trees
-    write.tree(phy=trees.good, file="trees_good.nwk")
-    # Compute parsimony super tree
-    tree.sp <- superTree(tree=trees.good, method="NNI", rooted=TRUE, trace=2, start=NULL, multicore=TRUE, mc.cores=6)
-    # Save parsimony super tree
-    write.tree(phy=tree.sp, file="parsimony_sp_tree.nwk")
-    # Plot parsimony super tree
-    plot.phylo(x=tree.sp, type="phylogram", edge.width=2, label.offset=0.01, cex=1.2)
-    add.scale.bar()
 	\end{spluscode}
 \end{frame}
 
 \subsection{Filtering trees}
 
-\begin{frame}[fragile]{}
+\begin{frame}[fragile]{Kdetrees}
 	\begin{itemize}
-		\item 
+		\item Finds discordant phylogenetic trees
+		\item Produces relative scores --- high are relatively similar to each other, low dissimilar (discordant with the others)
+		\item Produces scores, list of passing/discarded trees and graphical outputs
+		\item In \texttt{kdetrees()}, \alert{value of \texttt{k} is responsible for threshold for removal of outliers --- play with it}
 	\end{itemize}
 	\begin{spluscode}
-    
+    # Run kdetrees to detect outliers - play with k
+    ?kdetrees # See options for kdetrees
+    trees.kde <- kdetrees(trees=trees, k=0.36,
+      distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
+     # See text results with list of outlying trees
+    trees.kde¨
 	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Outputs of kdetrees}
+	\begin{spluscode}
+    # See graphical results
+    plot(x=trees.kde)
+    hist(x=trees.kde)
+    # See removed trees
+    plot.multiPhylo(trees.kde[["outliers"]])
+    # Save removed trees
+    write.tree(phy=trees.kde[["outliers"]],
+      file="trees_outliers.nwk")
+    # Save kdetrees report
+    write.table(x=as.data.frame(x=trees.kde),
+      file="trees_scores.tsv", quote=FALSE, sep="\t")
+    # Extract passing trees
+    trees.good <- trees[names(trees) %in%
+      names(trees.kde[["outliers"]]) == FALSE]
+    trees.good
+    # Save passing trees
+    write.tree(phy=trees.good, file="trees_good.nwk")
+	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{TreeShrink}
+	\begin{itemize}
+		\item Algorithm for detecting abnormally long branches in one or more phylogenetic trees \href{https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4620-2}{Mai et Mirarab 2018}
+		\item Requires \href{https://www.r-project.org/}{R} to be installed
+		\item See \href{https://github.com/uym2/TreeShrink}{more usage options}
+	\end{itemize}
 	\begin{bashcode}
-    
+    # Go to ~/bin directory
+    cd ~/bin/ || { mkdir ~/bin && cd ~/bin/; }
+    # Download TreeShrink
+    git clone https://github.com/uym2/TreeShrink.git
+    cd TreeShrink/
+    # Install it
+    python3 setup.py install --user # Or if using conda
+    conda install -c smirarab treeshrink
+    # Go to directory with trees_good.nwk and run TreeShrink
+    python3 ~/bin/TreeShrink/run_treeshrink.py -h # See help
+    python3 ~/bin/TreeShrink/run_treeshrink.py
+      -r ~/bin/TreeShrink/ -t trees_good.nwk
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{}
+\subsection{Species trees}
+
+\begin{frame}[fragile]{Parsimony super tree}
 	\begin{itemize}
-		\item 
+		\item Parsimony has plenty of implementation, example below is from \texttt{R} package \texttt{phangorn}
 	\end{itemize}
 	\begin{spluscode}
-    
+    # Compute parsimony super tree
+    ?superTree # See help first...
+    tree.sp <- superTree(tree=trees.good, method="NNI",
+      rooted=TRUE, trace=2, start=NULL, multicore=TRUE)
+    # Rooting the species tree
+    tree.sp <- root(phy=tree.sp,
+      outgroup="o_purpurascens_S482", resolve.root=TRUE)
+    tree.sp # See details
+    # Save parsimony super tree
+    write.tree(phy=tree.sp, file="parsimony_sp_tree.nwk")
+    # Plot parsimony super tree
+    plot.phylo(x=tree.sp, type="phylogram", edge.width=2,
+      label.offset=0.01, cex=1.2)
+    add.scale.bar()
+    # Tune display of the tree...
 	\end{spluscode}
-	\begin{bashcode}
-    
-	\end{bashcode}
+\end{frame}
+
+\begin{frame}[fragile]{Other options for species tree estimation in R}
+	\begin{itemize}
+		\item Similar approach as \texttt{superTree} is implemented in \texttt{phytools::mrp.supertree}
+		\item Distance-based tree reconstruction is in \texttt{ape::speciesTree}
+		\item Coalescence model handling multiple individuals per species is in \texttt{phangorn::coalSpeciesTree}
+	\end{itemize}
+	\begin{spluscode}
+    # See help for mrp.supertree and coalSpeciesTree
+    ?phytools::mrp.supertree
+    ?phangorn::coalSpeciesTree
+    # All trees must be ultrametric - chronos scale them
+    trees.ultra <- lapply(X=trees, FUN=chronos,
+      model="correlated")
+    class(trees.ultra) <- "multiPhylo"
+    # Calculate the species tree
+    tree.sp.mean <- speciesTree(x=trees.ultra, FUN=mean)
+    tree.sp2 <- mrp.supertree(tree=trees,
+      method="optim.parsimony", rooted=TRUE)
+	\end{spluscode}
 \end{frame}
 
 \subsection{Phylogenetic networks}
 
-\begin{frame}[fragile]{}
+\begin{frame}[fragile]{Consensus network}
 	\begin{itemize}
-		\item 
+		\item Available in \texttt{R} package \texttt{phangorn}
+		\item Requires same set of tips in all trees
 	\end{itemize}
 	\begin{spluscode}
-    
+    # See help
+    ?consensusNet
+    # Compute consensus network
+    tree.net <- consensusNet(obj=trees, prob=0.25)
+    # Plot 2D or 3D
+    plot(x=oxalis.tree.net, planar=FALSE, type="2D",
+      use.edge.length=TRUE, show.tip.label=TRUE,
+      show.edge.label=TRUE, show.node.label=TRUE,
+      show.nodes=TRUE, edge.color="black",
+      tip.color="blue") # 2D
+    plot(x=oxalis.tree.net, planar=FALSE, type="3D",
+      use.edge.length=TRUE, show.tip.label=TRUE,
+      show.edge.label=TRUE, show.node.label=TRUE,
+      show.nodes=TRUE, edge.color="black",
+      tip.color="blue") # 3D
 	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Phylonet}
+	\begin{itemize}
+		\item Requires as input NEXUS file with settings describing \href{https://wiki.rice.edu/confluence/display/PHYLONET/List+of+PhyloNet+Commands}{PhyloNet commands} (see example below)
+	\end{itemize}
 	\begin{bashcode}
-    
+    #NEXUS
+    BEGIN TREES;
+    ... list of trees from trees_good.nwk newick file ...
+    # Ever tree starts with:
+    Tree TreeID = (tree in NWK)
+    ... # All other trees ...
+    END;
+    BEGIN PHYLONET;
+    InferNetwork_MP (all) 1 -b 50 -x 5 -pl 2 -di;
+    END;
+
+    # Download binary JAR file (ready to run)
+    wget https://bioinfocs.rice.edu/sites/g/files/bxs266/f/
+      kcfinder/files/PhyloNet_3.8.0.jar
+    java -Xmx8g -jar PhyloNet_3.8.0.jar file.nex | tee file.log
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{}
+\begin{frame}{Running phylonet}
 	\begin{itemize}
-		\item 
+		\item Prepare the list of trees for the NEXUS file e.g. in spreadsheet
+		\item The \texttt{PHYLONET} section of the input NEXUS contains settings according to \href{https://wiki.rice.edu/confluence/display/PHYLONET/List+of+PhyloNet+Commands}{list of commands}
+		\item TreeID can be completely random, or simple consecutive sequence like GT0001--GT\#\#\#\#
+		\item PhyloNet can be computationally very demanding, calculating more than 1--3 reticulations can be unrealistic in terms of time needed\ldots
+		\item It does not save output file, the network in special NWK format for \href{https://www.wsi.uni-tuebingen.de/lehrstuehle/algorithms-in-bioinformatics/software/dendroscope/}{Dendroscope} is on the end --- copy it from terminal (after \texttt{Visualize in Dendroscope :}) or log file and save as tiny TXT, which can be opened in \href{https://www.wsi.uni-tuebingen.de/lehrstuehle/algorithms-in-bioinformatics/software/dendroscope/}{Dendroscope}
+	\end{itemize}
+\end{frame}
+
+\subsection{Comparing trees}
+
+\begin{frame}[fragile]{Installing phyparts and other tools}
+	\begin{itemize}
+		\item Requires \texttt{maven} and several Python packages, installation can be complicated\ldots
+	\end{itemize}
+	\begin{bashcode}
+    cd ~/bin/
+    # Install Phyparts
+    git clone https://bitbucket.org/blackrim/phyparts.git
+    cd phyparts/
+    # Install dependencies
+    ./mvn_cmdline.sh
+    # Install PhyParts_PieCharts
+    git clone
+      https://github.com/mossmatters/MJPythonNotebooks.git
+    # Split list of trees into individual files
+    mkdir trees_good
+    split -a 4 -d -l 1 trees_good.nwk trees_good/trees_good_
+    ls trees_good/
+	\end{bashcode}
+\end{frame}
+
+\begin{frame}[fragile]{Producing phyparts and phypartspiecharts.py outputs}
+	\begin{bashcode}
+    # Remove IQTREE ultrafast bootstrap values from gene trees
+    sed -i 's/\/[0-9]\{1,3\}//g' trees_good/trees_*
+    # Analysis with phyparts
+    java -jar ~/bin/phyparts/target/phyparts-0.0.1-SNAPSHOT-
+      jar-with-dependencies.jar --help
+    java -jar ~/bin/phyparts/target/phyparts-0.0.1-SNAPSHOT-
+      jar-with-dependencies.jar -a 1 -d trees_good -m
+      parsimony_sp_tree.nwk -o trees_good_res -s 0.5 -v
+    # Copy phypartspiecharts.py to directory with trees
+    cp ~/bin/phyparts/MJPythonNotebooks/phypartspiecharts.py .
+    # See help for phypartspiecharts.py
+    python phypartspiecharts.py --help
+    # Pie chart: concordance (blue) top conflict (green),
+    # other conflict (red), no signal (gray)
+    # Run phypartspiecharts.py to get the graphical output
+    python phypartspiecharts.py --svg_name trees_good_res.svg
+      parsimony_sp_tree.nwk trees_good_res 144
+	\end{bashcode}
+\end{frame}
+
+\begin{frame}[fragile]{Comparing two trees --- cophyloplots}
+	\begin{itemize}
+		\item Slightly different implementation in \texttt{R} packages \texttt{ape} (\texttt{cophyloplot}) and \texttt{phytools} (\texttt{cophylo})
+		\item See help pages and play with graphical parameters
 	\end{itemize}
 	\begin{spluscode}
-    
+    # We need 2 column matrix with tip labels
+    tips.labels <- matrix(data=c(sort(tree.sp[["tip.label"]]),
+      sort(tree.sp2[["tip.label"]])),
+      nrow=length(tree.sp[["tip.label"]]), ncol=2)
+    # Draw the tree, play with graphical parameters
+    # Click to nodes to rotate them to get better display
+    cophyloplot(x=tree.sp, y=tree.sp2, assoc=tips.labels,
+      use.edge.length=FALSE, space=60, length.line=1, gap=2,
+      type="phylogram", rotate=TRUE, col="red", lwd=1.5, lty=2)
+    # Slihtly better display in phytools::cophylo
+    trees.cophylo <- cophylo(tr1=tree.sp, tr2=tree.sp2,
+      assoc=tips.labels, rotate=TRUE)
+    plot.cophylo(x=trees.cophylo, lwd=2, link.type="curved")
 	\end{spluscode}
-	\begin{bashcode}
-    
-	\end{bashcode}
+\end{frame}
+
+\begin{frame}[fragile]{Density tree}
+	\begin{itemize}
+		\item The trees should be (otherwise plotting works, but may be more ugly) rooted, ultrametric and binary bifurcating
+		\item implementations are in \texttt{phangorn} (\texttt{densiTree}) and \texttt{phytools} (\texttt{densityTree})
+	\end{itemize}
+	\begin{spluscode}
+    is.rooted.multiPhylo(trees.ultra) # rooted
+    is.ultrametric.multiPhylo(trees.ultra) # ultrametric
+    is.binary.multiPhylo(trees.ultra) # binary bifurcating
+    # See help page
+    ?phangorn::densiTree
+    # Plotting density trees
+    densiTree(x=trees.ultra[1:10], direction="downwards",
+      scaleX=TRUE, col=rainbow(3), width=5, cex=1.5)
+    densiTree(x=trees.ultra, direction="upwards", scaleX=TRUE,
+      width=5)
+    densiTree(x=trees.ultra, scaleX=TRUE, width=5, cex=1.5)
+	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Different display for multiple trees}
+	\begin{itemize}
+		\item \texttt{phytools::densiTree} requires same number of tips in all trees
+		\item Note various ways how to select trees to display
+		\item Nodes of the trees are not rotated (the display might be suboptimal)
+	\end{itemize}
+	\begin{spluscode}
+    # See help page
+    ?phytools::densityTree
+    # Plotting density trees
+    densityTree(trees=c(tree.sp, tree.sp2), fix.depth=TRUE,
+      use.gradient=TRUE, alpha=0.5, lwd=4)
+    densityTree(trees=trees.ultra, fix.depth=TRUE,
+      use.gradient=TRUE, alpha=0.5, lwd=4)
+    densityTree(trees=trees.ultra[1:3], fix.depth=TRUE,
+      use.gradient=TRUE, alpha=0.5, lwd=4)
+    densityTree(trees=trees.ultra[c(2,4,6,7)], fix.depth=TRUE,
+      use.gradient=TRUE, alpha=0.5, lwd=4)
+	\end{spluscode}
 \end{frame}
 
 \section{The end}
 
-\begin{frame}[fragile]{}
+\begin{frame}{This is just beginning of long journey\ldots}
 	\begin{itemize}
-		\item 
+		\item I presented common basic tools how to process HybSeq data and deal with various problems, but new tools keep emerging\ldots
+		\item Stay updated and keep trying new tools
+		\item The scripts presented are not the only rigid way how to proceed, rather very general guideline, which should be subject of heavy modificcations according to your needs\ldots
 	\end{itemize}
-	\begin{spluscode}
-    
-	\end{spluscode}
-	\begin{bashcode}
-    
-	\end{bashcode}
-\end{frame}
-
-\begin{frame}[fragile]{}
-	\begin{itemize}
-		\item 
-	\end{itemize}
-	\begin{spluscode}
-    
-	\end{spluscode}
-	\begin{bashcode}
-    
-	\end{bashcode}
 \end{frame}
 
 \subsection{The very end}
