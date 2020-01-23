@@ -1,4 +1,4 @@
-\documentclass[compress, ucs, xelatex, 11pt, xcolor=x11names, aspectratio=1609,
+\documentclass[compress, ucs, xelatex, 11pt, xcolor=x11names, aspectratio=169,
 	hyperref={
 		bookmarks=true,
 		unicode=true,
@@ -97,7 +97,7 @@
 \institute[\url{https://trapa.cz/}]{Department of Botany, Faculty of Science, Charles University, Prague\\Institute of Botany, Czech Academy of Sciences, Průhonice\\\url{https://trapa.cz/}, \href{mailto:zeisek@natur.cuni.cz}{zeisek@natur.cuni.cz}}
 \title{HybSeq course}
 \subtitle{Practical processing of HybSeq target enrichment sequencing data on computing grids like MetaCentrum}
-\titlegraphic{\includegraphics[width=1.5cm]{konsole.png}}
+\titlegraphic{\includegraphics[width=1cm]{konsole.png}}
 \date{January 20 to 23, 2020}
 
 \begin{document}
@@ -199,12 +199,15 @@
 		\end{itemize}
 		\item Phylogenetic networks (e.g. by \href{https://bioinfocs.rice.edu/PhyloNet}{PhyloNet})
 	\end{enumerate}
-	\vfil
-	\begin{itemize}
-		\item This general scheme can be significantly altered\ldots
-		\item There are plenty of technical as well as biological problems (HGT, ILS,~\ldots) and new software keep being developed\ldots
-		\item Much more analysis possible\ldots
-	\end{itemize}
+	\vfill
+	\begin{block}{Note\ldots}
+		\begin{itemize}
+			\item This general scheme can be significantly altered\ldots
+			\item There are plenty of technical as well as biological problems (HGT, ILS,~\ldots) and new software keep being developed\ldots
+			\item Much more analysis possible\ldots
+		\end{itemize}
+	\end{block}
+	\vfill
 \end{frame}
 
 \subsection{Software needed}
@@ -274,10 +277,11 @@
 		\item Information about MetaCloud \url{https://wiki.metacentrum.cz/wiki/Kategorie:Clouds}
 		\item Most of practical information for users are at wiki \url{https://wiki.metacentrum.cz/w/index.php?&setlang=en}
 	\end{itemize}
+	\vfill
 	\begin{alertblock}{MetaCentrum vs. other clusters\ldots}
 		I show processing on MetaCentrum Czech National Grid Infrastructure, as it is readily available, well maintained and contains all needed applications, but it's possible to use any computing cluster in similar way.
 	\end{alertblock}
-
+	\vfill
 \end{frame}
 
 \begin{frame}{MetaCentrum}
@@ -419,7 +423,7 @@
 		\item Login to selected frontend via SSH
 		\item Go to working directory \texttt{cd workdir}
 		\item Create new directory for R packages \texttt{mkdir rpackages}
-		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them into the \texttt{rpackages} directory: \texttt{install.packages(pkgs=..., lib="rpackages")}
+		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them into directory \texttt{rpackages}: \texttt{install.packages(pkgs=..., lib="rpackages")}
 		\item In the R script load the packages from the \texttt{rpackages} directory \texttt{library(package=..., lib.loc="rpackages")}
 		\item Ensure all needed outputs are saved from the R script
 	\end{enumerate}
@@ -450,7 +454,7 @@
 \begin{frame}[fragile]{Scripts and other resources to process the data}
 	\begin{itemize}
 		\item The archive \texttt{hybseq\_course.zip} contains test data as well as needed scripts, R packages, HybSeq reference,~\ldots
-		\item The other resources (not the data in the \texttt{oxalis} directory) should be moved to the frontend
+		\item The other resources (not the data in the \texttt{oxalis} directory) should be moved to frontend
 		\item Inspect content of the \texttt{bin} and \texttt{hybseq} directories
 		\item Scripts must be updated to point to correct location of the \texttt{oxalis}
 	\end{itemize}
@@ -587,11 +591,11 @@
 \begin{frame}{Trimm and deduplicate all FASTQ files}
 	\begin{exampleblock}{Tasks to pre-process FASTQ data for HybPiper}
 			\begin{enumerate}
-		\item Inspect \texttt{$\sim$/hybseq/hybseq\_1\_prep.sh} and \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh} be sure to understand what the scripts do, including syntax used.
-		\item Edit declaration of variables \texttt{WORKDIR} and \texttt{DATADIR} so that they point to correct locations.
-		\item Submit via \texttt{qsub} \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh} to process both libraries and monitor the jobs during processing.
-		\item Inspect outputs of \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh}, including statistics and FASTQ checks. What do they show?
-		\item Can you run the task on your computer (desktop in office or notebook) without \texttt{qsub}? If so, how?
+				\item Inspect \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh} and \texttt{$\sim$/hybseq/hybseq\_1\_prep.sh} and be sure to understand what the scripts do, including syntax used.
+				\item Edit declaration of variables \texttt{WORKDIR} and \texttt{DATADIR} so that they point to correct locations.
+				\item Submit via \texttt{qsub} \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh} to process both libraries and monitor the jobs during processing.
+				\item Inspect outputs of \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh}, including statistics and FASTQ checks. What do they show?
+				\item Can you run the task on your computer (desktop or notebook) without \texttt{qsub}? If so, how?
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
@@ -629,7 +633,7 @@
 
 \begin{frame}{Overview of HybPiper}
 	\begin{center}
-		\includegraphics[height=7cm]{hybpiper.png}
+		\includegraphics[height=6.5cm]{hybpiper.png}
 	\end{center}
 \end{frame}
 
@@ -699,7 +703,7 @@
 
 \begin{frame}[fragile]{Sorting data after running HybPiper for all samples}
 	\begin{itemize}
-		\item Outputs of HybPiper are in same directory as where input files were --- outputs from all libraries must be moved into dedicated directory for post-processing and retrieval of the sequences
+		\item Outputs of HybPiper are in same directory as where input files were --- outputs from all libraries must be moved into dedicated directory for post-processing and sequence retrieval
 		\item \alert{Code below is exemplary and requires edits, as well as script \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh}}
 	\end{itemize}
 	\begin{bashcode}
@@ -707,14 +711,13 @@
     # all outputs of HybPiper to oxalis/2_seqs/ for next steps
     mv HybPiper.* hybseq_hybpiper.* *.dedup ../../../2_seqs/
     # Create in directory oxalis/2_seqs new samples_list.txt
-    find . -maxdepth 1 -type d | sed 's/^\.\///' | sort |
-      tail -n+2 > samples_list.txt
+    find . -maxdepth 1 -type d | sed 's/^\.\///' | sort | tail -n+2 >
+      samples_list.txt
     # Edit HYBPIPDIR, WORKDIR, BAITFILE and DATADIR in
     # ~/bin/hybseq_run_3_hybpiper_postprocess.sh
     # When ready, submit task to post-process HybPiper results
-    qsub -l walltime=12:0:0 -l select=1:ncpus=1:mem=2gb:
-      scratch_local=100gb -m abe
-      ~/bin/hybseq_run_3_hybpiper_postprocess.sh
+    qsub -l walltime=12:0:0 -l select=1:ncpus=1:mem=2gb:scratch_local=100gb
+       -m abe ~/bin/hybseq_run_3_hybpiper_postprocess.sh
 	\end{bashcode}
 \end{frame}
 
@@ -753,7 +756,7 @@
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_run\_3\_hybpiper\_postprocess.sh}) submits via \texttt{qsub} individual alignment task
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment.r} \texttt{R} script and copy results back
 		\item \texttt{R} script \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} alignes every input contig with \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT}, trimms the alignment, creates NJ tree (NWK and PNG), creates image of alignment and reports alignment details
-		\item Script \texttt{$\sim$/bin/} \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
 	\end{itemize}
 \end{frame}
 
@@ -817,16 +820,15 @@
     # Post-process (sort into subdirectories and get simple
     # statistics) all alignments - provide path to directory
     # with aligned files
-    ~/bin/hybseq_run_4_alignment_3_postprocess.sh oxalis/
-      2_seqs/aligned/
+    ~/bin/hybseq_run_4_alignment_3_postprocess.sh oxalis/2_seqs/aligned/
 	\end{bashcode}
 \end{frame}
 
 \begin{frame}{Post-processing of alignments}
 	\begin{exampleblock}{Tasks to post-process alignments}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/bin/} \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
-			\item Run \texttt{$\sim$/bin/} \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh}  with correct path to post-process all aligned outputs.
+			\item Inspect \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
+			\item Run \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh}  with correct path to post-process all aligned outputs.
 			\item Inspect outputs of, including statistics, images and logs. Open in spreadsheet (e.g. \href{https://www.libreoffice.org/}{LibreOffice Calc}) the \texttt{*.tsv} tables. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
@@ -846,7 +848,7 @@
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every aligned contig (all \texttt{*.aln.fasta} files) in that directory (created in previous step) submits via \texttt{qsub} individual task to reconstruct gene tree
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_5\_gene\_trees.sh} and copy results back
 		\item Script \texttt{$\sim$/hybseq/hybseq\_5\_gene\_trees.sh} computes gene tree for every input file with \href{http://www.iqtree.org/}{IQ-TREE}
-		\item Script \texttt{$\sim$/bin/} \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
 	\end{itemize}
 \end{frame}
 
@@ -914,16 +916,15 @@
     # Post-process (sort into subdirectories and get lists of
     # gene trees) all gene trees - provide path to directory
     # with gene trees files
-    ~/bin/hybseq_run_5_gene_trees_3_postprocess.sh oxalis/
-      oxalis/3_aligned/trees/
+    ~/bin/hybseq_run_5_gene_trees_3_postprocess.sh oxalis/3_aligned/trees/
 	\end{bashcode}
 \end{frame}
 
 \begin{frame}{Post-processing of gene trees}
 	\begin{exampleblock}{Tasks to post-process gene trees}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/bin/} \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
-			\item Run \texttt{$\sim$/bin/} \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh}  with correct path to post-process all gene trees outputs.
+			\item Inspect \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
+			\item Run \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh}  with correct path to post-process all gene trees outputs.
 			\item Inspect outputs of, including logs. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
@@ -933,7 +934,7 @@
 
 \begin{frame}{Seeing trees in forest}
 	\begin{itemize}
-		\item First step in comparisons of gene trees is to identify trees with significantly different topology --- and inspect them
+		\item Comparison of gene trees start with identifying trees with significantly different topology
 		\item There are several distance matrices allowing compare topological differences among trees (and subsequently plot heatmap, PCoA, etc.)
 	\end{itemize}
 	\begin{block}{How to recognize artifact and real biologial feature?}
@@ -983,8 +984,7 @@
 	\end{itemize}
 	\begin{bashcode}
     # Extract only trees having particular taxon
-    grep o_purpurascens_S482 trees_ml_exons.nwk >
-      trees_ml_exons.out.nwk
+    grep o_purpurascens_S482 trees_ml_exons.nwk > trees_ml_exons.out.nwk
     # See how many trees were lost
     wc -l trees_ml_exons.nwk trees_ml_exons.out.nwk
 	\end{bashcode}
@@ -1006,8 +1006,8 @@
     trees <- read.tree(file="trees_ml_exons.out.nwk")
     trees # See it
     # Root all trees
-    trees <- root.multiPhylo(phy=trees,
-      outgroup="o_purpurascens_S482", resolve.root=TRUE)
+    trees <- root.multiPhylo(phy=trees, outgroup="o_purpurascens_S482",
+      resolve.root=TRUE)
     print(trees, details=TRUE)
 	\end{spluscode}
 \end{frame}
@@ -1024,8 +1024,8 @@
     png(filename="trees_dist.png", width=10000, height=10000)
       heatmap.2(x=as.matrix(trees.d), Rowv=FALSE, Colv="Rowv",
         dendrogram="none", symm=TRUE, scale="none", na.rm=TRUE,
-        revC=FALSE, col=rainbow(15), cellnote=as.matrix
-        (trees.d), notecex=1, notecol="white", trace="none",
+        revC=FALSE, col=rainbow(15), cellnote=as.matrix(trees.d),
+        notecex=1, notecol="white", trace="none",
         labRow=rownames(as.matrix(trees.d)), labCol=colnames
         (as.matrix(trees.d)), key=FALSE, main="Correlation
         matrix of topographical distances")
@@ -1043,14 +1043,12 @@
     # Test if the distance matrix is Euclidean
     is.euclid(distmat=as.dist(trees.d), plot=TRUE, tol=1e-05)
     # PCoA
-    trees.pcoa <- dudi.pco(d=trees.d, scannf=FALSE, nf=3,
-      full=FALSE, tol=1e-05)
+    trees.pcoa <- dudi.pco(d=trees.d, scannf=FALSE, nf=5)
     trees.pcoa
     # Plot PCoA
     s.label(dfxy=trees.pcoa$li)
     s.kde2d(dfxy=trees.pcoa$li, cpoint=0, add.plot=TRUE)
-    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2,
-      posi="bottomleft")
+    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomleft")
     title("PCoA of matrix of pairwise trees distances")
 	\end{spluscode}
 \end{frame}
@@ -1067,8 +1065,8 @@
 	\begin{spluscode}
     # Run kdetrees to detect outliers - play with k
     ?kdetrees # See options for kdetrees
-    trees.kde <- kdetrees(trees=trees, k=0.36,
-      distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
+    trees.kde <- kdetrees(trees=trees, k=0.36, distance="dissimilarity",
+      topo.only=FALSE, greedy=TRUE)
      # See text results with list of outlying trees
     trees.kde¨
 	\end{spluscode}
@@ -1082,14 +1080,13 @@
     # See removed trees
     plot.multiPhylo(trees.kde[["outliers"]])
     # Save removed trees
-    write.tree(phy=trees.kde[["outliers"]],
-      file="trees_outliers.nwk")
+    write.tree(phy=trees.kde[["outliers"]], file="trees_outliers.nwk")
     # Save kdetrees report
-    write.table(x=as.data.frame(x=trees.kde),
-      file="trees_scores.tsv", quote=FALSE, sep="\t")
+    write.table(x=as.data.frame(x=trees.kde), file="trees_scores.tsv",
+      quote=FALSE, sep="\t")
     # Extract passing trees
-    trees.good <- trees[names(trees) %in%
-      names(trees.kde[["outliers"]]) == FALSE]
+    trees.good <- trees[names(trees) %in% names(trees.kde[["outliers"]])
+      == FALSE]
     trees.good
     # Save passing trees
     write.tree(phy=trees.good, file="trees_good.nwk")
@@ -1113,8 +1110,8 @@
     conda install -c smirarab treeshrink
     # Go to directory with trees_good.nwk and run TreeShrink
     python3 ~/bin/TreeShrink/run_treeshrink.py -h # See help
-    python3 ~/bin/TreeShrink/run_treeshrink.py
-      -r ~/bin/TreeShrink/ -t trees_good.nwk
+    python3 ~/bin/TreeShrink/run_treeshrink.py -r ~/bin/TreeShrink/
+      -t trees_good.nwk
 	\end{bashcode}
 \end{frame}
 
@@ -1127,11 +1124,11 @@
 	\begin{spluscode}
     # Compute parsimony super tree
     ?superTree # See help first...
-    tree.sp <- superTree(tree=trees.good, method="NNI",
-      rooted=TRUE, trace=2, start=NULL, multicore=TRUE)
+    tree.sp <- superTree(tree=trees.good, method="NNI", rooted=TRUE,
+      trace=2, start=NULL, multicore=TRUE)
     # Rooting the species tree
-    tree.sp <- root(phy=tree.sp,
-      outgroup="o_purpurascens_S482", resolve.root=TRUE)
+    tree.sp <- root(phy=tree.sp, outgroup="o_purpurascens_S482",
+      resolve.root=TRUE)
     tree.sp # See details
     # Save parsimony super tree
     write.tree(phy=tree.sp, file="parsimony_sp_tree.nwk")
@@ -1154,13 +1151,12 @@
     ?phytools::mrp.supertree
     ?phangorn::coalSpeciesTree
     # All trees must be ultrametric - chronos scale them
-    trees.ultra <- lapply(X=trees, FUN=chronos,
-      model="correlated")
+    trees.ultra <- lapply(X=trees, FUN=chronos, model="correlated")
     class(trees.ultra) <- "multiPhylo"
     # Calculate the species tree
     tree.sp.mean <- speciesTree(x=trees.ultra, FUN=mean)
-    tree.sp2 <- mrp.supertree(tree=trees,
-      method="optim.parsimony", rooted=TRUE)
+    tree.sp2 <- mrp.supertree(tree=trees, method="optim.parsimony",
+      rooted=TRUE)
 	\end{spluscode}
 \end{frame}
 
@@ -1177,16 +1173,12 @@
     # Compute consensus network
     tree.net <- consensusNet(obj=trees, prob=0.25)
     # Plot 2D or 3D
-    plot(x=oxalis.tree.net, planar=FALSE, type="2D",
-      use.edge.length=TRUE, show.tip.label=TRUE,
-      show.edge.label=TRUE, show.node.label=TRUE,
-      show.nodes=TRUE, edge.color="black",
-      tip.color="blue") # 2D
-    plot(x=oxalis.tree.net, planar=FALSE, type="3D",
-      use.edge.length=TRUE, show.tip.label=TRUE,
-      show.edge.label=TRUE, show.node.label=TRUE,
-      show.nodes=TRUE, edge.color="black",
-      tip.color="blue") # 3D
+    plot(x=oxalis.tree.net, planar=FALSE, type="2D", use.edge.length=TRUE,
+      show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE,
+      show.nodes=TRUE, edge.color="black", tip.color="blue") # 2D
+    plot(x=oxalis.tree.net, planar=FALSE, type="3D", use.edge.length=TRUE,
+      show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE,
+      show.nodes=TRUE, edge.color="black", tip.color="blue") # 3D
 	\end{spluscode}
 \end{frame}
 
@@ -1207,8 +1199,8 @@
     END;
 
     # Download binary JAR file (ready to run)
-    wget https://bioinfocs.rice.edu/sites/g/files/bxs266/f/
-      kcfinder/files/PhyloNet_3.8.0.jar
+    wget https://bioinfocs.rice.edu/sites/g/files/bxs266/f/kcfinder/files/
+      PhyloNet_3.8.0.jar
     java -Xmx8g -jar PhyloNet_3.8.0.jar file.nex | tee file.log
 	\end{bashcode}
 \end{frame}
@@ -1237,8 +1229,7 @@
     # Install dependencies
     ./mvn_cmdline.sh
     # Install PhyParts_PieCharts
-    git clone
-      https://github.com/mossmatters/MJPythonNotebooks.git
+    git clone https://github.com/mossmatters/MJPythonNotebooks.git
     # Split list of trees into individual files
     mkdir trees_good
     split -a 4 -d -l 1 trees_good.nwk trees_good/trees_good_
@@ -1275,17 +1266,16 @@
 	\end{itemize}
 	\begin{spluscode}
     # We need 2 column matrix with tip labels
-    tips.labels <- matrix(data=c(sort(tree.sp[["tip.label"]]),
-      sort(tree.sp2[["tip.label"]])),
-      nrow=length(tree.sp[["tip.label"]]), ncol=2)
+    tips.labels <- matrix(data=c(sort(tree.sp[["tip.label"]]), sort
+      (tree.sp2[["tip.label"]])), nrow=length(tree.sp[["tip.label"]]), ncol=2)
     # Draw the tree, play with graphical parameters
     # Click to nodes to rotate them to get better display
-    cophyloplot(x=tree.sp, y=tree.sp2, assoc=tips.labels,
-      use.edge.length=FALSE, space=60, length.line=1, gap=2,
-      type="phylogram", rotate=TRUE, col="red", lwd=1.5, lty=2)
+    cophyloplot(x=tree.sp, y=tree.sp2, assoc=tips.labels, use.edge.length=
+      FALSE, space=60, length.line=1, gap=2, type="phylogram", rotate=TRUE,
+      col="red", lwd=1.5, lty=2)
     # Slihtly better display in phytools::cophylo
-    trees.cophylo <- cophylo(tr1=tree.sp, tr2=tree.sp2,
-      assoc=tips.labels, rotate=TRUE)
+    trees.cophylo <- cophylo(tr1=tree.sp, tr2=tree.sp2, assoc=tips.labels,
+      rotate=TRUE)
     plot.cophylo(x=trees.cophylo, lwd=2, link.type="curved")
 	\end{spluscode}
 \end{frame}
@@ -1302,10 +1292,9 @@
     # See help page
     ?phangorn::densiTree
     # Plotting density trees
-    densiTree(x=trees.ultra[1:10], direction="downwards",
-      scaleX=TRUE, col=rainbow(3), width=5, cex=1.5)
-    densiTree(x=trees.ultra, direction="upwards", scaleX=TRUE,
-      width=5)
+    densiTree(x=trees.ultra[1:10], direction="downwards", scaleX=TRUE
+      col=rainbow(3), width=5, cex=1.5)
+    densiTree(x=trees.ultra, direction="upwards", scaleX=TRUE, width=5)
     densiTree(x=trees.ultra, scaleX=TRUE, width=5, cex=1.5)
 	\end{spluscode}
 \end{frame}
@@ -1320,12 +1309,12 @@
     # See help page
     ?phytools::densityTree
     # Plotting density trees
-    densityTree(trees=c(tree.sp, tree.sp2), fix.depth=TRUE,
-      use.gradient=TRUE, alpha=0.5, lwd=4)
-    densityTree(trees=trees.ultra, fix.depth=TRUE,
-      use.gradient=TRUE, alpha=0.5, lwd=4)
-    densityTree(trees=trees.ultra[1:3], fix.depth=TRUE,
-      use.gradient=TRUE, alpha=0.5, lwd=4)
+    densityTree(trees=c(tree.sp, tree.sp2), fix.depth=TRUE, use.gradient=TRUE,
+      alpha=0.5, lwd=4)
+    densityTree(trees=trees.ultra, fix.depth=TRUE, use.gradient=TRUE,
+      alpha=0.5, lwd=4)
+    densityTree(trees=trees.ultra[1:3], fix.depth=TRUE, use.gradient=TRUE,
+      alpha=0.5, lwd=4)
     densityTree(trees=trees.ultra[c(2,4,6,7)], fix.depth=TRUE,
       use.gradient=TRUE, alpha=0.5, lwd=4)
 	\end{spluscode}
