@@ -773,6 +773,8 @@
     qstat -w -n -1 -u $USER # Last column contains machine name
     # See your processes running the machine (from above list)
     ssh exec_node "ps ux" # Replace exec_host by hostname!
+    # Something went wrong? Cancel or running or queued tasks by
+    qdel $(qstat -u $USER | grep -o "^[0-9]\+" | tr "\n" " ")
 	\end{bashcode}
 \end{frame}
 
@@ -1112,6 +1114,24 @@
     python3 ~/bin/TreeShrink/run_treeshrink.py -h # See help
     python3 ~/bin/TreeShrink/run_treeshrink.py -r ~/bin/TreeShrink/
       -t trees_good.nwk
+	\end{bashcode}
+\end{frame}
+
+\begin{frame}[fragile]{Outputs of TreeShrink}
+	\begin{itemize}
+		\item Output (2 files) is saved into directory (in our case) \texttt{trees\_good\_treeshrink}
+		\item File \texttt{*.nwk} contains new list of phylogenetic trees in \texttt{NEWICK} which can be then used as an input for any species tree reconstruction software
+		\item File \texttt{*\_RS\_*.txt} is bit hard to read, it has one line for every tree in the input list and every line contains list of removed tips
+		\begin{itemize}
+			\item If there is an empty line, no tip was removed from that particular tree
+			\item Trees are not named, only in same order as in the original input file
+		\end{itemize}
+	\end{itemize}
+	\begin{bashcode}
+    # Find out how many times particular sample was removed from the list of
+    # the trees
+    grep -o "\<[[:graph:]]\+\>" trees_good_RS_0.05.txt | sort | uniq -c |
+      sort -r
 	\end{bashcode}
 \end{frame}
 
