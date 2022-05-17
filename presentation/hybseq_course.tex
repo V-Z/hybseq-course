@@ -85,12 +85,12 @@
 \usepackage[autostyle=true, english=american]{csquotes}
 
 % Title page
-\author[Vojtěch Zeisek]{Vojtěch Zeisek, Roswitha Elisabeth Schmickl and Tomáš Fér}
+\author[Vojtěch Zeisek]{\textbf{Vojtěch Zeisek}, Roswitha Elisabeth Schmickl, Tomáš Fér and Luciana Salomon}
 \institute[\url{https://trapa.cz/}]{Department of Botany, Faculty of Science, Charles University, Prague\\Institute of Botany, Czech Academy of Sciences, Průhonice\\\url{https://trapa.cz/}, \href{mailto:zeisek@natur.cuni.cz}{zeisek@natur.cuni.cz}}
-\title{HybSeq course}
-\subtitle{Practical processing of HybSeq target enrichment sequencing data on computing grids like MetaCentrum}
+\title{HybSeq course --- from raw data to species trees}
+\subtitle{Practical processing of HybSeq target enrichment sequencing data on computing grids like MetaCentrum --- pre-processing, HybPiper, alignments, gene trees, species trees}
 \titlegraphic{\includegraphics[width=1cm]{konsole.png}}
-\date{January 20 to 23, 2020}
+\date{May 26--27, 2022}
 
 \begin{document}
 
@@ -98,7 +98,7 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Outline}
+\begin{frame}[allowframebreaks]{Outline}{Target enrichment for plant/animal systematics --- methodological workshop (MB120C117)}
 	\tableofcontents
 \end{frame}
 
@@ -106,11 +106,12 @@
 
 \begin{frame}{Resources before we start}
 	\begin{itemize}
-		\item Course \href{https://github.com/V-Z/hybseq-course}{git} and information: \url{https://trapa.cz/en/hybseq-course-2020}
+		\item Course \href{https://github.com/V-Z/hybseq-course}{git (slides with all links)} and \href{https://is.cuni.cz/studium/eng/predmety/index.php?do=predmet&kod=MB120C117}{information in SIS} (\href{https://is.cuni.cz/studium/predmety/index.php?do=predmet&kod=MB120C117}{česky})
+		\item Scripts \url{https://github.com/V-Z/hybseq-scripts} will be used in the course
 		\item Most of the work is done in Linux/UNIX (macOS,~\ldots) command line, so that good knowledge of work in command line is essential, good starting point can be my Linux and MetaCentrum course \url{https://soubory.trapa.cz/linuxcourse/}
 		\item Many tasks are done in R, so that at least basic knowledge of R is needed, good starting point can be my R course \url{https://soubory.trapa.cz/rcourse/}
 		\item As \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} is written in \href{https://www.python.org/}{Python}, so that at least minimal knowledge of this language is advantageous
-		\item Processing HybSeq data is computationally demanding (it requires plenty of resources), during the course we use \href{https://www.metacentrum.cz/en/Sluzby/Grid/}{MetaCentrum, Czech National Grid Infrastructure} (slide~\ref{CESNET}), but any computing cluster or powerful desktop (for patient users;-) can be used
+		\item Processing HybSeq data is computationally demanding (it requires plenty of resources), during the course we use \href{https://www.metacentrum.cz/en/Sluzby/Grid/}{MetaCentrum, Czech National Grid Infrastructure} (\href{https://www.metacentrum.cz/cs/Sluzby/Grid/}{česky}) (slide~\ref{CESNET}), but any computing cluster or powerful desktop (for patient users;-) can be used
 	\end{itemize}
 \end{frame}
 
