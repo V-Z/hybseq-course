@@ -9,21 +9,19 @@
 		pdfsubject={Practical processing of HybSeq target enrichment sequencing data on computing grids like MetaCentrum},
 		pdfcreator={XeLaTeX},
 		pdfkeywords={BASH, command line, GNU, HybSeq, Linux, MetaCentrum, sequencing shell, target enrichment},
-		linkcolor=Cyan2, % Navigation menu links on pages and in navigation menus
-		anchorcolor=Firebrick2, % Not in use?
-		citecolor=Firebrick2, % Not in use?
-		filecolor=Firebrick2, % Not in use?
-		menucolor=Firebrick2, % Not in use?
-		urlcolor=Chartreuse2, % Links with \href and \url
+		linkcolor=Turquoise4, % Navigation menu links on pages and in navigation menus
+		anchorcolor=DodgerBlue4, % Not in use?
+		citecolor=DodgerBlue4, % Not in use?
+		filecolor=DodgerBlue4, % Not in use?
+		menucolor=Tan4, % Not in use?
+		urlcolor=DarkOliveGreen4, % Links with \href and \url
 		pdftex},
 	url={hyphens, lowtilde} % Allow line breaks within URLs
 	]{beamer}
 
 % Theme settings
-\useoutertheme{infolines}
-\useinnertheme[shadow]{rounded}
-\usecolortheme{beetle}
-% Headline
+\usetheme[secheader]{Boadilla}
+\usecolortheme{beaver}
 \setbeamertemplate{headline} {
 	\begin{beamercolorbox}{section in head/foot}
 		\insertsectionnavigationhorizontal{\paperwidth}{\hskip0pt plus1fill}{\hskip0pt plus1fill}
@@ -32,13 +30,7 @@
 		\insertsubsectionnavigationhorizontal{\paperwidth}{}{\hfill\hfill}
 	\end{beamercolorbox}
 	}
-% Color background for titles
-\setbeamercolor{titlelike}{parent=palette secondary}
-
-% Background for block titles
-\setbeamercolor{block title}{bg=beetle@other}
-\setbeamercolor{block title alerted}{bg=beetle@other}
-\setbeamercolor{block title example}{bg=beetle@other}
+\useinnertheme{circles}
 
 % Fonts Linux Libertine
 \usepackage{libertine}
@@ -50,17 +42,17 @@
 % TeX logos
 \usepackage{dtk-logos}
 
-% % In-line higlighting
-\renewcommand{\texttt}[1]{\colorbox{Snow4}{{\ttfamily #1}}}
+% In-line higlighting
+\renewcommand{\texttt}[1]{\colorbox{Cornsilk2}{{\ttfamily #1}}}
 
 % Change text color of highlighted text
-\renewcommand{\alert}[1]{\textcolor{OrangeRed2}{#1}}
+\renewcommand{\alert}[1]{\textcolor{OrangeRed3}{#1}}
 
 % Syntax higlight
 \usepackage{minted}
 \usemintedstyle{vim} % Styles are listed by pygmentize -L styles; languages are listed by pygmentize -L lexers
-\newminted{bash}{linenos, fontsize=\footnotesize, bgcolor=Snow4, fontfamily=tt, gobble=4, numbersep=-3pt}
-\newminted{splus}{linenos, fontsize=\footnotesize, bgcolor=Snow4, fontfamily=tt, gobble=4, numbersep=-3pt}
+\newminted{bash}{linenos, fontsize=\footnotesize, bgcolor=Cornsilk2, fontfamily=tt, gobble=4, numbersep=-3pt}
+\newminted{splus}{linenos, fontsize=\footnotesize, bgcolor=Cornsilk4, fontfamily=tt, gobble=4, numbersep=-3pt}
 % Change line number style
 \renewcommand{\theFancyVerbLine}{
 	\sffamily
@@ -90,7 +82,7 @@
 \usepackage[main=american]{babel}
 
 % Quotes
-	\usepackage[autostyle=true, english=american]{csquotes}
+\usepackage[autostyle=true, english=american]{csquotes}
 
 % Title page
 \author[Vojtěch Zeisek]{Vojtěch Zeisek, Roswitha Elisabeth Schmickl and Tomáš Fér}
