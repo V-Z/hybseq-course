@@ -238,87 +238,50 @@
 \begin{frame}[allowframebreaks]{CESNET and MetaCentrum}
 	\label{CESNET}
 	\begin{itemize}
-		\item \href{https://www.cesnet.cz/?lang=en}{CESNET} is organization of Czech universities, Academy of Science and other organizations taking care about Czech backbone Internet, one of world leading institutions of this type
-		\item CESNET provides various \href{https://www.cesnet.cz/services/?lang=en}{services}
+		\item \href{https://www.cesnet.cz/?lang=en}{CESNET} (\href{https://www.cesnet.cz/}{česky}) is organization of Czech universities, Academy of Science and other organizations taking care about Czech backbone Internet, one of world leading institutions of this type
+		\item CESNET provides various \href{https://www.cesnet.cz/services/?lang=en}{services} (\href{https://www.cesnet.cz/sluzby/}{česky})
 		\begin{itemize}
-			\item Massive computations --- \href{https://www.cesnet.cz/services/massive-computations-metacentrum/?lang=en}{MetaCentrum} --- \alert{this we need to process our HybSeq data}
-			\item Large \href{https://www.cesnet.cz/services/data-storage/?lang=en}{data storage} --- \alert{this we need to store our HybSeq data}
-			\item \href{https://www.cesnet.cz/services/filesender/?lang=en}{FileSender} to be able to send up to 1.9~TB file
-			\item \href{https://www.metacentrum.cz/en/Sluzby/Cloud/}{Cloud} --- computing (HPC) cloud similar to e.g. Amazon Elastic Compute Cloud (EC2) or Google Compute Engine
-			\item \href{https://www.cesnet.cz/services/owncloud/?lang=en}{ownCloud} to backup and/or sync data across devices (default capacity is 100~GB, user may ask for more) --- similar to e.g. Dropbox
-			\begin{itemize}
-				\item It is possible to connect by webDAV to ownCloud--- many applications support it
-				\item It is possible to share calendars and/or address books via calDav and cardDav among devices and/or people
-			\end{itemize}
+			\item Massive computations --- \href{https://www.cesnet.cz/services/massive-computations-metacentrum/?lang=en}{MetaCentrum} (\href{https://www.cesnet.cz/sluzby/metacentrum/}{česky}) --- \alert{this we need to process our HybSeq data}
+			\item Large \href{https://www.cesnet.cz/services/data-storage/?lang=en}{data storage} (\href{https://www.cesnet.cz/sluzby/datova-uloziste/}{česky}) --- \alert{this we can use to store our HybSeq data}
+			\item And \href{https://www.cesnet.cz/services/?lang=en}{much more} (\href{https://www.cesnet.cz/sluzby/}{česky})\ldots
+			\item See also my course \url{https://soubory.trapa.cz/linuxcourse/linux_bash_metacentrum_course.pdf} (chapter \enquote{MetaCentrum})
 		\end{itemize}
-		\item Services accessible without registration
-		\begin{itemize}
-			\item ownCloud \url{https://owncloud.cesnet.cz/}
-			\item FileSender \url{https://filesender.cesnet.cz/}
-			\item Go to web and log in with your institutional password
-		\end{itemize}
-		\item Services requiring registration (and approval)
-		\begin{itemize}
-			\item To use MetaCentrum fill registration form \url{https://metavo.metacentrum.cz/en/application/form}
-			\item To use data storage fill registration form \url{https://einfra.cesnet.cz/perun-registrar-fed/?vo=storage}
-			\item After registration for MetaCentrum, user can join MetaCloud via \url{https://perun.metacentrum.cz/fed/registrar/?vo=meta&group=metacloud}
-			\item Users not having access to \href{https://www.eduid.cz/en/index}{EduID} have to register first at HostelID \url{http://hostel.eduid.cz/en/index.html}
-		\end{itemize}
-		\item Information about data storage \url{https://du.cesnet.cz/en/start} contains detailed usage instructions
-		\item Information about MetaCentrum \url{https://www.metacentrum.cz/en/}
-		\item Information about MetaCloud \url{https://wiki.metacentrum.cz/wiki/Kategorie:Clouds}
-		\item Most of practical information for users are at wiki \url{https://wiki.metacentrum.cz/w/index.php?&setlang=en}
+		\item Information about data storage \url{https://du.cesnet.cz/en/start} (\href{https://du.cesnet.cz/cs/start}{česky}) contains detailed usage instructions
+		\item Information about MetaCentrum \url{https://www.metacentrum.cz/en/} (\href{https://www.metacentrum.cz/cs/}{česky})
+		\item Most of practical information for users are at wiki \url{https://wiki.metacentrum.cz/wiki/Main_Page} (\href{https://wiki.metacentrum.cz/wiki/Hlavn\%C3\%AD_strana}{česky})
+		\item Of course, good knowledge of work in Linux command line (BASH) is needed\ldots
 	\end{itemize}
 	\vfill
 	\begin{alertblock}{MetaCentrum vs. other clusters\ldots}
-		I show processing on MetaCentrum Czech National Grid Infrastructure, as it is readily available, well maintained and contains all needed applications, but it's possible to use any computing cluster in similar way.
+		I show processing on MetaCentrum Czech National Grid Infrastructure, as it is readily available, well maintained and contains all needed applications, but it's possible to use any computing cluster in similar way (the scripts are easily modifiable).
 	\end{alertblock}
 	\vfill
 \end{frame}
 
 \begin{frame}{MetaCentrum}
 	\begin{itemize}
-		\item Find all needed information at \url{https://wiki.metacentrum.cz/wiki/Main_Page}
-		\item Current state and usage as available at \url{https://metavo.metacentrum.cz/en/}
-		\item Manage your user account at \url{http://metavo.metacentrum.cz/en/myaccount/}
+		\item Find all needed information at \url{https://wiki.metacentrum.cz/wiki/Main_Page} (\href{https://wiki.metacentrum.cz/wiki/Hlavn\%C3\%AD_strana}{česky})
+		\item Current state and usage as available at \url{https://metavo.metacentrum.cz/}
+		\item Manage your user account at \url{http://metavo.metacentrum.cz/en/myaccount/} (\href{https://metavo.metacentrum.cz/cs/myaccount/}{česky})
 		\item Personal view on actual resources and running tasks is at \url{https://metavo.metacentrum.cz/pbsmon2/person}
 		\item List of available applications \url{https://wiki.metacentrum.cz/wiki/Kategorie:Applications}
-		\item It has 9~\href{https://wiki.metacentrum.cz/wiki/Frontend}{frontends} where users log and thousands of computers doing the calculations --- they are not accessed directly to run task
+		\item It has 9~\href{https://wiki.metacentrum.cz/wiki/Frontend}{frontends} (\href{https://wiki.metacentrum.cz/wiki/Celni_uzel}{česky}) where users log and thousands of computers doing the calculations --- they are not accessed directly to run task
 		\item Most of computers are running \href{https://www.debian.org/}{Debian GNU/Linux}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{MetaCentrum usage}
-	\begin{itemize}
-		\item User can transfer data on one of \href{https://wiki.metacentrum.cz/wiki/Frontend}{frontends} or to \href{https://du.cesnet.cz/en/prehled_protokolu_a_sluzeb_s_jejich_doporucenimi/start#protocol}{data storage} by e.g. \texttt{scp} or \href{https://winscp.net/}{WinSCP} from Windows or \href{https://filezilla-project.org/}{FileZilla} from anywhere
-		\item Same credentials are used for all frontends, computing nodes as well as data storage, for SSH login as well as file transmissions
-	\end{itemize}
-	\vfill
-	\begin{bashcode}
-    # Login to selected server (tarkil is located in Prague)
-    ssh USER@tarkil.metacentrum.cz
-    # Continue as in any other command line...
-    qsub ... # Submit the job (see later)
-	\end{bashcode}
-	\vfill
-	\begin{itemize}
-		\item In home directory on the server prepare all needed data and non-interactive script (interactive are more complicated) which will do the calculations
-		\item Tasks are not launched immediately, but using \texttt{qsub} the task is submitted into queue and system decides when it will be launched
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{File transfers to MetaCentrum}
-	\begin{itemize}
-		\item Graphical applications: \href{https://winscp.net/}{WinSCP}, \href{https://filezilla-project.org/}{FileZilla} or from most of file managers
-		\item Protocol is SSH/SSH2/SFTP/SCP, port 22, server is selected \href{https://wiki.metacentrum.cz/wiki/Frontend}{frontend's} address (e.g. \texttt{tarkil.metacentrum.cz}) --- it is recommendable to use all the time same frontend
-		\item All servers are accessible under domain \texttt{*.metacentrum.cz}: \texttt{skirit}, \texttt{perian}, \texttt{onyx}, \texttt{zuphux} (located in Brno), \texttt{alfrid}, \texttt{nympha}, \texttt{minos} (in Pilsen), \texttt{tarkil} (in Prague), and \texttt{tilia} (in Průhonice) --- so that e.g. \texttt{tarkil.grid.cesnet.cz} is synonymous to \texttt{tarkil.metacentrum.cz}
-		\item In the same way use SCP/SFTP/rsync/SSH to \texttt{ssh.du4.cesnet.cz} to access the storage, see \href{https://du.cesnet.cz/en/prehled_protokolu_a_sluzeb_s_jejich_doporucenimi/start\#protocol}{help}
-	\end{itemize}
+\begin{frame}{Basic workflow}
+	\begin{center}
+		\includegraphics[height=5.5cm]{grid_graphics.jpg}
+	\end{center}
+	\begin{flushright}
+		From \href{https://wiki.metacentrum.cz/wiki/Beginners_guide}{Beginners guide} (\href{https://wiki.metacentrum.cz/wiki/Pruvodce_pro_zacatecniky}{česky})
+	\end{flushright}
 \end{frame}
 
 \begin{frame}[fragile]{Launching of tasks}
 	\begin{itemize}
-		\item \url{https://wiki.metacentrum.cz/wiki/How_to_compute/Requesting_resources}
+		\item \url{https://wiki.metacentrum.cz/wiki/About_scheduling_system}
 		\item Personal view \url{https://metavo.metacentrum.cz/pbsmon2/person} has nice overview of available resources and tasks and allows comfortable construction of submission command
 	\end{itemize}
 	\vfill
@@ -357,66 +320,17 @@
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Scheduling details}
-	\begin{itemize}
-		\item Specify needed time
-		\begin{itemize}
-			\item Always \texttt{hours:minutes:seconds}, so e.g. for 4~weeks use \texttt{-l~walltime=672:0:0} (28~$\cdot$~24), for two days and 12 hours \texttt{-l~walltime=60:0:0}
-			\item User \href{mailto:meta@cesnet.cz}{may ask} to prolong the walltime --- it is needed to write in advance
-		\end{itemize}
-		\item Ask for as much RAM as you need (e.g. \texttt{-l~mem=8gb} to request 8~GB of memory)
-		\begin{itemize}
-			\item If the task is going to require more, than allowed, system kills it\ldots
-			\item If user doesn't use all required RAM, the system temporarily lowers priority for future tasks
-			\item It can be hard to estimate\ldots
-		\end{itemize}
-		\item Disk space is relatively free resource, user can ask more to have some reserve (e.g. \texttt{-l~scratch\_local=10gb} to request 10~GB)
-		\item Specify how many physical computer(s) you are going to use (e.g. \texttt{-l~select=1} for one machine) and number of CPU threads on each machine (e.g. \texttt{-l~select=1:ncpus=8} for 1~machine with 8~cores or \texttt{-l~select=2:ncpus=4} for 2~machines, each with 4~CPU threads)
-		\begin{itemize}
-			\item It use to be necessary to specify correct number of threads for the application (e.g. \texttt{parallel}~\texttt{-j 4}) --- the application sees all CPUs on the machine, but can't use them
-			\item If the application consumes less than required, the system temporarily lowers priority for future tasks, if it try to use more, it will be very slowed down or killed by the server
-		\end{itemize}
-		\item If requesting e-mails (e.g. \texttt{-m abe} to get mail about abort, beginning and exit of the task) and submitting plenty of tasks by some script, it can result in hundreds of mails --- receiving mail servers don't like it\ldots
-		\item Every user has certain \href{https://metavo.metacentrum.cz/pbsmon2/users/}{priority} highered by \href{https://wiki.metacentrum.cz/wiki/Usage_rules/Acknowledgement}{acknowledgments} in publications to MetaCentrum and lowered by intensive usage of the service (the usage is calculated from past month)
-		\item After submission of the task, check in \href{https://metavo.metacentrum.cz/pbsmon2/queues/jobsQueued}{the queue} in which state it is --- sometimes it can't start because of impossible combination of resources or so
-		\item User can \href{https://metavo.metacentrum.cz/pbsmon2/nodes/physical}{check load of machines}
-		\item For more options read \url{https://wiki.metacentrum.cz/wiki/How_to_compute/Requesting_resources}
-		\begin{itemize}
-			\item Request special CPU (AMD, graphical,~\ldots), e.g. CPU with AVX2 \texttt{-l~select=cpu\_flag=avx2}
-			\item Request particular location, ...
-			\item \url{https://metavo.metacentrum.cz/pbsmon2/qsub_pbspro} helps with preparation of \texttt{qsub} command
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Get to task's working directory}
-	\begin{itemize}
-		\item Go to \url{https://metavo.metacentrum.cz/pbsmon2/person} and click to list of your tasks and click to selected task
-		\item Search for information \textbf{exec\_host} (address of node doing the task) and \textbf{SCRATCHDIR} (temporal directory for all data and results)
-		\item Sometimes one needs to monitor task progress or influence it
-		\item It is not possible to directly modify running task, but at least check (and possibly modify) input data and see outputs
-	\end{itemize}
-	\begin{bashcode}
-    # From MetaCentrum frontend login to node running the task
-    ssh exec_host # No need to specify user name; e.g. mandos9
-    # Go to SCRATCH directory
-    cd SCRATCHDIR # e.g. /scratch/gunnera/job_90220.meta-pbs...
-    # There are working data of currently running task...
-    # Check whatever you need...
-	\end{bashcode}
-\end{frame}
-
 \begin{frame}{Running R tasks on MetaCentrum}
 	\begin{itemize}
-		\item There are no R packages, user must create local package library and provide path --- \alert{Be careful about paths!}
-		\item In the \texttt{metacentrum.sh} script load R \texttt{module add R-3.5.1-gcc} and start R script as usually \texttt{R CMD BATCH script.r}
+		\item There are only some R packages, to get more create own package library and use it in scripts (see e.g. \texttt{/software/R/4.0.0/gcc/lib/R/library/})
+		\item \alert{Be careful about paths!}
+		\item In the \texttt{metacentrum.sh} script load R \texttt{module add R-4.0.0-gcc} and start there R script as usually \texttt{R CMD BATCH script.r}
 	\end{itemize}
 	\begin{enumerate}
-		\item Login to selected frontend via SSH
-		\item Go to working directory \texttt{cd workdir}
-		\item Create new directory for R packages \texttt{mkdir rpackages}
-		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them into directory \texttt{rpackages}: \texttt{install.packages(pkgs=..., lib="rpackages")}
-		\item In the R script load the packages from the \texttt{rpackages} directory \texttt{library(package=..., lib.loc="rpackages")}
+		\item Login to selected front node via SSH
+		\item Create somewhere new directory for R packages \texttt{mkdir rpkgs} (or use default \texttt{$\sim$/R/})
+		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them into the \texttt{rpkgs} directory \texttt{install.packages(pkgs=\ldots, lib="rpkgs")}
+		\item In the R script \texttt{*.r} load the packages from the \texttt{rpkgs} directory \texttt{library(package=\ldots, lib.loc="/storage/\ldots/rpkgs")}
 		\item Ensure all needed outputs are saved from the R script
 	\end{enumerate}
 \end{frame}
