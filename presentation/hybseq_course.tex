@@ -190,6 +190,7 @@
 			\item Comparison of species tree and gene trees (e.g. by \href{https://bitbucket.org/blackrim/phyparts}{phyparts} and \href{https://github.com/mossmatters/MJPythonNotebooks}{MJPythonNotebooks})
 		\end{itemize}
 		\item Phylogenetic networks (e.g. by \href{https://bioinfocs.rice.edu/PhyloNet}{PhyloNet})
+		\item And more\ldots
 	\end{enumerate}
 	\vfill
 	\begin{block}{Note\ldots}
@@ -249,6 +250,7 @@
 		\item Information about data storage \url{https://du.cesnet.cz/en/start} (\href{https://du.cesnet.cz/cs/start}{česky}) contains detailed usage instructions
 		\item Information about MetaCentrum \url{https://www.metacentrum.cz/en/} (\href{https://www.metacentrum.cz/cs/}{česky})
 		\item Most of practical information for users are at wiki \url{https://wiki.metacentrum.cz/wiki/Main_Page} (\href{https://wiki.metacentrum.cz/wiki/Hlavn\%C3\%AD_strana}{česky})
+		\item To start work see at least \href{https://wiki.metacentrum.cz/wiki/Categorized_list_of_topics}{list of topics} (\href{https://wiki.metacentrum.cz/wiki/Rozcestnik}{česky}), \href{https://wiki.metacentrum.cz/wiki/Computational_services_overview}{overview} (\href{https://wiki.metacentrum.cz/wiki/Prehled_vypocetnich_sluzeb}{česky}), \href{https://wiki.metacentrum.cz/wiki/Beginners_guide}{beginers guide} (\href{https://wiki.metacentrum.cz/wiki/Pruvodce_pro_zacatecniky}{česky}) and \href{https://wiki.metacentrum.cz/wiki/Working_with_data}{work with data} (\href{https://wiki.metacentrum.cz/wiki/Prace_s_daty}{česky})
 		\item Of course, good knowledge of work in Linux command line (BASH) is needed\ldots
 	\end{itemize}
 	\vfill
@@ -265,7 +267,7 @@
 		\item Manage your user account at \url{http://metavo.metacentrum.cz/en/myaccount/} (\href{https://metavo.metacentrum.cz/cs/myaccount/}{česky})
 		\item Personal view on actual resources and running tasks is at \url{https://metavo.metacentrum.cz/pbsmon2/person}
 		\item List of available applications \url{https://wiki.metacentrum.cz/wiki/Kategorie:Applications}
-		\item It has 9~\href{https://wiki.metacentrum.cz/wiki/Frontend}{frontends} (\href{https://wiki.metacentrum.cz/wiki/Celni_uzel}{česky}) where users log and thousands of computers doing the calculations --- they are not accessed directly to run task
+		\item It has several \href{https://wiki.metacentrum.cz/wiki/Frontend}{frontends} (\href{https://wiki.metacentrum.cz/wiki/Celni_uzel}{česky}) where users log, various \href{https://wiki.metacentrum.cz/wiki/Working_with_data}{storages} (\href{https://wiki.metacentrum.cz/wiki/Prace_s_daty}{česky}), and thousands of computers (nodes) doing the calculations --- they are not accessed directly to run task
 		\item Most of computers are running \href{https://www.debian.org/}{Debian GNU/Linux}
 	\end{itemize}
 \end{frame}
@@ -311,12 +313,12 @@
 	\end{itemize}
 	\vfill
 	\begin{bashcode}
+    module avail XXX # List available modules for XXX
     module add <TAB><TAB> # Load some module
-    module rm XXX # Unload selected module
     module list # List of currently loaded modules
-    qsub ... # Submit task for computing
-    qstat -u $USER # See $USER's running and queued jobs
-    qdel 123456789 # Termite task (number from qstat)
+    module rm XXX # Unload selected module
+    qstat -w -n -1 -u $USER -t -p -a @cerit-pbs.cerit-sc.cz
+      @elixir-pbs.elixir-czech.cz @meta-pbs.metacentrum.cz # All jobs for $USER
 	\end{bashcode}
 \end{frame}
 
