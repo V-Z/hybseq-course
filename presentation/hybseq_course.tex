@@ -342,104 +342,99 @@
 \begin{frame}[fragile]{Data download}
 	\label{datadownload}
 	\begin{itemize}
-		\item It's not possible to store such large data on MetaCentrum frontend, it must be download to the CESNET storage
-		\item Servers powering CESNET storage have only very limited set of command line tools available
-		\item We can login to any MetaCentrum frontend and then go to directory where the storage is accessible
+		\item MetaCentrum storages have sometimes too limited quota for such a large data --- see your \href{https://metavo.metacentrum.cz/en/myaccount/kvoty}{quotas} (\href{http://metavo.metacentrum.cz/cs/myaccount/kvoty}{česky}), details on wiki \href{https://wiki.metacentrum.cz/wiki/Quotas}{wiki}, (\href{https://wiki.metacentrum.cz/wiki/Kvoty}{česky})
+		\item The \href{https://github.com/V-Z/hybseq-scripts}{pipeline} produce a lot of data (especially \href{https://github.com/mossmatters/HybPiper/}{HybPiper}, but gene trees can be also large) --- ensure to have enough space to store everything
+		\begin{itemize}
+			\item Especially \textbf{HybPiper produces a lot of files} --- \alert{user may reach quota for number of files}, not necessarily (only) amount of data
+		\end{itemize}
 	\end{itemize}
 	\begin{bashcode}
     # Login to any MetaCentrum frontend
-    ssh USER@tarkil.grid.cesnet.cz # Or any other fronted
-    # Go to your directory on the CESNET data storage
-    cd /storage/ostrava2-archive/tape_tape/backup/VO_storage/
-      home/$USER/ # $USER's home on the storage
-    # Download the course data
-    wget ftp://botany.natur.cuni.cz/hybseq_course.zip
+    ssh USER@tilia.ibot.cas.cz # Or any other fronted
+    # Download the data
+    wget ftp://botany.natur.cuni.cz/hybseq_hybpiper_course.zip
     # Unpack it
-    unzip hybseq_course.zip
+    unzip hybseq_hybpiper_course.zip
 	\end{bashcode}
+	\begin{itemize}
+		 \item The archive contains input raw data, their complete processing by HypPiper, alignments and gene trees; HybPiper itself, used HybSeq scrips, reference,~\ldots
+	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Scripts and other resources to process the data}
+\begin{frame}{Scripts and other resources to process the data}
 	\begin{itemize}
-		\item The archive \texttt{hybseq\_course.zip} contains test data as well as needed scripts, R packages, HybSeq reference,~\ldots
-		\item The other resources (not the data in the \texttt{oxalis} directory) should be moved to frontend
-		\item Inspect content of the \texttt{bin} and \texttt{hybseq} directories
-		\item Scripts must be updated to point to correct location of the \texttt{oxalis}
+		\item The archive \texttt{hybseq\_hybpiper\_course.zip} contains\ldots
+		\begin{itemize}
+			\item \texttt{bin/HypPiper} --- \href{https://github.com/mossmatters/HybPiper/}{HybPiper}, version 1.3 with minor edits (see further)
+			\item \texttt{hybseq} --- \href{https://github.com/V-Z/hybseq-scripts}{HybSeq scripts} with installed \textbf{R} packages needed for HybPiper and FASTA reference for HybPiper
+			\item \texttt{zingiberace\_hybseq\_course} --- Test data (see following slides)
+		\end{itemize}
 	\end{itemize}
-	\begin{alertblock}{Do not blindy copy-paste commands\ldots}
-		\alert{Commands show typical way how to proceed, but should not be using without understanding, and onther ways how to work are possible\ldots}
+	\begin{alertblock}{Do not blindly copy-paste commands\ldots}
+		\alert{Commands show typical way how to proceed, but should not be using without understanding, and other ways how to work are possible\ldots}{ }Command and submission scripts also \textbf{do require} edits prior launching them.
 	\end{alertblock}
-	\begin{bashcode}
-    # Login to any MetaCentrum frontend
-    ssh USER@tarkil.grid.cesnet.cz # Or any other fronted
-    # Move scripts and other resources into home directory
-    mv /storage/ostrava2-archive/tape_tape/backup/VO_storage/
-      home/$USER/{bin,hybseq} ~/ # Note $USER/{...,...} syntax
-	\end{bashcode}
 \end{frame}
 
 \subsection{General data structure}
 
-\begin{frame}[fragile]{\textit{Oxalis} test data directory structure I}
+\begin{frame}[fragile]{Test data directory structure I}
 	\label{datastructure}
 	\begin{bashcode}
-    ├── bin # BASH script to be submitted by qsub
-    │   └── HybPiper # HybPiper Python and R scripts
+    ├── bin # Place for various BASH scripts, user SW, ...
+    I   └── HybPiper # HybPiper Python and R scripts
     ├── hybseq # BASH scripts to process the data
-    │   ├── dedup # Output directory for deduplicated sequences
-    │   ├── qual_rep # Output directory for FastQC reports
-    │   ├── ref # References for HybPiper
-    │   ├── rpackages # R library with installed R packages
-    │   └── trimmed # Output directory for trimmed sequences
-    └── oxalis # Oxalis test data
+    I   ├── bin # Scripts themselves
+    I   ├── ref # References for HybPiper
+    I   ├── rpackages # R library with installed R packages
+    └── zingiberace_hybseq_course # Data
         ├── 1_data # Sequencing libraries
-        │   ├── lib_01 # Sequencing library 1
-        │   │   ├── 0_data # Raw FASTQ sequences
-        │   │   ├── 1_trimmed # Trimmed FASTQ sequences
-        │   │   ├── 2_dedup # Deduplicated FASTQ sequences
-        │   │   └── 3_qual_rep # FastQC quality reports
-        │   └── lib_02 # Sequencing library 2
-        ... ... ├... # Next slide...
+        I   ├── lib_01 # Sequencing library 1
+        I   I   ├── 0_data # Raw FASTQ sequences
+        I   I   ├── 1_trimmed # Trimmed FASTQ sequences
+        I   I   ├── 2_dedup # Deduplicated FASTQ sequences
+        I   I   └── 3_qual_rep # FastQC quality reports
+        I   └── lib_02 # Possible sequencing library 2
+        I       ├── 0_data # Raw FASTQ sequences
+        I       ├... # Same structure as lib_01...
+        ...     ... # Next slide...
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{\textit{Oxalis} test data directory structure II}
+\begin{frame}[fragile]{Test data directory structure II}
 	\begin{bashcode}
-        ... ... ... # Previous slide...
-        │   │   ├── 0_data # Raw FASTQ sequences
-        │   │   ├── 1_trimmed # Trimmed FASTQ sequences
-        │   │   ├── 2_dedup # Deduplicated FASTQ sequences
-        │   │   └── 3_qual_rep # FastQC quality reports
+        ... # Previous slide...
         ├── 2_seqs # Outputs of HybPiper
-        │   ├── o_amblyodonta_S524.dedup # Sample output dir
-        │   │   ├── Assembly_10176 # Gene output directory
-        │   │   ├── Assembly_10307 # Gene output directory
-        │   │   ├── ... # Gene output directory
-        │   ├── ... # More samples...
-        │   └── o_zeekoevleyensis_S518.dedup # Sample output dir
-        │   │   ├── Assembly_10176 # Gene output directory
-        │   │   ├── Assembly_10307 # Gene output directory
-        │   │   ├── ... # Gene output directory
+        I   ├── Calathea_crotalifera_S401.dedup # Sample output dir
+        I   I   ├── Assembly_1 # Gene output directory
+        I   I   ├── Assembly_10014 # Gene output directory
+        I   I   ├── ... # More gene output directories...
+        I   ├── ... # More samples...
+        I   └── Zingiber_citriodorum_S171.dedup # Sample output dir
+        I       ├── Assembly_1 # Gene output directory
+        I       ├── Assembly_10014 # Gene output directory
+        I       └── ... # More gene output directories...
         ├── 3_aligned # Aligned contigs
-        ... ├... # Next slide...
+        I   ├── exons # Aligned exons
+        I   ├── introns # Aligned introns
+        I   └── supercontigs # Aligned supercontigs
+        ... # Next slide...
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{\textit{Oxalis} test data directory structure III}
+\begin{frame}[fragile]{Test data directory structure III}
 	\begin{bashcode}
-        ... ... # Previous slide...
-        │   ├── exons # Aligned exons
-        │   ├── introns # Aligned introns
-        │   └── supercontigs # Aligned supercontigs
+        ... # Previous slide...
         ├── 4_gene_trees # Reconstructed gene trees
-        │   ├── exons # Gene trees of exons
-        │   ├── introns # Gene trees of introns
-        │   └── supercontigs # Gene trees of supercontigs
+        I   ├── exons # Gene trees of exons
+        I   ├── introns # Gene trees of introns
+        I   └── supercontigs # Gene trees of supercontigs
+        I   # Possibly create some substructure for outputs of kdetrees,
+        I   # TreeShrink and another gene trees filtration... e.g.
+        I   # mkdir {exons,introns,supercontigs}_{0_trees,1_unfiltered,
+        I   #   2_pcoa_kdetrees,3_treeshrink}
+        I   # To keep everything sorted
         └── 5_species_trees # Processing of the trees
-            ├── distances_kdetrees_comparisons
-            ├── phyparts # Comparison of species vs. gene trees
-            ├── phylonet # Phylogenetic networks
-            └── treeshrink # Identification of outlied branches
+            ├── # Outputs of various analysis like ASTRAL...
             ... # More downstream analysis...
 	\end{bashcode}
 	\begin{itemize}
