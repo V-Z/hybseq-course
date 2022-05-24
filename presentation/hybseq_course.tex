@@ -267,7 +267,7 @@
 		\item Manage your user account at \url{http://metavo.metacentrum.cz/en/myaccount/} (\href{https://metavo.metacentrum.cz/cs/myaccount/}{česky})
 		\item Personal view on actual resources and running tasks is at \url{https://metavo.metacentrum.cz/pbsmon2/person}
 		\item List of available applications \url{https://wiki.metacentrum.cz/wiki/Kategorie:Applications}
-		\item It has several \href{https://wiki.metacentrum.cz/wiki/Frontend}{frontends} (\href{https://wiki.metacentrum.cz/wiki/Celni_uzel}{česky}) where users log, various \href{https://wiki.metacentrum.cz/wiki/Working_with_data}{storages} (\href{https://wiki.metacentrum.cz/wiki/Prace_s_daty}{česky}), and thousands of computers (nodes) doing the calculations --- they are not accessed directly to run task
+		\item It has several \href{https://wiki.metacentrum.cz/wiki/Frontend}{front ends} (\href{https://wiki.metacentrum.cz/wiki/Celni_uzel}{česky}) where users log, various \href{https://wiki.metacentrum.cz/wiki/Working_with_data}{storages} (\href{https://wiki.metacentrum.cz/wiki/Prace_s_daty}{česky}), and thousands of computers (nodes) doing the calculations --- they are not accessed directly to run task
 		\item Most of computers are running \href{https://www.debian.org/}{Debian GNU/Linux}
 	\end{itemize}
 \end{frame}
@@ -349,10 +349,10 @@
 		\end{itemize}
 	\end{itemize}
 	\begin{bashcode}
-    # Login to any MetaCentrum frontend
-    ssh USER@tilia.ibot.cas.cz # Or any other fronted
+    # Login to any MetaCentrum front end
+    ssh USER@tilia.ibot.cas.cz # Or any other front end
     # Download the data
-    wget ftp://botany.natur.cuni.cz/hybseq_hybpiper_course.zip
+    wget https://botany.natur.cuni.cz/zeisek/hybseq_hybpiper_course.zip
     # Unpack it
     unzip hybseq_hybpiper_course.zip
 	\end{bashcode}
@@ -442,6 +442,31 @@
 	\end{itemize}
 \end{frame}
 
+\subsection{HybSeq scripts}
+
+\begin{frame}[fragile]{Getting HybSeq scripts}
+	\begin{itemize}
+		\item See \url{https://github.com/V-Z/hybseq-scripts}
+		\item Either unpack it from \href{https://botany.natur.cuni.cz/zeisek/hybseq_hybpiper_course.zip}{hybseq\_hybpiper\_course.zip} or install as follows:
+	\end{itemize}
+	\begin{bashcode}
+    # Clone repository with scripts into "hybseq" directory
+    cd && git clone https://github.com/V-Z/hybseq-scripts.git hybseq
+    # Install all needed R packages
+    cd hybseq/ # Go to hybseq directory
+    module add R-4.0.0-gcc # Load R module
+    R # Start R and install needed packages:
+	\end{bashcode}
+	\begin{spluscode}
+    install.packages(pkgs=c("ape", "ggplot2", "gplots", "heatmap.plus", "ips",
+      "reshape2"), lib="rpackages", repos="https://mirrors.nic.cz/R/",
+      dependencies="Imports")
+    # As heatmap.plus was archived in CRAN recently, possibly install it like
+    install.packages(pkgs="https://cran.r-project.org/src/contrib/Archive/
+      heatmap.plus/heatmap.plus_1.3.tar.gz", lib="rpackages", repos=NULL)
+	\end{spluscode}
+\end{frame}
+
 \subsection{Trimming and deduplication}
 
 \begin{frame}{Trimming and deduplication}
@@ -458,31 +483,32 @@
 
 \begin{frame}{Scripts to trim and deduplicate FASTQ sequences}
 	\begin{itemize}
-		\item Script \texttt{$\sim$/hybseq/hybseq\_1\_prep.sh}
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_1\_qsub.sh}
 		\begin{itemize}
-			\item See \texttt{./hybseq\_run\_1\_prep.sh -h} for usage help
+			\item Submits via \texttt{qsub} script \texttt{$\sim$/bin/hybseq\_1\_prep\_2\_run.sh} for calculation
+			\item Variables \texttt{WORKDIR} and \texttt{DATADIR} must point to correct existing location --- script contains settings for running following script
+			\item If changing parameters for \texttt{hybseq\_1\_prep\_2\_run.sh}, parameters for \texttt{qsub} must be changed accordingly
+			\item The script is started multiple times to process all sequencing libraries
+		\end{itemize}
+		\item Script \texttt{$\sim$/bin/hybseq\_1\_prep\_2\_run.sh}
+		\begin{itemize}
+			\item See \texttt{./hybseq\_1\_prep\_2\_run.sh -h} for usage help
 			\item Script checks if all needed parameters and tools are available and in simple \texttt{for} loop trimms all sequences (one by one), deduplicates them, does quality checking, prints simple statistics, and prepares list of samples for HybPiper
 		\end{itemize}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh}
-		\begin{itemize}
-			\item Submits via \texttt{qsub} script \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh} for calculation
-			\item Variables \texttt{WORKDIR} and \texttt{DATADIR} must point to correct existing location
-			\item The script is started twice to process both sequencing libraries
-			\item If changing parameters for \texttt{hybseq\_1\_prep.sh}, parameters for \texttt{qsub} must be changed accordingly
-		\end{itemize}
+		\item Output is prepared as input for HybPiper itself
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Submission of hybseq\_1\_prep.sh}
+\begin{frame}[fragile]{Submission of hybseq\_1\_prep\_1\_qsub.sh}
 	\begin{itemize}
-		\item To prepare data for HybPiper
-		\item \alert{\texttt{~/bin/hybseq\_run\_1\_prep.sh} must be edited before submission via \texttt{qsub}}
+		\item Pre-processing data for HybPiper
+		\item \alert{\texttt{~/bin/hybseq\_1\_prep\_1\_qsub.sh} must be edited before submission via \texttt{qsub}}
 		\item After it runs for a while (everything had been copyied to the computing node), it is possible to change \texttt{DATADIR} and submit processing of the second library
 	\end{itemize}
 	\begin{bashcode}
     # After edition of WORKDIR and DATADIR run
-    qsub -l walltime=12:0:0 -l select=1:ncpus=4:mem=16gb:
-      scratch_local=100gb -m abe ~/bin/hybseq_run_1_prep.sh
+    qsub -l walltime=12:0:0 -l select=1:ncpus=4:mem=48gb:
+      scratch_local=100gb -m abe ~/hybseq/bin/hybseq_1_prep_1_qsub.sh
     # Or similar command
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
@@ -494,13 +520,34 @@
 \begin{frame}{Trimm and deduplicate all FASTQ files}
 	\begin{exampleblock}{Tasks to pre-process FASTQ data for HybPiper}
 			\begin{enumerate}
-				\item Inspect \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh} and \texttt{$\sim$/hybseq/hybseq\_1\_prep.sh} and be sure to understand what the scripts do, including syntax used.
-				\item Edit declaration of variables \texttt{WORKDIR} and \texttt{DATADIR} so that they point to correct locations.
-				\item Submit via \texttt{qsub} \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh} to process both libraries and monitor the jobs during processing.
-				\item Inspect outputs of \texttt{$\sim$/bin/hybseq\_run\_1\_prep.sh}, including statistics and FASTQ checks. What do they show?
+				\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_1\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_2\_run.sh} and be sure to understand what the scripts do, including syntax used.
+				\item Edit declarations of variables \texttt{WORKDIR} and \texttt{DATADIR} in \texttt{hybseq\_1\_prep\_1\_qsub.sh} so that they point to correct locations.
+				\item Submit via \texttt{qsub} \texttt{hybseq\_1\_prep\_1\_qsub.sh} to process the data and monitor the jobs during processing.
+				\item Inspect outputs of \texttt{hybseq\_1\_prep\_2\_run.sh}, including statistics and FASTQ checks. What do they show?
 				\item Can you run the task on your computer (desktop or notebook) without \texttt{qsub}? If so, how?
 		\end{enumerate}
 	\end{exampleblock}
+\end{frame}
+
+\section{HybPiper}
+
+\begin{frame}{HybPiper}
+	\begin{itemize}
+		\item See \href{https://github.com/mossmatters/HybPiper/blob/master/README.md}{README} and \href{https://github.com/mossmatters/HybPiper/wiki}{wiki} documentation
+		\item HybPiper is currently in transition from version 1.3 to 2.0, course shows version 1.3 as 2.0 is still under development
+		\begin{itemize}
+			\item Script \texttt{retrieve\_sequences.py} in newest 1.3 release \href{https://github.com/mossmatters/HybPiper/issues/74}{requires} \texttt{Bio.Alphabet}, which was removed from recent \texttt{biopython}, so that we use older version of this script
+		\end{itemize}
+		\item HybPiper was designed for targeted sequence capture, in which DNA sequencing libraries are enriched for gene regions of interest, especially for phylogenetics
+		\item The Piper pipeline starts with high-throughput sequencing reads, and assigns them to target genes using BLASTx/DIAMOND or BWA. The reads are distributed to separate directories, where they are assembled separately using SPAdes. The main output is a FASTA file of the (in frame) CDS portion of the sample for each target region, and a separate file with the translated protein sequence.
+		\item Includes commands to extract the intronic regions flanking each exon, and investigate putative paralogs
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Overview of HybPiper}
+	\begin{center}
+		\includegraphics[height=6.5cm]{hybpiper.png}
+	\end{center}
 \end{frame}
 
 \subsection{Preparing data for HybPiper}
@@ -509,61 +556,52 @@
 	\begin{itemize}
 		\item See \url{https://github.com/mossmatters/HybPiper/} to see software requirements to run HybPiper
 		\item It is possible to run HybPiper on your computer (with Linux or macOS), but it requires plenty of CPU and memory and creates huge output directories\ldots
-		\item To process multiple files (by \texttt{while} loop or by \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh}) there must be list of sample base names without suffixes like \texttt{*[.\_]R\{1,2\}.f*q*} (here created by \texttt{hybseq\_1\_prep.sh})
-		\item Reference bait FASTA file \textbf{must} have sequences named as \texttt{Species\_name-gene\_id} (see \href{https://github.com/mossmatters/HybPiper/wiki\#target-file}{help}) (\alert{note} order and dash in between)
+		\item To process multiple files (by \texttt{while} loop or by \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}) there must be list of sample base names without suffixes like \texttt{*[.\_]R\{1,2\}.f*q*} (here created by \texttt{hybseq\_1\_prep\_2\_run.sh})
+		\item Reference bait FASTA file \textbf{must} have sequences named as \texttt{Species\_name-gene\_id} (see \href{https://github.com/mossmatters/HybPiper/wiki\#12-target-file}{help}) (\alert{note} order and dash in between)
 		\item \href{https://github.com/mossmatters/HybPiper}{HybPiper} is processing individual files with given baits FASTA sequences --- batch processing must be scripted
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Before running HybPiper}
 	\begin{itemize}
-		\item Directory \texttt{$\sim$/hybseq/ref/} contains prepared reduced bait file \texttt{new\_soa\_probes\_gen\_comp.fasta} (it will be used to process test data) and unreduced \texttt{input\_seq\_without\_cpdna\_1086\_loci\_renamed.f\ldots} (with renamed sequences from \texttt{input\_seq\_without\_cpdna\_1086\_loci.fa})
-		\item To run \href{https://github.com/mossmatters/HybPiper}{HybPiper} we need both files above and all required software, and BASH script to process all input files in batch --- see \texttt{hybseq\_run\_2\_hybpiper\_1\_submitter.sh} (submitting via \texttt{qsub} all input files), \texttt{hybseq\_run\_2\_hybpiper\_2\_qsub.sh} (preparing individual job to run) and \texttt{hybseq\_2\_hybpiper.sh} (processing every input file --- doing the job)
+		\item Directory \texttt{$\sim$/hybseq/ref/} contains prepared reduced bait file \texttt{curcuma\_hybpiper\_renamed\_concat.fasta} (it will be used to process test data)
+		\item To run \href{https://github.com/mossmatters/HybPiper}{HybPiper} we need the target reference file above and all required software, and BASH script to process all input files in batch --- see \texttt{hybseq\_2\_hybpiper\_1\_submitter.sh} (submitting via \texttt{qsub} all input files), \texttt{hybseq\_2\_hybpiper\_2\_qsub.sh} (preparing individual job to run) and \texttt{hybseq\_2\_hybpiper\_3\_run.sh} (processing every input file --- doing the job)
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Prepare to run HybPiper}
 	\begin{exampleblock}{Tasks before running HybPiper}
 		\begin{enumerate}
-			\item Check \texttt{samples\_list.txt} in \texttt{2\_dedup} output directories of both libraries after running \texttt{$\sim$/hybseq/hybseq\_1\_prep.sh}, and check how it was created.
-			\item In \texttt{input\_seq\_without\_cpdna\_1086\_loci.fa} (output of Geneious assembler) consider \texttt{Contig\_\#} (\texttt{\#} stands for number) as standing for \texttt{Oxalis\_obtusa\_\#} (mutliple \textit{Oxalis obtusa} individuals were used) and \texttt{Assembly\_\#} as gene ID and think how to transfor it to form required by \href{https://github.com/mossmatters/HybPiper/wiki\#target-file}{HybPiper} (also discard final \texttt{\_\#}). Use any good text editor (or \texttt{sed} and another command line tools) and regular expressions.
-			\item Do we have everyhting needed to run \href{https://github.com/mossmatters/HybPiper}{HybPiper}?
+			\item Check \texttt{samples\_list.txt} in \texttt{2\_dedup} output directory of the test data after running \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_1\_qsub.sh}, and check how it was created.
+			\item Compare \url{https://github.com/tomas-fer/HybPhyloMaker/blob/master/HybSeqSource/curcuma_HybSeqProbes_test.fa} (output of Geneious assembler) and \texttt{curcuma\_hybpiper\_renamed\_concat.fasta} --- see form required by \href{https://github.com/mossmatters/HybPiper/wiki\#12-target-file}{HybPiper}
+			\item Do we have everything needed to run \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper}?
 		\end{enumerate}
 	\end{exampleblock}
-\end{frame}
-
-\section{HybPiper}
-
-\begin{frame}{Overview of HybPiper}
-	\begin{center}
-		\includegraphics[height=6.5cm]{hybpiper.png}
-	\end{center}
 \end{frame}
 
 \subsection{Processing input files}
 
 \begin{frame}[allowframebreaks]{Understanding how presented scripts run HybPiper}
 	\begin{itemize}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every sample (forward and reverse FASTQ files) listed in \texttt{samples\_list.txt} (variable \texttt{SAMPLES}, created by \texttt{hybseq\_2\_hybpiper.sh}) submits via \texttt{qsub} individual task
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_2\_hybpiper.sh} and copy results back
-		\item Script \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} runs all HybPiper steps for individual samples (as submitted by previous scripts)
-		\item Outputs of \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} should be checked and moved into special directory (\texttt{oxalis/2\_seqs}) where new list of samples must be created
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh} can be then used to run \texttt{$\sim$/hybseq/hybseq\_3\_hybpiper\_postprocess.sh} which uses HybPiper to retrieve sequences of exons, introns and supercontigs, and prints statistics and creates heatmaps
-		\item Retrieved sequences can then be aligned
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} variable and for every sample (pair of forward and reverse FASTQ files) listed in \texttt{samples\_list.txt} (variable \texttt{SAMPLES}, created by \texttt{hybseq\_1\_prep\_2\_run.sh}) and submits via \texttt{qsub} individual task for each input sample (thy are processed independently in parallel)
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_2\_hybpiper\_3\_run.sh} and copy results back
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_3\_run.sh} runs all HybPiper steps for individual samples (as submitted by previous scripts)
+		\item Outputs of \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_3\_run.sh} should be checked and moved into special directory (\texttt{$\sim$/zingiberace\_hybseq\_course/2\_seqs}) where new list of samples must be created
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_1\_qsub.sh} can be then used to run \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_2\_run.sh} which uses HybPiper to retrieve sequences of exons, introns and supercontigs, and prints statistics and creates heatmaps --- retrieved sequences can then be aligned (see further)
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Submitting jobs to run HybPiper}
 	\begin{itemize}
 		\item To retrieve probe sequences from every input FASTQ file
-		\item \alert{\texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh} must be edited before running it}
+		\item \alert{\texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh} must be edited before running it}
 		\item After submission of all input files is done, it is possible to change \texttt{DATADIR} and submit processing of the second library
 		\item It will start job for every sample, so that output of \texttt{qstat} will notably prolong\ldots
 	\end{itemize}
 	\begin{bashcode}
     # After edition of HYBPIPDIR, WORKDIR, DATADIR, SAMPLES,
     # BAITFILE and NCPU run simply
-    ~/bin/hybseq_run_2_hybpiper_1_submitter.sh
+    ~/hybseq/bin/hybseq_run_2_hybpiper_1_submitter.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
     # See your processes running the machine (from above list)
@@ -574,21 +612,21 @@
 \begin{frame}{Running HybPiper}
 	\begin{exampleblock}{Run HybPiper}
 		\begin{enumerate}
-			\item Inspect scripts \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_1\_submitter.sh}, \texttt{$\sim$/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} and \texttt{$\sim$/hybseq/hybseq\_2\_hybpiper.sh} and be sure to understand what they are doing, including syntax used.
+			\item Inspect scripts \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}, \texttt{$\sim$/hybseq/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_3\_run.sh} and be sure to understand what they are doing, including syntax used.
 			\item In \texttt{$\sim$/bin/HybPiper/} check \texttt{./reads\_first.py -h}.
-			\item Edit declarations of variables \texttt{HYBPIPDIR}, \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES} and \texttt{BAITFILE} in \texttt{hybseq\_run\_2\_hybpiper\_1\_submitter.sh} so that they point to correct locations.
-			\item Process both libraries and inspect outputs and log files.
+			\item Edit declarations of variables \texttt{HYBPIPDIR}, \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES} and \texttt{BAITFILE} in \texttt{hybseq\_2\_hybpiper\_1\_submitter.sh} so that they point to correct locations.
+			\item Run \texttt{./hybseq\_2\_hybpiper\_1\_submitter.sh} to process sample data.
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{Other tasks with HybPiper}
+\begin{frame}{Other tasks with HybPiper}{For interested students}
 	\begin{exampleblock}{HybPiper tasks for advanced users}
 		\begin{enumerate}
-			\item Think how to process all samples on single computer. Use \texttt{while} BASH loop and feed it by \texttt{samples\_data.txt}. How would such script look like? What had to be changed in \texttt{qsub}?
+			\item Think how to process all samples on single computer. Use \texttt{while} BASH loop and feed it by \texttt{samples\_data.txt}. How would such script look like? What had to be changed?
 			\item Check requirements of software used by HybPiper (BWA, SPAdes,~\ldots) and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
-			\item See \texttt{man qsub} and think if there is another option how to pass options from \texttt{hybseq\_run\_2\_hybpiper\_1\_submitter.sh} for individual \texttt{qsub} commands (apart of usage of exported variables as is used now).
-			\item Think about \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} parameters in \texttt{hybseq\_2\_hybpiper.sh}.
+			\item See \texttt{man qsub} and think if there is another option how to pass options from \texttt{hybseq\_2\_hybpiper\_1\_submitter.sh} for individual \texttt{qsub} commands (apart of usage of exported variables as is used now).
+			\item Think about \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} parameters in \texttt{hybseq\_2\_hybpiper\_3\_run.sh}.
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
@@ -599,48 +637,49 @@
 	\begin{itemize}
 		\item Previous step processed by HybPiper every single sample individually and independently
 		\item HybPiper postprocessing will retrieve contigs for every exon, intron and supercontig containing all individuals where particular genetic region was found; and do some statistics
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh} is submitted via \texttt{qsub} and it runs \texttt{$\sim$/hybseq/hybseq\_3\_hybpiper\_postprocess.sh} which uses HybPiper to obtain table of contig lengths, some statistics, heatmaps, and retrieves from individual directores contigs to be aligned
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} is submitted via \texttt{qsub} and it runs \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_2\_run.sh} which uses HybPiper to obtain table of contig lengths, some statistics, heatmaps, and retrieves from individual directores contigs to be aligned
 		\item New list of samples for all samples (all libraries) must be prepared (next slide)
+		\item R scripts used with HybPiper version 1.3 have plenty of parameters hard coded, possibly use edited versions from \href{https://botany.natur.cuni.cz/zeisek/hybseq_hybpiper_course.zip}{hybseq\_hybpiper\_course.zip}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Sorting data after running HybPiper for all samples}
 	\begin{itemize}
 		\item Outputs of HybPiper are in same directory as where input files were --- outputs from all libraries must be moved into dedicated directory for post-processing and sequence retrieval
-		\item \alert{Code below is exemplary and requires edits, as well as script \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh}}
+		\item \alert{Code below is exemplary and requires edits, as well as script \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_1\_qsub.sh}}
 	\end{itemize}
 	\begin{bashcode}
-    # Move from both directories oxalis/1_data/lib_0[12]/2_dedup
-    # all outputs of HybPiper to oxalis/2_seqs/ for next steps
+    # Move from zingiberace_hybseq_course/1_data/lib_01/2_dedup all outputs
+    # of HybPiper to zingiberace_hybseq_course/2_seqs/ for next steps
     mv HybPiper.* hybseq_hybpiper.* *.dedup ../../../2_seqs/
-    # Create in directory oxalis/2_seqs new samples_list.txt
+    # Create in zingiberace_hybseq_courses/2_seqs new samples_list.txt
     find . -maxdepth 1 -type d | sed 's/^\.\///' | sort | tail -n+2 >
       samples_list.txt
     # Edit HYBPIPDIR, WORKDIR, BAITFILE and DATADIR in
-    # ~/bin/hybseq_run_3_hybpiper_postprocess.sh
+    # ~/hybseq/bin/hybseq_run_3_hybpiper_postprocess_1_qsub.sh
     # When ready, submit task to post-process HybPiper results
     qsub -l walltime=12:0:0 -l select=1:ncpus=1:mem=2gb:scratch_local=100gb
-       -m abe ~/bin/hybseq_run_3_hybpiper_postprocess.sh
+       -m abe ~/hybseq/bin/hybseq_3_hybpiper_postprocess_1_qsub.sh
 	\end{bashcode}
 \end{frame}
 
 \begin{frame}{Post-processing HybPiper outputs and retrieving contig sequences I}
 	\begin{exampleblock}{Tasks to post-process HybPiper outputs I}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/hybseq/hybseq\_3\_hybpiper\_postprocess.sh} and \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh} and be sure to understand what the scripts do, including syntax used.
+			\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_2\_run.sh} and be sure to understand what the scripts do, including syntax used.
 			\item Edit declaration of variables \texttt{HYBPIPDIR}, \texttt{WORKDIR}, \texttt{BAITFILE} and \texttt{DATADIR} so that they point to correct locations.
-			\item Submit via \texttt{qsub} \texttt{$\sim$/bin/hybseq\_run\_3\_hybpiper\_postprocess.sh} to post-process all HybPiper outputs.
+			\item Submit via \texttt{qsub} \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_1\_qsub.sh} to post-process all HybPiper outputs.
 			\item Inspect outputs of, including statistics, heatmaps and log. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{Post-processing HybPiper outputs and retrieving contig sequences II}
+\begin{frame}{Post-processing HybPiper outputs and retrieving contig sequences II}{For interested students}
 	\begin{exampleblock}{Tasks to post-process HybPiper outputs II}
 		\begin{enumerate}
 			\item Which part does take the longest time on this task? Does this task take plenty of resources (CPU, memory)?
 			\item If not satisfied with heatmaps, edit \texttt{R} scripts in \texttt{$\sim$/bin/HybPiper/} and run them manually (can be done in your notebook).
-			\item Can you run the task on your computer (desktop in office or notebook) without \texttt{qsub}? If so, how? Can you run the task directly on MetaCentrum fronted?
+			\item Can you run the task on your computer (desktop in office or notebook) without \texttt{qsub}? If so, how? Can you run the task directly on MetaCentrum front end?
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
@@ -659,7 +698,7 @@
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_run\_3\_hybpiper\_postprocess.sh}) submits via \texttt{qsub} individual alignment task
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment.r} \texttt{R} script and copy results back
 		\item \texttt{R} script \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} alignes every input contig with \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT}, trimms the alignment, creates NJ tree (NWK and PNG), creates image of alignment and reports alignment details
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
 	\end{itemize}
 \end{frame}
 
@@ -753,7 +792,7 @@
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every aligned contig (all \texttt{*.aln.fasta} files) in that directory (created in previous step) submits via \texttt{qsub} individual task to reconstruct gene tree
 		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_5\_gene\_trees.sh} and copy results back
 		\item Script \texttt{$\sim$/hybseq/hybseq\_5\_gene\_trees.sh} computes gene tree for every input file with \href{http://www.iqtree.org/}{IQ-TREE}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} is short, can be runned on the fronted, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
+		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
 	\end{itemize}
 \end{frame}
 
