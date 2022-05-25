@@ -601,7 +601,7 @@
 	\begin{bashcode}
     # After edition of HYBPIPDIR, WORKDIR, DATADIR, SAMPLES,
     # BAITFILE and NCPU run simply
-    ~/hybseq/bin/hybseq_run_2_hybpiper_1_submitter.sh
+    ./hybseq/bin/hybseq_run_2_hybpiper_1_submitter.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
     # See your processes running the machine (from above list)
@@ -695,26 +695,25 @@
 			\item Too short alignments or alignments with too few variable sites or too few individuals should be removed
 			\item Exact thresholds are to be discussed\ldots
 		\end{itemize}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_run\_3\_hybpiper\_postprocess.sh}) submits via \texttt{qsub} individual alignment task
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment.r} \texttt{R} script and copy results back
-		\item \texttt{R} script \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} alignes every input contig with \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT}, trimms the alignment, creates NJ tree (NWK and PNG), creates image of alignment and reports alignment details
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} variable and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_3\_hybpiper\_postprocess\_2\_run.sh}) submits via \texttt{qsub} individual alignment task
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment\_3\_run.r} \texttt{R} script and copy results back
+		\item \texttt{R} script \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_3\_run.r} aligns every input contig with \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT}, trims the alignment, creates NJ tree (NWK and PNG), creates image of alignment and reports alignment details
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_4\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Submitting alignment jobs}
 	\begin{itemize}
 		\item To align all retrieved contigs (sequences)
-		\item \alert{\texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh} must be edited before running it}
-		\item It will start job for every sample, so that output of \texttt{qstat} will be very long (3 jobs --- respective exon, intron and supercontig --- for every of $\sim$1000 probes)\ldots
+		\item \alert{\texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_1\_submitter.sh} must be edited before running it}
+		\item It will start job for every sample, so that output of \texttt{qstat} will be very long (3 jobs --- respective exon, intron and supercontig --- for every probe)\ldots
+		\item For small contigs, jobs are very fast
 	\end{itemize}
 	\begin{bashcode}
     # After edition of WORKDIR and DATADIR run simply
-    ~/bin/hybseq_run_4_alignment_1_submitter.sh
+    ./hybseq/bin/hybseq_4_alignment_1_submitter.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
-    # See your processes running the machine (from above list)
-    ssh exec_node "ps ux" # Replace exec_host by hostname!
     # Something went wrong? Cancel or running or queued tasks by
     qdel $(qstat -u $USER | grep -o "^[0-9]\+" | tr "\n" " ")
 	\end{bashcode}
@@ -723,8 +722,8 @@
 \begin{frame}{Running alignments}
 	\begin{exampleblock}{Run alignments}
 		\begin{enumerate}
-			\item Inspect scripts \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_1\_submitter.sh}, \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} and \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} and be sure to understand what they are doing, including syntax used.
-			\item Edit declarations of variables \texttt{WORKDIR} and \texttt{DATADIR} in \texttt{hybseq\_run\_4\_alignment\_1\_submitter.sh} so that they point to correct locations.
+			\item Inspect scripts \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_1\_submitter.sh}, \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_2\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_3\_run.r} and be sure to understand what they are doing, including syntax used.
+			\item Edit declarations of variables \texttt{WORKDIR} and \texttt{DATADIR} in \texttt{hybseq\_4\_alignment\_1\_submitter.sh} so that they point to correct locations.
 			\item Process all \texttt{*.FNA} and \texttt{*.fasta} files.
 			\item Monitor progress of the jobs
 			\item Inspect outputs (including images) and log files.
@@ -732,12 +731,12 @@
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{Other tasks with alignments}
+\begin{frame}{Other tasks with alignments}{For interested students}
 	\begin{exampleblock}{Alignment tasks for advanced users}
 		\begin{enumerate}
-			\item Think how to process all samples on single computer. Use \texttt{find} to list all \texttt{*.FNA} and \texttt{*.fasta} files and pass them to \href{https://www.gnu.org/software/parallel/}{GNU Parallel}. How would such script look like? What had to be changed in \texttt{qsub}?
+			\item Think how to process all samples on single computer. Use \texttt{find} to list all \texttt{*.FNA} and \texttt{*.fasta} files and pass them to \href{https://www.gnu.org/software/parallel/}{GNU Parallel}. How would such script look like? What had to be changed?
 			\item Check requirements of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} and/or another aligners and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
-			\item In \texttt{$\sim$/hybseq/hybseq\_4\_alignment.r} replace usage of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} by another aligner like e.g. \href{https://www.drive5.com/muscle/}{MUSCLE} or \href{http://clustal.org/}{Clustal}.
+			\item In \texttt{hybseq\_4\_alignment\_3\_run.r} replace usage of \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} by another aligner like e.g. \href{https://www.drive5.com/muscle/}{MUSCLE} or \href{http://clustal.org/}{Clustal}.
 			\item Think about parameters for functions \texttt{deleteGaps()}, \texttt{del.rowgapsonly()} and \texttt{del.colgapsonly()}. How do they influence output (\texttt{*.aln.fasta} files)?
 		\end{enumerate}
 	\end{exampleblock}
@@ -747,16 +746,16 @@
 
 \begin{frame}{After all alignment jobs are done}
 	\begin{itemize}
-		\item Results (alignments named \texttt{*.aln.fasta} and other files) are in newly created \texttt{aligned} directory created by \texttt{hybseq\_run\_4\_alignment\_1\_submitter.sh} in \texttt{DATADIR}
-		\item Other outputs are images with alignment checks (\texttt{*.aln.check.png} and \texttt{*.aln.png}), NJ trees (\texttt{*.nwk} and \texttt{*.tree.png}) and logs (\texttt{*.log} from \texttt{R} and \texttt{HybSeq.alignment.*.[eo]*} from \texttt{qsub})
-		\item Outputs should be sorted by \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh} --- it requires only path to the \texttt{aligned} directory
+		\item Results (alignments named \texttt{*.aln.fasta} and other files) are in newly created \texttt{aligned} directory created by \texttt{hybseq\_4\_alignment\_1\_submitter.sh} in \texttt{DATADIR}
+		\item Other outputs are images with alignment checks (\texttt{*.aln.check.png} and \texttt{*.aln.png}), NJ trees (\texttt{*.nwk} and \texttt{*.tree.png}), saturation plots (\texttt{*.saturation.png}) and logs (\texttt{*.log} from \texttt{R} and \texttt{HybSeq.alignment.*.[eo]*} from \texttt{qsub})
+		\item Outputs should be sorted by \texttt{hybseq\_4\_alignment\_4\_postprocess.sh} --- it requires only path to the \texttt{aligned} directory
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Sorting data after running alignments for all samples}
 	\begin{itemize}
 		\item Outputs of alignments are in directory \texttt{aligned} which was created in the input directory, files with alignments itself are named \texttt{*.aln.fasta}
-		\item It should be sorted by \texttt{hybseq\_run\_4\_alignment\_3\_postprocess.sh}
+		\item It should be sorted by \texttt{hybseq\_4\_alignment\_4\_postprocess.sh}
 		\item All outputs should be then moved to dedicated directory (cf. slide~\ref{datastructure})
 		\item \alert{Code below is exemplary and requires edits}
 	\end{itemize}
@@ -764,16 +763,18 @@
     # Post-process (sort into subdirectories and get simple
     # statistics) all alignments - provide path to directory
     # with aligned files
-    ~/bin/hybseq_run_4_alignment_3_postprocess.sh oxalis/2_seqs/aligned/
+    ./hybseq/bin/hybseq_4_alignment_4_postprocess.sh
+      ~/zingiberace_hybseq_course/2_seqs/aligned | tee
+      hybseq_align_postprocess.log
 	\end{bashcode}
 \end{frame}
 
 \begin{frame}{Post-processing of alignments}
 	\begin{exampleblock}{Tasks to post-process alignments}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
-			\item Run \texttt{$\sim$/bin/hybseq\_run\_4\_alignment\_3\_postprocess.sh}  with correct path to post-process all aligned outputs.
-			\item Inspect outputs of, including statistics, images and logs. Open in spreadsheet (e.g. \href{https://www.libreoffice.org/}{LibreOffice Calc}) the \texttt{*.tsv} tables. What do they show?
+			\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_4\_postprocess.sh} and be sure to understand what the script does, including syntax used.
+			\item Run \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_4\_postprocess.sh}  with correct path to post-process all aligned outputs (previous slide).
+			\item Inspect outputs, including statistics, images and logs. Open in spreadsheet (e.g. \href{https://www.libreoffice.org/}{LibreOffice Calc}) the \texttt{*.tsv} tables. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
