@@ -790,22 +790,23 @@
 			\item Trees with significantly different topology must be identified and inspected (and possibly removed) --- this will be later done in \texttt{R}
 			\item Long branches within trees must be identified and respective trees inspected --- artificial long branches can be discarded from given trees (e.g. by \href{https://github.com/uym2/TreeShrink}{TreeShrink})
 		\end{itemize}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every aligned contig (all \texttt{*.aln.fasta} files) in that directory (created in previous step) submits via \texttt{qsub} individual task to reconstruct gene tree
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_5\_gene\_trees.sh} and copy results back
-		\item Script \texttt{$\sim$/hybseq/hybseq\_5\_gene\_trees.sh} computes gene tree for every input file with \href{http://www.iqtree.org/}{IQ-TREE}
-		\item Script \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every aligned contig (all \texttt{*.aln.fasta} files) in that directory (created in previous step) submits via \texttt{qsub} individual task to reconstruct gene tree
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} and copy results back
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_3\_run.sh} computes gene tree for every input file with \href{http://www.iqtree.org/}{IQ-TREE 2} (see how easily it can be converted for another tree builder, e.g. \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG})
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_4\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Submitting gene trees jobs}
 	\begin{itemize}
 		\item To reconstruct gene trees from every aligned and trimmed sequence
-		\item \alert{\texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_1\_submitter.sh} must be edited before running it}
+		\item \alert{\texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_1\_submitter.sh} must be edited before running it}
 		\item It will start job for every sample, so that output of \texttt{qstat} will be very long (3 jobs --- respective exon, intron and supercontig --- for every of $\sim$1000 probes)\ldots
+		\item Larger alignments can take long time to compute --- set \texttt{walltime} in \texttt{hybseq\_5\_gene\_trees\_1\_submitter.sh} accordingly
 	\end{itemize}
 	\begin{bashcode}
     # After edition of WORKDIR and DATADIR run simply
-    ~/bin/hybseq_run_5_gene_trees_1_submitter.sh
+    ./hybseq/bin/hybseq_5_gene_trees_1_submitter.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
     # See your processes running the machine (from above list)
@@ -816,7 +817,7 @@
 \begin{frame}{Running gene trees}
 	\begin{exampleblock}{Run gene trees}
 		\begin{enumerate}
-			\item Inspect scripts \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_1\_submitter.sh}, \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_2\_qsub.sh} and \texttt{$\sim$/hybseq/hybseq\_5\_gene\_trees.sh} and be sure to understand what they are doing, including syntax used.
+			\item Inspect scripts \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_1\_submitter.sh}, \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_2\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_3\_run.sh} and be sure to understand what they are doing, including syntax used.
 			\item Edit declarations of variables \texttt{WORKDIR} and \texttt{DATADIR} in \texttt{hybseq\_run\_5\_gene\_trees\_1\_submitter.sh} so that they point to correct locations.
 			\item Run it to process all \texttt{*.aln.fasta} files.
 			\item Monitor progress of the jobs
@@ -825,35 +826,74 @@
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{Other tasks with gene trees}
+\begin{frame}{Other tasks with gene trees}{For interested students}
 	\begin{exampleblock}{Gene trees tasks for advanced users}
 		\begin{enumerate}
-			\item See \href{http://www.iqtree.org/doc/Command-Reference}{IQ-TREE help}, check its parameters in \texttt{$\sim$/hybseq/hybseq\_5\_gene\_trees.sh} and think about possible changes to fit better your needs.
-			\item Think how to process all samples on single computer. Use \texttt{find} to list all \texttt{*.aln.fasta} files and pass them to \href{https://www.gnu.org/software/parallel/}{GNU Parallel}. How would such script look like? What had to be changed in \texttt{qsub}?
+			\item See \href{http://www.iqtree.org/doc/Command-Reference}{IQ-TREE help}, check its parameters in \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} and think about possible changes to fit better your needs.
+			\item Think how to process all samples on single computer. Use \texttt{find} to list all \texttt{*.aln.fasta} files and pass them to \href{https://www.gnu.org/software/parallel/}{GNU Parallel}. How would such script look like? What had to be changed?
 			\item Check requirements of \href{http://www.iqtree.org/}{IQ-TREE} and/or another tree builder and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
-			\item Replace usage of \href{http://www.iqtree.org/}{IQ-TREE} in \texttt{$\sim$/hybseq/hybseq\_5\_gene\_trees.sh} by another tree builder like e.g. \href{https://github.com/stamatak/ExaML}{ExaML}, \href{https://nbisweden.github.io/MrBayes/}{MrBayes}, \href{http://www.atgc-montpellier.fr/phyml/}{PhyML} or \href{https://github.com/stamatak/standard-RAxML}{RAxML}.
+			\item Replace usage of \href{http://www.iqtree.org/}{IQ-TREE} in \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} by another tree builder like e.g. \href{https://github.com/stamatak/ExaML}{ExaML}, \href{https://nbisweden.github.io/MrBayes/}{MrBayes}, \href{https://github.com/stephaneguindon/phyml}{PhyML} or \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG}.
 		\end{enumerate}
 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Quick visualization of gene trees I}
+	\begin{itemize}
+		\item Individual gene trees can be quickly visualized by simple \textbf{R} script processing in \texttt{for} loop each gene tree input file
+		\item Adjust code below and save it as \texttt{mltreeplot.r} in directory  with gene trees
+	\end{itemize}
+	\begin{spluscode}
+    library(ape)
+    # File names [1] file.aln.fasta.treefile / file.aln.fasta.raxml.support
+    fnames <- commandArgs(TRUE)
+    tr <- read.tree(file=fnames[1])
+    png(filename=fnames[2], width=1200, height=1200, units="px", bg="white")
+      plot.phylo(x=tr, type="unrooted", edge.color="blue", edge.width=3,
+        cex=1.25)
+      title("Maximum-likelihood phylogenetic tree")
+      nodelabels(text=tr$node.label, frame="none", col="red")
+      edgelabels(text=round(x=tr$edge.length, digits=3), frame="none",
+        col="brown", cex=0.75)
+      add.scale.bar()
+      dev.off()
+	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Quick visualization of gene trees II}
+	\begin{itemize}
+		\item Run following \texttt{for} loop to process \texttt{R} script from previous slide to get quick visualization of individual gene trees
+		\item Of course, this is very exemplary and especially graphical parameters must be highly adjusted according size of phylogeny etc.
+	\end{itemize}
+	\begin{bashcode}
+    # IQ-TREE
+    for L in *.aln.fasta.treefile; do echo "${L}"; R CMD BATCH --no-save
+      --no-restore "--args ${L} ${L%.aln.fasta.treefile}.mltree.png"
+      mltreeplot.r; done
+    # RAxML-NG
+    for L in *.aln.fasta.raxml.support; do echo "${L}"; R CMD BATCH --no-save
+      --no-restore "--args ${L} ${L%.aln.fasta.raxml.support}.mltree.png"
+      mltreeplot.r; done
+	\end{bashcode}
 \end{frame}
 
 \subsection{Post-processing gene trees}
 
 \begin{frame}{After all gene trees jobs are done}
 	\begin{itemize}
-		\item Results are in newly created \texttt{trees} directory created by \texttt{hybseq\_run\_5\_gene\_trees\_1\_submitter.sh} in \texttt{DATADIR}
+		\item Results are in newly created \texttt{trees} directory created by \texttt{hybseq\_5\_gene\_trees\_1\_submitter.sh} in \texttt{DATADIR}
 		\begin{itemize}
 			\item Records of what IQ-TREE did (\texttt{*.log}) and \texttt{HybSeq*} from \texttt{qsub}
 			\item Results are in \texttt{*.iqtree} (IQ-TREE report), maximum likelihood tree is in \texttt{*.treefile} and likelihood distances in \texttt{*.mldist}
 			\item Ultrafast bootstrap approximation results contain split support values in \texttt{*.splits.nex}, consensus tree in \texttt{*.contree}, bootstrap trees \texttt{*.ufboot} and likelihood mapping plots in \texttt{*.svg} and \texttt{*.eps}
 		\end{itemize}
-		\item Outputs should be sorted by \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} --- it requires only path to the \texttt{trees} directory
+		\item Outputs should be sorted by \texttt{hybseq\_5\_gene\_trees\_4\_postprocess.sh} --- it requires only path to the \texttt{trees} directory
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Sorting data after running gene trees for all samples}
 	\begin{itemize}
 		\item Outputs of gene trees are in directory \texttt{trees} which was created in the input directory, files with gene tree itself are named \texttt{*.contree}
-		\item It should be sorted by \texttt{hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh}
+		\item It should be sorted by \texttt{hybseq\_5\_gene\_trees\_4\_postprocess.sh}
 		\item All outputs should be then moved to dedicated directory (cf. slide~\ref{datastructure})
 		\item \alert{Code below is exemplary and requires edits}
 	\end{itemize}
@@ -861,18 +901,28 @@
     # Post-process (sort into subdirectories and get lists of
     # gene trees) all gene trees - provide path to directory
     # with gene trees files
-    ~/bin/hybseq_run_5_gene_trees_3_postprocess.sh oxalis/3_aligned/trees/
+    ./hybseq/bin/hybseq_5_gene_trees_4_postprocess.sh
+      ~/zingiberace_hybseq_course/3_aligned/trees | tee
+      hybseq_gene_trees_postprocess.log
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}{Post-processing of gene trees}
+\begin{frame}[fragile]{Post-processing of gene trees}
 	\begin{exampleblock}{Tasks to post-process gene trees}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh} and be sure to understand what the script does, including syntax used.
-			\item Run \texttt{$\sim$/bin/hybseq\_run\_5\_gene\_trees\_3\_postprocess.sh}  with correct path to post-process all gene trees outputs.
+			\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_4\_postprocess.sh} and be sure to understand what the script does, including syntax used.
+			\item Run \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_4\_postprocess.sh} with correct path to post-process all gene trees outputs.
 			\item Inspect outputs of, including logs. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
+	\begin{itemize}
+		\item Now we have gene trees for all alignments --- we can directly construct species tree (using e.g. \href{https://github.com/smirarab/ASTRAL}{ASTRAL-III} or \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2} from lists of trees \texttt{trees\_ml\_*.nwk}), or inspect and compare topologies of gene trees and possibly discard outliers
+	\end{itemize}
+	\begin{bashcode}
+    # Some SW like ASTRAL dislike tree names on the beginning of lines
+    # - discard them e.g. by (i.e. keeping only tree topology):
+    sed -i 's/^[[:graph:]]\+ //' trees_*.nwk
+	\end{bashcode}
 \end{frame}
 
 \section{Comparing gene trees}
