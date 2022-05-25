@@ -955,35 +955,40 @@
 	\begin{itemize}
 		\item The tasks will be done in \href{https://www.r-project.org/}{R}
 		\item Download e.g. \texttt{trees\_ml\_exons.nwk} (or another final list of gene trees) and work in \texttt{R} in your notebook
-		\item Robinsons-Foulds distance in \texttt{phytools::multiRF}
 		\begin{itemize}
-			\item The index adds 1~for each difference between pair of trees
-			\item Well defined only for fully bifurcating trees --- if not fulfilled, some results might be misleading
-			\item Allow comparison of trees created by different methods
-			\item If the difference is very close to root, RF value can be large, even there are not much differences in the tree at all --- \texttt{dist.multiPhylo} from package \href{https://CRAN.R-project.org/package=distory}{distory} can be an alternative, although interpretation of that geodesic distance is sometimes not so straightforward as simple logic of RF
-		\end{itemize}
-		\item Methods implemented in \texttt{ape::dist.topo} allow comparison of trees with polytomies (\texttt{method="PH85"}) or use of squared lengths of internal branches (\texttt{method="score"})
-		\item Final matrices are commonly not \href{https://en.wikipedia.org/wiki/Euclidean_distance_matrix}{Euclidean} --- may be problematic for usage in methods like PCoA
-		\begin{itemize}
-			\item Test it with \texttt{ade4::is.euclid}, can be scaled (forced to became Euclidean) by functions like \texttt{quasieuclid} or \texttt{cailliez} in \texttt{ade4} --- carefully, it can damage meaning of the data
-			\item We get matrix of pairwise differences among trees (from multiple genes), we need display and analyze it
+			\item Comparing plenty of individual gene trees, finding different topologies, construction of consensual species tree topology
+			\item Robinsons-Foulds distance in \texttt{phytools::multiRF}
+			\begin{itemize}
+				\item The index adds 1~for each difference between pair of trees
+				\item Well defined only for fully bifurcating trees --- if not fulfilled, some results might be misleading
+				\item Allow comparison of trees created by different methods
+				\item If the difference is very close to root, RF value can be large, even there are not much differences in the tree at all --- \texttt{dist.multiPhylo} from package \href{https://CRAN.R-project.org/package=distory}{distory} can be an alternative, although interpretation of that geodesic distance is sometimes not so straightforward as simple logic of RF
+			\end{itemize}
+			\item Methods implemented in \texttt{ape::dist.topo} allow comparison of trees with polytomies (\texttt{method="PH85"}) or use of squared lengths of internal branches (\texttt{method="score"})
+			\item Final matrices are commonly not \href{https://en.wikipedia.org/wiki/Euclidean_distance_matrix}{Euclidean} --- may be problematic for usage in methods like PCA
+			\begin{itemize}
+				\item Test it with \texttt{ade4::is.euclid}, can be scaled (forced to became Euclidean) by functions like \texttt{quasieuclid} or \texttt{cailliez} in \texttt{ade4} --- carefully, it can damage meaning of the data
+				\item We get matrix of pairwise differences among trees (from multiple genes), we need display and analyze it
+			\end{itemize}
+			\item Set of tools for identifying discordant phylogenetic trees are e.g. in package \href{https://CRAN.R-project.org/package=kdetrees}{kdetrees}
+			\item Filtered trees (with removed outlying topologies) are input for further species tree reconstruction method
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Preparing lists of trees for import into R}
-	\begin{itemize}
-		\item If the trees should be rooted, only trees containing the outgroup should be kept
-		\item \texttt{trees\_ml\_exons.nwk} is shown as an example, but other trees can be used as well
-		\item \texttt{grep} will easily keep only trees having outgroup \texttt{o\_purpurascens\_S482}
-	\end{itemize}
-	\begin{bashcode}
-    # Extract only trees having particular taxon
-    grep o_purpurascens_S482 trees_ml_exons.nwk > trees_ml_exons.out.nwk
-    # See how many trees were lost
-    wc -l trees_ml_exons.nwk trees_ml_exons.out.nwk
-	\end{bashcode}
-\end{frame}
+% \begin{frame}[fragile]{Preparing lists of trees for import into R}
+% 	\begin{itemize}
+% 		\item If the trees should be rooted, only trees containing the outgroup should be kept
+% 		\item \texttt{trees\_ml\_exons.nwk} is shown as an example, but other trees can be used as well
+% 		\item \texttt{grep} will easily keep only trees having outgroup \texttt{o\_purpurascens\_S482}
+% 	\end{itemize}
+% 	\begin{bashcode}
+%     # Extract only trees having particular taxon
+%     grep o_purpurascens_S482 trees_ml_exons.nwk > trees_ml_exons.out.nwk
+%     # See how many trees were lost
+%     wc -l trees_ml_exons.nwk trees_ml_exons.out.nwk
+% 	\end{bashcode}
+% \end{frame}
 
 \begin{frame}[fragile]{Loading trees into R}
 	\begin{spluscode}
@@ -995,21 +1000,22 @@
     library(ggplot2)
     library(kdetrees)
     library(phangorn)
+    library(phytools)
     # Set working directory
-    setwd("/home/vojta/dokumenty/vyuka/hybseq/")
+    setwd("~/dokumenty/vyuka/hybseq/")
     # Load the list of trees
-    trees <- read.tree(file="trees_ml_exons.out.nwk")
+    trees <- read.tree(file="trees_ml_exons.nwk")
     trees # See it
-    # Root all trees
-    trees <- root.multiPhylo(phy=trees, outgroup="o_purpurascens_S482",
-      resolve.root=TRUE)
     print(trees, details=TRUE)
 	\end{spluscode}
 \end{frame}
+%     # Root all trees
+%     trees <- root.multiPhylo(phy=trees, outgroup="o_purpurascens_S482",
+%       resolve.root=TRUE)
 
 \begin{frame}[fragile]{Heatmap of topological distances}
 	\begin{itemize}
-		\item There are several heatmap functions, try also at least \texttt{heatmap} and \texttt{heatmap.plus::heatmap.plus}
+		\item There are several heatmap functions, try also at least \texttt{heatmap}
 		\item Edit settings to fit your needs and preferences
 	\end{itemize}
 	\begin{spluscode}
@@ -1028,7 +1034,7 @@
 	\end{spluscode}
 \end{frame}
 
-\begin{frame}[fragile]{PCoA of topological distances}
+\begin{frame}[fragile]{PCoA of topological distances I}
 	\begin{itemize}
 		\item Requires \href{https://en.wikipedia.org/wiki/Euclidean_distance_matrix}{Euclidean distance matrix} (\texttt{is.euclid()})
 		\item Non-Euclidean matrices can be forced to became Euclidean by e.g. \texttt{quasieuclid()} or \texttt{cailliez()}
@@ -1043,12 +1049,38 @@
     # Plot PCoA
     s.label(dfxy=trees.pcoa$li)
     s.kde2d(dfxy=trees.pcoa$li, cpoint=0, add.plot=TRUE)
-    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomleft")
+    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomright")
     title("PCoA of matrix of pairwise trees distances")
 	\end{spluscode}
 \end{frame}
 
+\begin{frame}{PCoA of topological distances II}
+	\begin{center}
+		\includegraphics[height=6.5cm]{pcoa.png}
+	\end{center}
+\end{frame}
+
 \subsection{Filtering trees}
+
+\begin{frame}[fragile]{Filtration of PCoA}
+	\begin{spluscode}
+    trees # See original trees
+    # Remove trees identified in the PCoA plot
+    trees[c("Assembly_10373", "Assembly_10725")] <- NULL
+    trees # See new object
+    # Possibly remove trees with too few tips
+    print(trees, details=TRUE)
+    trees[c(1, 2, 7, 10, 14, 19, 20, 25)] <- NULL
+    trees
+    # Export filtered trees
+    write.tree(phy=trees, file="trees_exons_filtered.nwk")
+	\end{spluscode}
+	\begin{itemize}
+		\item Now you can repeat recalculation of distance matrix and PCoA and possibly remove more trees\ldots{ }--- or use another method like kdetrees (next slide) etc.
+		\item Calculation of distance matrix for large tree set can be very time demanding\ldots
+		\item See more details in \url{https://soubory.trapa.cz/rcourse/}, chapter \enquote{Trees} and subchapters \enquote{Seeing trees in forest} and \enquote{Comparisons}
+	\end{itemize}
+\end{frame}
 
 \begin{frame}[fragile]{Kdetrees}
 	\begin{itemize}
@@ -1060,10 +1092,14 @@
 	\begin{spluscode}
     # Run kdetrees to detect outliers - play with k
     ?kdetrees # See options for kdetrees
+    # Remove rare tips
+    trees <- lapply(X=trees, FUN=drop.tip, tip=c("Paracostus_paradoxus_S266",
+      "Costus_tonkinensis_S268", "Orchidantha_chinensis_S352"))
+    class(trees) <- "multiPhylo"
     trees.kde <- kdetrees(trees=trees, k=0.36, distance="dissimilarity",
       topo.only=FALSE, greedy=TRUE)
-     # See text results with list of outlying trees
-    trees.kde¨
+    # See text results with list of outlying trees
+    trees.kde
 	\end{spluscode}
 \end{frame}
 
@@ -1088,10 +1124,16 @@
 	\end{spluscode}
 \end{frame}
 
+\begin{frame}{Outputs of kdetrees --- graphs}
+	\begin{center}
+		\includegraphics[height=6.5cm]{kdetrees.png}
+	\end{center}
+\end{frame}
+
 \begin{frame}[fragile]{TreeShrink}
 	\begin{itemize}
 		\item Algorithm for detecting abnormally long branches in one or more phylogenetic trees \href{https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4620-2}{Mai et Mirarab 2018}
-		\item Requires \href{https://www.r-project.org/}{R} to be installed
+		\item Requires \href{https://www.r-project.org/}{R} 4.0.X to be installed (e.g. module \texttt{R-4.0.0-gcc})
 		\item See \href{https://github.com/uym2/TreeShrink}{more usage options}
 	\end{itemize}
 	\begin{bashcode}
@@ -1104,28 +1146,29 @@
     python3 setup.py install --user # Or if using conda
     conda install -c smirarab treeshrink
     # Go to directory with trees_good.nwk and run TreeShrink
-    python3 ~/bin/TreeShrink/run_treeshrink.py -h # See help
-    python3 ~/bin/TreeShrink/run_treeshrink.py -r ~/bin/TreeShrink/
-      -t trees_good.nwk
+    python3 ~/.local/bin/run_treeshrink.py -h # See help
+    run_treeshrink.py -t trees_good.nwk -o treeshrink -O exons
+    -s -lha treeshrink/ # Results
 	\end{bashcode}
 \end{frame}
 
-\begin{frame}[fragile]{Outputs of TreeShrink}
+\begin{frame}{Outputs of TreeShrink} % [fragile]
 	\begin{itemize}
-		\item Output (2 files) is saved into directory (in our case) \texttt{trees\_good\_treeshrink}
+		\item Output (3 files) is saved into directory (in our case) \texttt{treeshrink}
 		\item File \texttt{*.nwk} contains new list of phylogenetic trees in \texttt{NEWICK} which can be then used as an input for any species tree reconstruction software
-		\item File \texttt{*\_RS\_*.txt} is bit hard to read, it has one line for every tree in the input list and every line contains list of removed tips
+		\item \texttt{*.txt} files can be bit hard to read
 		\begin{itemize}
-			\item If there is an empty line, no tip was removed from that particular tree
-			\item Trees are not named, only in same order as in the original input file
+			\item \texttt{exons.txt} has one line for every tree in the input list and every line contains list of removed tips --- if there is an empty line, no tip was removed from that particular tree; trees are not named, only in same order as in the original input file
+			\item \texttt{exons\_summary.txt} contains statistics for affected taxa
 		\end{itemize}
+		\item \texttt{exons.nwk} can be directly used as input for ASTRAL or so (see also lesson by TF)
 	\end{itemize}
-	\begin{bashcode}
-    # Find out how many times particular sample was removed from the list of
-    # the trees
-    grep -o "\<[[:graph:]]\+\>" trees_good_RS_0.05.txt | sort | uniq -c |
-      sort -r
-	\end{bashcode}
+% 	\begin{bashcode}
+%     # Find out how many times particular sample was removed from the list of
+%     # the trees
+%     grep -o "\<[[:graph:]]\+\>" trees_good_RS_0.05.txt | sort | uniq -c |
+%       sort -r
+% 	\end{bashcode}
 \end{frame}
 
 \subsection{Species trees}
