@@ -490,7 +490,7 @@
 			\item If changing parameters for \texttt{hybseq\_1\_prep\_2\_run.sh}, parameters for \texttt{qsub} must be changed accordingly
 			\item The script is started multiple times to process all sequencing libraries
 		\end{itemize}
-		\item Script \texttt{$\sim$/bin/hybseq\_1\_prep\_2\_run.sh}
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_2\_run.sh}
 		\begin{itemize}
 			\item See \texttt{./hybseq\_1\_prep\_2\_run.sh -h} for usage help
 			\item Script checks if all needed parameters and tools are available and in simple \texttt{for} loop trimms all sequences (one by one), deduplicates them, does quality checking, prints simple statistics, and prepares list of samples for HybPiper
@@ -502,7 +502,7 @@
 \begin{frame}[fragile]{Submission of hybseq\_1\_prep\_1\_qsub.sh}
 	\begin{itemize}
 		\item Pre-processing data for HybPiper
-		\item \alert{\texttt{~/bin/hybseq\_1\_prep\_1\_qsub.sh} must be edited before submission via \texttt{qsub}}
+		\item \alert{\texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_1\_qsub.sh} must be edited before submission via \texttt{qsub}}
 		\item After it runs for a while (everything had been copyied to the computing node), it is possible to change \texttt{DATADIR} and submit processing of the second library
 	\end{itemize}
 	\begin{bashcode}
@@ -1096,7 +1096,7 @@
     trees <- lapply(X=trees, FUN=drop.tip, tip=c("Paracostus_paradoxus_S266",
       "Costus_tonkinensis_S268", "Orchidantha_chinensis_S352"))
     class(trees) <- "multiPhylo"
-    trees.kde <- kdetrees(trees=trees, k=0.36, distance="dissimilarity",
+    trees.kde <- kdetrees(trees=trees, k=0.5 distance="dissimilarity",
       topo.only=FALSE, greedy=TRUE)
     # See text results with list of outlying trees
     trees.kde
@@ -1148,7 +1148,7 @@
     # Go to directory with trees_good.nwk and run TreeShrink
     python3 ~/.local/bin/run_treeshrink.py -h # See help
     run_treeshrink.py -t trees_good.nwk -o treeshrink -O exons
-    -s -lha treeshrink/ # Results
+    ls -lha treeshrink/ # Results
 	\end{bashcode}
 \end{frame}
 
