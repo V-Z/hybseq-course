@@ -38,4 +38,7 @@ presentation/*.nlo
 *.bak
 *.backup
 ostatni_prezentace_materialy
+## R
+*.RData*
+*.rko
 

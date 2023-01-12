@@ -406,13 +406,13 @@
         ├── 2_seqs # Outputs of HybPiper
         I   ├── Calathea_crotalifera_S401.dedup # Sample output dir
         I   I   ├── Assembly_1 # Gene output directory
-        I   I   ├── Assembly_10014 # Gene output directory
         I   I   ├── ... # More gene output directories...
+        I   I   └── Assembly_10014 # Gene output directory
         I   ├── ... # More samples...
         I   └── Zingiber_citriodorum_S171.dedup # Sample output dir
         I       ├── Assembly_1 # Gene output directory
-        I       ├── Assembly_10014 # Gene output directory
-        I       └── ... # More gene output directories...
+        I       ├── # More gene output directories...
+        I       └── Assembly_10014 # Gene output directory...
         ├── 3_aligned # Aligned contigs
         I   ├── exons # Aligned exons
         I   ├── introns # Aligned introns
@@ -1230,10 +1230,10 @@
     # Compute consensus network
     tree.net <- consensusNet(obj=trees.good, prob=0.25)
     # Plot 2D or 3D
-    plot(x=oxalis.tree.net, planar=FALSE, type="2D", use.edge.length=TRUE,
+    plot(x=tree.net, planar=FALSE, type="2D", use.edge.length=TRUE,
       show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE,
       show.nodes=TRUE, edge.color="black", tip.color="blue") # 2D
-    plot(x=oxalis.tree.net, planar=FALSE, type="3D", use.edge.length=TRUE,
+    plot(x=tree.net, planar=FALSE, type="3D", use.edge.length=TRUE,
       show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE,
       show.nodes=TRUE, edge.color="black", tip.color="blue") # 3D
 	\end{spluscode}
