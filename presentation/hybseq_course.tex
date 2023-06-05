@@ -35,8 +35,8 @@
 % Fonts Linux Libertine
 \usepackage{libertine}
 
-% Other packages
-\usepackage{multicol}
+% % Other packages
+% \usepackage{multicol}
 
 % TeX logos
 \usepackage{dtk-logos}
@@ -100,10 +100,8 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}{Outline}{Target enrichment for plant/animal systematics --- methodological workshop (MB120C117)}
-	\begin{multicols}{2}
-		\tableofcontents
-	\end{multicols}
+\begin{frame}[allowframebreaks]{Outline}{Target enrichment for plant/animal systematics --- methodological workshop (MB120C117)}
+	\tableofcontents
 \end{frame}
 
 \section{Introduction}
@@ -190,7 +188,7 @@
 			\item Comparison of gene trees (e.g. heatmaps and PCoA by \href{https://www.r-project.org/}{R} and packages \href{https://cran.r-project.org/package=ade4}{ade4}, \href{https://cran.r-project.org/package=ape}{ape}, \href{https://cran.r-project.org/package=distory}{distory}, \href{https://cran.r-project.org/package=phytools}{phytools}, etc.)
 			\item Comparison of (several) (species) trees (e.g.by \href{https://www.r-project.org/}{R} and packages \href{https://cran.r-project.org/package=ape}{ape} or \href{https://cran.r-project.org/package=phytools}{phytools})
 		\end{itemize}
-		\item Construction of species trees (e.g. by \href{https://github.com/smirarab/ASTRAL}{ASTRAL-III} or \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2})
+		\item Construction of species trees (e.g. by \href{https://github.com/smirarab/ASTRAL}{ASTRAL-III}, \href{https://github.com/chaoszhang/ASTER}{ASTER∗} or \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2})
 		\begin{itemize}
 			\item Comparison of species tree and gene trees (e.g. by \href{https://bitbucket.org/blackrim/phyparts}{phyparts} and \href{https://github.com/mossmatters/MJPythonNotebooks}{MJPythonNotebooks})
 		\end{itemize}
@@ -227,7 +225,6 @@
 		\item \href{https://phylogenomics.rice.edu/html/phylonet.html}{PhyloNet} --- phylogenetic networks
 		\item \href{https://bitbucket.org/blackrim/phyparts}{phyparts} --- comparison of species tree vs. gene trees
 		\item \href{https://www.python.org/}{Python 3.7 or later} and \href{https://biopython.org/}{Biopython 1.80 or later} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
-		\item \href{https://github.com/lutteropp/QuartetScores}{QuartetScores} (see lesson by TF) --- support scores for internodes
 		\item \href{https://www.r-project.org/}{R 4.0 or later} and packages \href{https://cran.r-project.org/package=ade4}{ade4}, \href{https://cran.r-project.org/package=adegenet}{adegenet}, \href{https://cran.r-project.org/package=ape}{ape}, \href{https://cran.r-project.org/package=corrplot}{corrplot}, \href{https://cran.r-project.org/package=distory}{distory}, \href{https://cran.r-project.org/package=ggplot2}{ggplot2}, \href{https://cran.r-project.org/package=gplots}{gplots}, \href{https://cran.r-project.org/package=ips}{ips}, \href{https://cran.r-project.org/package=kdetrees}{kdetrees}, \href{https://cran.r-project.org/package=pegas}{pegas}, \href{https://cran.r-project.org/package=phangorn}{phangorn}, \href{https://cran.r-project.org/package=phytools}{phytools} and \href{https://cran.r-project.org/package=scales}{scales}
 		\begin{itemize}
 			\item Used for alignment of contigs, post-processing of alignments, post-processing and comparison of gene trees, etc.
@@ -249,7 +246,7 @@
 		\begin{itemize}
 			\item Massive computations --- \href{https://www.cesnet.cz/services/massive-computations-metacentrum/?lang=en}{MetaCentrum} (\href{https://www.cesnet.cz/sluzby/metacentrum/}{česky}) --- \alert{this we need to process our HybSeq data}
 			\item Large \href{https://www.cesnet.cz/services/data-storage/?lang=en}{data storage} (\href{https://www.cesnet.cz/sluzby/datova-uloziste/}{česky}) --- \alert{this we can use to store our HybSeq data}
-			\item And \href{https://www.cesnet.cz/services/?lang=en}{much more} (\href{https://www.cesnet.cz/sluzby/}{česky})\ldots
+			\item And \href{https://www.cesnet.cz/services/?lang=en}{much more} (\href{https://www.cesnet.cz/sluzby/}{česky}) --- note especially \href{https://www.cesnet.cz/services/filesender/?lang=en}{FileSender} (\href{https://www.cesnet.cz/sluzby/filesender/}{česky}) and \href{https://www.cesnet.cz/services/owncloud/?lang=en}{ownCloud} (\href{https://www.cesnet.cz/sluzby/owncloud/}{česky})\ldots
 			\item See also my course \url{https://soubory.trapa.cz/linuxcourse/linux_bash_metacentrum_course.pdf} (chapter \enquote{MetaCentrum})
 		\end{itemize}
 		\item Information about data storage \url{https://du.cesnet.cz/en/start} (\href{https://du.cesnet.cz/cs/start}{česky}) contains detailed usage instructions
@@ -262,10 +259,11 @@
 		\item Of course, good knowledge of work in Linux command line (BASH) is needed\ldots
 	\end{itemize}
 	\vfill
-	\begin{alertblock}{MetaCentrum vs. other clusters\ldots}
+	\begin{alertblock}{MetaCentrum vs. other grids and clusters\ldots}
 	\begin{itemize}
 		\item I show processing on MetaCentrum Czech National Grid Infrastructure, as it is readily available, well maintained and contains all needed applications, but it's possible to use any computing cluster in similar way (the scripts are easily modifiable)
 		\item For other clusters than Czech MetaCentrum, user must in the \href{https://github.com/V-Z/hybseq-scripts}{scripts} edit at least commands to load modules and handling with scratch directory
+		\item MetaCentrum is distributed --- it has multiple front end and storages, which might be confusing (be careful with paths in scripts)
 	\end{itemize}
 	\end{alertblock}
 	\vfill
@@ -325,7 +323,7 @@
 	\vfill
 	\begin{bashcode}
     module avail XXX/ # List available modules for XXX
-    module add <TAB><TAB> # Load some module
+    module add <TAB><TAB> # Load some module (or use 'module load XXX')
     module list # List of currently loaded modules
     module rm XXX # Unload selected module
     qstat -w -n -1 -u $USER -t -p -a @cerit-pbs.cerit-sc.cz
@@ -350,43 +348,7 @@
 	\end{enumerate}
 \end{frame}
 
-\section{Data preprocessing}
-
-\begin{frame}[fragile]{Data download}
-	\label{datadownload}
-	\begin{itemize}
-		\item MetaCentrum storages have sometimes too limited quota for such a large data --- see your \href{https://metavo.metacentrum.cz/en/myaccount/kvoty}{quotas} (\href{http://metavo.metacentrum.cz/cs/myaccount/kvoty}{česky}), see \href{https://docs.metacentrum.cz/data/quotas/}{details}
-		\item The \href{https://github.com/V-Z/hybseq-scripts}{pipeline} produce a lot of data (especially \href{https://github.com/mossmatters/HybPiper/}{HybPiper}; gene trees can be also large) --- ensure to have enough space to store everything
-		\begin{itemize}
-			\item Especially \textbf{HybPiper produces a lot of files} --- \alert{user may reach quota for number of files}, not necessarily (only) amount of data
-		\end{itemize}
-	\end{itemize}
-	\begin{bashcode}
-    # Login to any MetaCentrum front end
-    ssh USER@skirit.metacentrum.cz # Or any other front end
-    # Download the data
-    wget https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_0_data.zip
-    # Unpack it
-    unzip hybseq_course_zingibers_0_data.zip
-	\end{bashcode}
-	\begin{itemize}
-		 \item The archive contains input raw data and reference
-		 \item Further steps are in other archives (see later)
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Scripts and other resources to process the data}
-	\begin{itemize}
-		\item The archive \texttt{hybseq\_course\_zingibers\_0\_data.zip} contains directory \texttt{hybseq\_course\_2023\_zingibers} with\ldots
-		\begin{itemize}
-			\item Raw data \texttt{*.fastq.gz} in \texttt{1\_data/lib\_01/0\_data/}
-			\item Reference for HybPiper \texttt{curcuma\_HybSeqProbes\_first958\_concat.fasta} in \texttt{ref/}
-		\end{itemize}
-	\end{itemize}
-	\begin{alertblock}{Do not blindly copy-paste commands\ldots}
-		\alert{Commands show typical way how to proceed, but should not be using without understanding, and other ways how to work are possible\ldots}{ }Command and submission scripts also \textbf{do require} edits prior launching them.
-	\end{alertblock}
-\end{frame}
+\section{Data and scripts}
 
 \subsection{General data structure}
 
@@ -454,6 +416,44 @@
 	\end{itemize}
 \end{frame}
 
+\subsection{Data download and start}
+
+\begin{frame}[fragile]{Data download}
+	\label{datadownload}
+	\begin{itemize}
+		\item MetaCentrum storages have sometimes too limited quota for such a large data --- see your \href{https://metavo.metacentrum.cz/en/myaccount/kvoty}{quotas} (\href{http://metavo.metacentrum.cz/cs/myaccount/kvoty}{česky}), see \href{https://docs.metacentrum.cz/data/quotas/}{details}
+		\item The \href{https://github.com/V-Z/hybseq-scripts}{pipeline} produce a lot of data (especially \href{https://github.com/mossmatters/HybPiper/}{HybPiper}; gene trees can be also large) --- ensure to have enough space to store everything
+		\begin{itemize}
+			\item Especially \textbf{HybPiper produces a lot of files} --- \alert{user may reach quota for number of files}, not necessarily (only) amount of data
+		\end{itemize}
+	\end{itemize}
+	\begin{bashcode}
+    # Login to any MetaCentrum front end
+    ssh USER@skirit.metacentrum.cz # Or any other front end
+    # Download the data
+    wget https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_0_data.zip
+    # Unpack it
+    unzip hybseq_course_zingibers_0_data.zip
+	\end{bashcode}
+	\begin{itemize}
+		 \item The archive contains input raw data and reference
+		 \item Further steps are in other archives (see later)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Scripts and other resources to process the data}
+	\begin{itemize}
+		\item The archive \texttt{hybseq\_course\_zingibers\_0\_data.zip} contains directory \texttt{hybseq\_course\_2023\_zingibers} with\ldots
+		\begin{itemize}
+			\item Raw data \texttt{*.fastq.gz} in \texttt{1\_data/lib\_01/0\_data/}
+			\item Reference for HybPiper \texttt{curcuma\_HybSeqProbes\_first958\_concat.fasta} in \texttt{ref/}
+		\end{itemize}
+	\end{itemize}
+	\begin{alertblock}{Do not blindly copy-paste commands\ldots}
+		\alert{Commands show typical way how to proceed, but should not be using without understanding, and other ways how to work are possible\ldots}{ }Command and submission scripts also \textbf{do require} edits prior launching them.
+	\end{alertblock}
+\end{frame}
+
 \subsection{HybSeq scripts}
 
 \begin{frame}[fragile]{Getting HybSeq scripts}
@@ -471,10 +471,12 @@
 	\end{bashcode}
 	\begin{spluscode}
     install.packages(pkgs=c("ape", "codetools", "cpp11", "farver",
-    "ips", "RcppArmadillo", "scales"), lib="rpackages",
-    repos="https://mirrors.nic.cz/R/", dependencies="Imports")
+      "ips", "RcppArmadillo", "scales"), lib="rpackages",
+      repos="https://mirrors.nic.cz/R/", dependencies="Imports")
 	\end{spluscode}
 \end{frame}
+
+\section{Data preprocessing}
 
 \subsection{Trimming and deduplication}
 
@@ -524,6 +526,9 @@
     # See your processes running the machine (from above list)
     ssh exec_host "ps ux" # Replace exec_host by hostname!
 	\end{bashcode}
+	\begin{itemize}
+		\item Wait for task to finish, or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_1_prepared.zip}{download} and inspect test data
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Trimm and deduplicate all FASTQ files}
@@ -562,8 +567,8 @@
 	\begin{itemize}
 		\item See \url{https://github.com/mossmatters/HybPiper\#readme} --- HybPiper has plenty of requirements, the easiest is probably installation using \texttt{conda}
 		\item It is possible to run HybPiper on your computer (with Linux or macOS), but it requires plenty of CPU and memory and creates huge output directories\ldots
-		\item \texttt{hybpiper assemble} is processing single sample --- to process multiple (by \texttt{while} loop or by \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}) there must be list of sample base names without suffixes like \texttt{*[.\_]R\{1,2\}.f*q*} (here \texttt{samples\_list.txt} created by \texttt{hybseq\_1\_prep\_2\_run.sh})
-		\item Reference bait FASTA file \textbf{must} have sequences named as \texttt{>Species\_name-gene\_id} (see \href{https://github.com/mossmatters/HybPiper/wiki\#12-target-file}{help}) (\alert{note} order and dash in between)
+		\item \texttt{hybpiper assemble} is processing single sample --- to process multiple (by \texttt{while} loop or by \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}) there must be list of sample base names without suffixes like \texttt{*[.\_]R\{1,2\}[.\_]*f*q*} (here \texttt{samples\_list.txt} created by \texttt{hybseq\_1\_prep\_2\_run.sh})
+		\item Reference bait FASTA file \textbf{must} have sequences named as \texttt{>Species\_name\alert{-}gene\_id} (see \href{https://github.com/mossmatters/HybPiper/wiki\#12-target-file}{help}) (\alert{note} order and dash in between)
 		\item \href{https://github.com/mossmatters/HybPiper}{HybPiper} is processing individual files with given baits FASTA sequences --- batch processing must be scripted
 	\end{itemize}
 \end{frame}
@@ -677,12 +682,17 @@
 			\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_2\_run.sh} and be sure to understand what the scripts do, including syntax used.
 			\item Edit declaration of variables \texttt{WORKDIR}, \texttt{BAITFILE} and \texttt{DATADIR} in \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} so that they point to correct locations.
 			\item Submit via \texttt{qsub} \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_1\_qsub.sh} to post-process all HybPiper outputs.
-			\item Inspect outputs of, including statistics, heatmaps and log. What do they show?
+			\item Inspect outputs, including statistics, heatmaps and log. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
 
 \begin{frame}{Post-processing HybPiper outputs and retrieving contig sequences II}{For interested students}
+	\vfill
+	\begin{itemize}
+		\item Wait for tasks to finish, or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_2_hybpiper.zip}{download} and inspect test data
+	\end{itemize}
+	\vfill
 	\begin{exampleblock}{Tasks to post-process HybPiper outputs II}
 		\begin{enumerate}
 			\item Which part does take the longest time on this task? Does this task take plenty of resources (CPU, memory)?
@@ -690,6 +700,7 @@
 			\item Can you run the task on your computer (desktop in office or notebook) without \texttt{qsub}? If so, how? Can you run the task directly on MetaCentrum front end?
 		\end{enumerate}
 	\end{exampleblock}
+	\vfill
 \end{frame}
 
 \section{Alignments}
@@ -701,7 +712,7 @@
 		\begin{itemize}
 			\item Rows (individuals) and/or colums (positions within alignment) with more than $\sim$10--30\% of missing data must be removed (e.g. beginning and the end of the alignment)
 			\item Too short alignments or alignments with too few variable sites or too few individuals should be removed
-			\item Exact thresholds are to be discussed\ldots
+			\item Exact thresholds are to be discussed (according to purpose, phylogenetic scale etc.)\ldots
 		\end{itemize}
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} variable and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_3\_hybpiper\_postprocess\_2\_run.sh}) submits via \texttt{qsub} individual alignment task
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_run\_4\_alignment\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_4\_alignment\_3\_run.r} \texttt{R} script and copy results back
@@ -709,6 +720,8 @@
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_4\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs, create statistics of alignments and lists of NJ gene trees
 	\end{itemize}
 \end{frame}
+
+\subsection{Alignments of all contigs (and their trimming)}
 
 \begin{frame}[fragile]{Submitting alignment jobs}
 	\begin{itemize}
@@ -776,7 +789,7 @@
     # Post-process (sort into subdirectories and get simple statistics)
     # all alignments - provide path to directory with aligned files
     ./hybseq_4_alignment_4_postprocess.sh -p ~/zingiberace_hybseq_course/
-      3_aligned -s ~/zingiberace_hybseq_course//2_seqs/samples_list.txt |
+      3_aligned -s ~/zingiberace_hybseq_course/2_seqs/samples_list.txt |
       tee hybseq_align_postprocess.log
     mv hybseq_align_postprocess.log XXX/3_aligned/
 	\end{bashcode}
@@ -790,6 +803,11 @@
 			\item Inspect outputs, including statistics, images and logs. Open in spreadsheet (e.g. \href{https://www.libreoffice.org/}{LibreOffice Calc}) the \texttt{*.tsv} tables. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
+	\vfill
+	\begin{itemize}
+		\item Wait for tasks to finish, or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_3_aligned.zip}{download} and inspect test data
+	\end{itemize}
+	\vfill
 \end{frame}
 
 \section{Gene trees}
@@ -809,6 +827,8 @@
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_4\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
 	\end{itemize}
 \end{frame}
+
+\subsection{Gene trees from all alignments}
 
 \begin{frame}[fragile]{Submitting gene trees jobs}
 	\begin{itemize}
@@ -900,16 +920,16 @@
 		\begin{itemize}
 			\item Records of what IQ-TREE did (\texttt{*.log}) and \texttt{HybSeq*} from \texttt{qsub}
 			\item Results are in \texttt{*.iqtree} (IQ-TREE report), maximum likelihood tree is in \texttt{*.treefile} and likelihood distances in \texttt{*.mldist}
-			\item Ultrafast bootstrap approximation results contain split support values in \texttt{*.splits.nex}, consensus tree in \texttt{*.contree}, bootstrap trees \texttt{*.ufboot} and likelihood mapping plots in \texttt{*.svg} and \texttt{*.eps}
+			\item Ultrafast bootstrap approximation results contain split support values in \texttt{*.splits.nex}, consensus tree in \texttt{*.contree}, bootstrap trees \texttt{*.ufboot} and likelihood mapping plots in \texttt{*.ckp.gz}
 		\end{itemize}
 		\item Outputs should be sorted by \texttt{hybseq\_5\_gene\_trees\_4\_postprocess.sh} --- it requires only path to the \texttt{trees} directory
+		\item Outputs of gene trees are in directory \texttt{trees} which was created in the input directory, files with gene tree itself are named \texttt{*.contree}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Sorting data after running gene trees for all samples}
 	\begin{itemize}
-		\item Outputs of gene trees are in directory \texttt{trees} which was created in the input directory, files with gene tree itself are named \texttt{*.contree}
-		\item It should be sorted by \texttt{hybseq\_5\_gene\_trees\_4\_postprocess.sh}
+		\item Results should be sorted by \texttt{hybseq\_5\_gene\_trees\_4\_postprocess.sh}
 		\item All outputs should be then moved to dedicated directory (cf. slide~\ref{datastructure})
 		\item \alert{Code below is exemplary and requires edits}
 	\end{itemize}
@@ -924,6 +944,9 @@
       ~/hybseq_course_2023_zingibers/4_gene_trees | tee
       hybseq_gene_trees_postprocess.log
 	\end{bashcode}
+	\begin{itemize}
+		\item Wait for tasks to finish, or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_4_gene_trees.zip}{download} and inspect test data
+	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Post-processing of gene trees}
@@ -935,7 +958,7 @@
 		\end{enumerate}
 	\end{exampleblock}
 	\begin{itemize}
-		\item Now we have gene trees for all alignments --- we can directly construct species tree (using e.g. \href{https://github.com/smirarab/ASTRAL}{ASTRAL-III} or \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2} from lists of trees \texttt{trees\_ml\_*.nwk}), or inspect and compare topologies of gene trees and possibly discard outliers
+		\item Now we have gene trees for all alignments --- we can directly construct species tree (using e.g. \href{https://github.com/smirarab/ASTRAL}{ASTRAL-III}, \href{https://github.com/chaoszhang/ASTER}{ASTER∗} or \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2} from lists of trees \texttt{trees\_ml\_*.nwk}), or inspect and compare topologies of gene trees and possibly discard outliers
 	\end{itemize}
 	\begin{bashcode}
     # Some SW like ASTRAL dislike tree names on the beginning of lines
