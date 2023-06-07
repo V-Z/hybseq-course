@@ -1,3 +1,7 @@
+# Install needed packages
+install.packages(pkgs=c("ape", "ade4", "distory", "gplots", "ggplot2", "phangorn", "phytools"), repos="https://mirrors.nic.cz/R/", dependencies="Imports")
+install.packages(pkgs="https://cran.r-project.org/src/contrib/Archive/kdetrees/kdetrees_0.1.5.tar.gz", repos=NULL)
+
 # Load libraries
 library(ape)
 library(ade4)
@@ -34,30 +38,28 @@ trees.pcoa
 # Plot PCoA
 s.label(dfxy=trees.pcoa$li)
 s.kde2d(dfxy=trees.pcoa$li, cpoint=0, add.plot=TRUE)
-add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="topleft")
+add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomright")
 title("PCoA of matrix of pairwise trees distances")
 
 # Remove outlying trees
 trees
-trees[c("Assembly_10373", "Assembly_10725")] <- NULL
+trees[c("Assembly_1556", "Assembly_13627")] <- NULL
 trees
-
-# Possibly remove trees with too few tips
-print(trees, details=TRUE)
-trees[c(1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 16, 19, 20, 24, 25, 26)] <- NULL
-trees
-# Export filtered trees
-write.tree(phy=trees, file="trees_exons_filtered.nwk")
 
 # Now you can repeat recalculation of distance matrix and PCoA and possibly remove more trees...
 
-# Remove rare tips
-trees <- lapply(X=trees, FUN=drop.tip, tip=c("Paracostus_paradoxus_S266", "Costus_tonkinensis_S268", "Orchidantha_chinensis_S352"))
-class(trees) <- "multiPhylo"
+# # Possibly remove trees with too few tips
+# print(trees, details=TRUE)
+# trees[c(1, 2, 3, 4)] <- NULL
+# trees
+
+# # Possibly remove rare tips
+# trees <- lapply(X=trees, FUN=drop.tip, tip=c("Amomum-sp7_S308_L001", "Amomum-trilobum_S12_L001"))
+# class(trees) <- "multiPhylo" # Use after usage of lapply to multiPhylo
 
 # Run kdetrees to detect outliers - play with k
 ?kdetrees # See options for kdetrees
-trees.kde <- kdetrees(trees=trees, k=0.5, distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
+trees.kde <- kdetrees(trees=trees, k=0.45, distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
 # See text results with list of outlying trees
 trees.kde
 # See graphical results
@@ -79,6 +81,8 @@ write.tree(phy=trees.good, file="trees_good.nwk")
 ?superTree # See help first...
 tree.sp <- superTree(tree=trees.good, method="NNI", rooted=TRUE, trace=2, start=NULL, multicore=TRUE)
 tree.sp # See details
+# Root it
+tree.sp <- root(phy=tree.sp, outgroup=c("Riedelia-arfakensis_S49_L001", "Zingiber-officinale_S242_L001"), resolve.root=TRUE)
 # Save parsimony super tree
 write.tree(phy=tree.sp, file="parsimony_sp_tree.nwk")
 # Plot parsimony super tree
@@ -86,23 +90,29 @@ plot.phylo(x=tree.sp, type="phylogram", edge.width=2, label.offset=0.01, cex=1.2
 add.scale.bar()
 # Tune display of the tree...
 
-# See help for mrp.supertree and coalSpeciesTree
+# See help...
+?ape::speciesTree
 ?phytools::mrp.supertree
 ?phangorn::coalSpeciesTree
 # All trees must be ultrametric - chronos scale them
 trees.ultra <- lapply(X=trees.good, FUN=chronos, model="correlated")
 class(trees.ultra) <- "multiPhylo"
 # Calculate the species tree
-tree.sp.mean <- speciesTree(x=trees.ultra, FUN=mean)
+# tree.sp.mean <- speciesTree(x=trees.ultra, FUN=mean)
 tree.sp2 <- mrp.supertree(tree=trees.good, method="optim.parsimony", rooted=TRUE)
+tree.sp2 <- root(phy=tree.sp2, outgroup=c("Riedelia-arfakensis_S49_L001", "Zingiber-officinale_S242_L001"), resolve.root=TRUE)
+plot.phylo(x=tree.sp2, type="phylogram", edge.width=2, label.offset=0.01, cex=1.2)
 
-# Consensus networks
-?consensusNet
-# Compute consensus network
-tree.net <- consensusNet(obj=trees.good, prob=0.25)
-# Plot 2D or 3D
-plot(x=tree.net, planar=FALSE, type="2D", use.edge.length=TRUE, show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE, show.nodes=TRUE, edge.color="black", tip.color="blue") # 2D
-plot(x=tree.net, planar=FALSE, type="3D", use.edge.length=TRUE, show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE, show.nodes=TRUE, edge.color="black", tip.color="blue") # 3D
+# # Consensus networks
+# ?consensusNet
+# # Compute consensus network
+# tree.net <- consensusNet(obj=trees.good, prob=0.25)
+# # Plot 2D or 3D
+# plot(x=tree.net, planar=FALSE, type="2D", use.edge.length=TRUE, show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE, show.nodes=TRUE, edge.color="black", tip.color="blue") # 2D
+# plot(x=tree.net, planar=FALSE, type="3D", use.edge.length=TRUE, show.tip.label=TRUE, show.edge.label=TRUE, show.node.label=TRUE, show.nodes=TRUE, edge.color="black", tip.color="blue") # 3D
+
+# Save trees.good in NEXUS for PhyloNet
+write.nexus(trees.good, file="trees_good.nex", translate=FALSE)
 
 # Cophyloplots - comparing 2 phylogenetic trees
 # We need 2 column matrix with tip labels
@@ -127,8 +137,8 @@ densiTree(x=trees.ultra, scaleX=TRUE, width=5, cex=1.5)
 # See help page
 ?phytools::densityTree
 # Plotting density trees
-densityTree(trees=c(tree.sp, tree.sp2), fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
-densityTree(trees=trees.ultra, fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
-densityTree(trees=trees.ultra[1:3], fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
-densityTree(trees=trees.ultra[c(2, 4, 6)], fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
+# densityTree(trees=c(tree.sp, tree.sp2), fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
+# densityTree(trees=trees.ultra, fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
+# densityTree(trees=trees.ultra[1:3], fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
+# densityTree(trees=trees.ultra[c(2, 4, 6)], fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
 
