@@ -1265,6 +1265,103 @@
 	\end{spluscode}
 \end{frame}
 
+\begin{frame}{ASTRAL and related tools}
+	\begin{itemize}
+		\item \href{https://github.com/smirarab/ASTRAL}{ASTRAL-III} and related tools like \href{https://github.com/chaoszhang/ASTER}{ASTER∗} or \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2} are popular easy to use methods to construct species tree out of set of gene trees
+		\item From \url{https://github.com/smirarab/ASTRAL\#installation} download \texttt{ZIP} archive, unpack \texttt{astral.5.7.8.jar} and edit \texttt{$\sim$/hybseq/bin/hybseq\_6\_sp\_tree\_2\_run.sh} so that \texttt{java -jar /storage/\ldots/astral.5.7.8.jar} points to correct location
+		\item \alert{\texttt{$\sim$/hybseq/bin/hybseq\_6\_sp\_tree\_1\_qsub.sh} must be edited before submission via \texttt{qsub} --- change \texttt{WORKDIR} and \texttt{DATADIR}}
+		\item It goes to \texttt{DATADIR} and process all \texttt{*.nwk} files there
+		\item The scripts can be easily edited to use with another similar tool
+		\item Run the task (next slides), or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_5_sp_trees.zip}{download} and inspect test data
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Prepare lists of trees for ASTRAL and similar tools and submit job}
+	\begin{bashcode}
+    # Create new directory and go there
+    cd ~/hybseq_course_2023_zingibers/ && mkdir 5_sp_trees && cd 5_sp_trees/
+    # Upload to 5_sp_trees also results from R and TreeShrink
+    cp ../4_gene_trees/trees_*.nwk .
+    # Trees lists exported from R and in dir. 4_gene_trees contain gene name
+    # Assembly_10014 (Afr...eum_S118:0.0504,Afr...eta_S701:0.054,((((((Am...
+    # Remove gene (contig) names from lists of trees
+    sed -i 's/^[[:graph:]]\+ //'
+      trees_{cons,ml}_{exons,introns,supercontigs}.nwk
+    # Edit WORKDIR and DATADIR in ~/hybseq/bin/hybseq_6_sp_tree_1_qsub.sh and
+    # path to ASTRAL in ~/hybseq/bin/hybseq_6_sp_tree_2_run.sh and submit job
+    qsub -l walltime=4:0:0 -l select=1:ncpus=1:mem=4gb:scratch_local=1gb -m
+      abe ~/hybseq/bin/hybseq_6_sp_tree_1_qsub.sh
+    # Monitor running $USER's tasks with details
+    qstat -w -n -1 -u $USER # Last column contains machine name
+    # See your processes running the machine (from above list)
+    ssh exec_host "ps ux" # Replace exec_host by hostname!
+	\end{bashcode}
+\end{frame}
+
+\begin{frame}{Running species trees}
+	\begin{exampleblock}{Run species trees}
+		\begin{enumerate}
+			\item Inspect scripts \texttt{$\sim$/hybseq/bin/hybseq\_6\_sp\_tree\_1\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_6\_sp\_tree\_2\_run.sh} and be sure to understand what they are doing, including syntax used.
+			\item Edit declarations of variables \texttt{WORKDIR} and \texttt{DATADIR} in \texttt{hybseq\_6\_sp\_tree\_1\_qsub.sh} so that they point to correct locations.
+			\item Ensure to have correct path to ASTRAL \texttt{jar} file in \texttt{hybseq\_6\_sp\_tree\_2\_run.sh}.
+			\item Run it to process all \texttt{*.nwk} files.
+			\item Inspect outputs and log files.
+		\end{enumerate}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Other tasks with gene trees}{For interested students}
+	\begin{exampleblock}{Tasks for advanced users with ASTRAL and relatives}
+		\begin{enumerate}
+			\item Think how to run \href{https://github.com/smirarab/ASTRAL}{ASTRAL}, \href{https://github.com/chaoszhang/ASTER}{ASTER∗}, \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2} or similar tool in your computer.
+			\item Edit \texttt{hybseq\_6\_sp\_tree\_2\_run.sh} (and possibly \texttt{hybseq\_6\_sp\_tree\_1\_qsub.sh}) to use different species tree builder.
+			\item Check parameters of \href{https://github.com/smirarab/ASTRAL}{ASTRAL}, \href{https://github.com/chaoszhang/ASTER}{ASTER∗} and \href{https://github.com/pranjalv123/ASTRID}{ASTRID-2} and other similar tools listed on their pages. What are differences? What are their advantages and disadvantages? Think about various possible settings.
+		\end{enumerate}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Quick visualization of species trees I}
+	\begin{itemize}
+		\item Individual species trees can be quickly visualized by simple \textbf{R} script processing in \texttt{for} loop each species tree input file
+		\item Adjust code below and save it as \texttt{treeplot.r} in directory  with species trees
+	\end{itemize}
+	\begin{spluscode}
+    library(ape)
+    library(scales)
+    fnames <- commandArgs(TRUE) # [1] file.nwk [2] file.png
+    tr <- read.tree(file=fnames[1])
+    tr <- root(phy=tr, outgroup="Zingiber-officinale_S242_L001",
+      resolve.root=TRUE)
+    tr <- di2multi.phylo(phy=tr, tol=1e-08)
+    tr$edge.length[is.nan(tr$edge.length)] <- 1
+    png(filename=fnames[2], width=1500, height=1500, units="px", bg="white")
+      plot.phylo(x=tr, type="phylogram", edge.color="blue", edge.width=4,
+        cex=1.25, root.edge=TRUE, label.offset=0.1, align.tip.label=TRUE)
+      title("Phylogenetic tree") # Ends on next slide ...
+	\end{spluscode}
+\end{frame}
+
+\begin{frame}[fragile]{Quick visualization of species trees II}
+	\begin{spluscode}
+      edgelabels(text=round(x=tr$edge.length, digits=3), frame="rect",
+        col="brown", bg=alpha(colour="white", alpha=0.5), cex=0.75)
+      nodelabels(text=round(x=tr$node.label, digits=3), frame="rect",
+        col="red", bg=alpha(colour="white", alpha=0.5), cex=1.2)
+      axisPhylo()
+      dev.off() # ... starts on previous slide
+	\end{spluscode}
+	\begin{itemize}
+		\item Run following \texttt{for} loop to process \texttt{R} script from previous slide to get quick visualization of individual species trees
+		\item Of course, this is very exemplary and especially graphical parameters must be highly adjusted according size of phylogeny etc.
+	\end{itemize}
+	\begin{bashcode}
+    module add r/4.1.3-gcc-10.2.1-6xt26dl # Load R. Packages: ape, scales
+    for L in sp_*.nwk; do echo "${L}"; R CMD BATCH --no-save --no-restore
+      "--args ${L} ${L%.nwk}.png" treeplot.r; done
+    # Note > " < around arguments to pass to R
+	\end{bashcode}
+\end{frame}
+
 \subsection{Phylogenetic networks}
 
 \begin{frame}[fragile]{Consensus network}
