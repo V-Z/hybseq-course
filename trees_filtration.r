@@ -134,10 +134,11 @@ is.binary.multiPhylo(trees.ultra) # binary bifurcating
 densiTree(x=trees.ultra, scaleX=TRUE, col=rainbow(6), width=5, cex=1.5)
 densiTree(x=trees.ultra, direction="upwards", scaleX=TRUE, width=5)
 densiTree(x=trees.ultra, scaleX=TRUE, width=5, cex=1.5)
+densiTree(x=trees.ultra[1:10], scaleX=TRUE, width=5, cex=1.25)
 # See help page
 ?phytools::densityTree
 # Plotting density trees
-# densityTree(trees=c(tree.sp, tree.sp2), fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
+densityTree(trees=c(tree.sp, tree.sp2), fix.depth=TRUE, lwd=4)
 # densityTree(trees=trees.ultra, fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
 # densityTree(trees=trees.ultra[1:3], fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
 # densityTree(trees=trees.ultra[c(2, 4, 6)], fix.depth=TRUE, use.gradient=TRUE, alpha=0.5, lwd=4)
