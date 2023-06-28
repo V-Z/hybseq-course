@@ -300,8 +300,8 @@
     # Task in metacentrum.sh will run up to 4 days (4 h), require
     # one physical computer with 8 CPU threads, 24 GB of RAM, 10
     # GB of disk space and we get all information mails
-    qsub -l walltime=96:0:0 -l select=1:ncpus=8:mem=24gb:
-      scratch_local=10gb -m abe metacentrum.sh
+    qsub -l walltime=96:0:0 -l \
+      select=1:ncpus=8:mem=24gb:scratch_local=10gb -m abe metacentrum.sh
     # Check how the task is running (above web) and
     qstat -u $USER # Information about $USER's jobs
     qstat 123456789 # The task ID is available from qstat
@@ -326,7 +326,7 @@
     module add <TAB><TAB> # Load some module (or use 'module load XXX')
     module list # List of currently loaded modules
     module rm XXX # Unload selected module
-    qstat -w -n -1 -u $USER -t -p -a @cerit-pbs.cerit-sc.cz
+    qstat -w -n -1 -u $USER -t -p -a @cerit-pbs.cerit-sc.cz \
       @elixir-pbs.elixir-czech.cz @meta-pbs.metacentrum.cz # All jobs for $USER
 	\end{bashcode}
 \end{frame}
@@ -470,6 +470,7 @@
     R # Start R and install needed packages:
 	\end{bashcode}
 	\begin{spluscode}
+    # Install needed packages in R
     install.packages(pkgs=c("ape", "codetools", "cpp11", "farver",
       "ips", "RcppArmadillo", "scales"), lib="rpackages",
       repos="https://mirrors.nic.cz/R/", dependencies="Imports")
@@ -518,8 +519,9 @@
 	\end{itemize}
 	\begin{bashcode}
     # After edition of WORKDIR and DATADIR run
-    qsub -l walltime=12:0:0 -l select=1:ncpus=4:mem=48gb:
-      scratch_local=100gb -m abe ~/hybseq/bin/hybseq_1_prep_1_qsub.sh
+    qsub -l walltime=12:0:0 -l \
+      select=1:ncpus=4:mem=48gb:scratch_local=100gb -m abe \
+      ~/hybseq/bin/hybseq_1_prep_1_qsub.sh
     # Or similar command
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
@@ -613,7 +615,7 @@
 	\begin{bashcode}
     # After edition of WORKDIR, DATADIR, SAMPLES, BAITFILE and NCPU run simply
     # NOTE: There are no further parameters on command line
-    ./hybseq/bin/hybseq_run_2_hybpiper_1_submitter.sh
+    ~/hybseq/bin/hybseq_run_2_hybpiper_1_submitter.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
     # See your processes running the machine (from above list)
@@ -662,16 +664,16 @@
 	\begin{bashcode}
     # Move MetaCentrum output files into output directories
     while read L; do mv HybPiper."$L".[eo]* "$L"/; done < samples_list.txt
-    # Move from hybseq_course_2023_zingibers/1_data/lib_01/2_dedup all outputs
+    # Move from ~/hybseq_course_2023_zingibers/1_data/lib_01/2_dedup all outputs
     # of HybPiper to hybseq_course_2023_zingibers/2_seqs/ for next steps
-    mv *.dedup ../../../2_seqs/
-    # Create in hybseq_course_2023_zingiberss/2_seqs new samples_list.txt
-    find . -maxdepth 1 -type d | sed 's/^\.\///' | sort | tail -n+2 >
+    mkdir ../../../2_seqs && mv *.dedup ../../../2_seqs/
+    # Create in ~/hybseq_course_2023_zingiberss/2_seqs new samples_list.txt
+    find . -maxdepth 1 -type d | sed 's/^\.\///' | sort | tail -n+2 > \
       samples_list.txt
     # Edit WORKDIR, BAITFILE and DATADIR in
     # ~/hybseq/bin/hybseq_run_3_hybpiper_postprocess_1_qsub.sh
     # When ready, submit task to post-process HybPiper results
-    qsub -l walltime=12:0:0 -l select=1:ncpus=1:mem=2gb:scratch_local=100gb
+    qsub -l walltime=12:0:0 -l select=1:ncpus=1:mem=2gb:scratch_local=100gb \
        -m abe ~/hybseq/bin/hybseq_3_hybpiper_postprocess_1_qsub.sh
 	\end{bashcode}
 \end{frame}
@@ -733,7 +735,7 @@
 	\begin{bashcode}
     # After edition of WORKDIR and DATADIR run simply
     # NOTE: There are no further parameters on command line
-    ./hybseq/bin/hybseq_4_alignment_1_submitter.sh
+    ~/hybseq/bin/hybseq_4_alignment_1_submitter.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
     # Something went wrong? Cancel all running or queued tasks by
@@ -782,16 +784,15 @@
 		\item \alert{Code below is exemplary and requires edits}
 	\end{itemize}
 	\begin{bashcode}
-    # Move qsub logs to the 'aligned' directory
+    # Move qsub logs to the 'aligned' directory - go to directory XXX/2_seqs
     mv HybSeq.alignment.* aligned/
     # Everything should be moved from XXX/2_seqs/aligned to XXX/3_aligned
-    mv aligned ../3_aligned
+    mv aligned ../3_aligned && cd ../
     # Post-process (sort into subdirectories and get simple statistics)
     # all alignments - provide path to directory with aligned files
-    ./hybseq_4_alignment_4_postprocess.sh -p ~/zingiberace_hybseq_course/
-      3_aligned -s ~/zingiberace_hybseq_course/2_seqs/samples_list.txt |
-      tee hybseq_align_postprocess.log
-    mv hybseq_align_postprocess.log XXX/3_aligned/
+    ~/hybseq/bin/hybseq_4_alignment_4_postprocess.sh -p 3_aligned \
+      -s 2_seqs/samples_list.txt | tee hybseq_align_postprocess.log
+    mv hybseq_align_postprocess.log 3_aligned/
 	\end{bashcode}
 \end{frame}
 
@@ -840,7 +841,7 @@
 	\begin{bashcode}
     # After edition of WORKDIR and DATADIR run simply
     # NOTE: There are no further parameters on command line
-    ./hybseq/bin/hybseq_5_gene_trees_1_submitter.sh
+    ~/hybseq/bin/hybseq_5_gene_trees_1_submitter.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
     # See your processes running the machine (from above list)
@@ -901,12 +902,12 @@
 	\begin{bashcode}
     module add r/4.1.3-gcc-10.2.1-6xt26dl # Load R. Ensure 'ape' is installed.
     # IQ-TREE
-    for L in *.aln.fasta.treefile; do echo "${L}"; R CMD BATCH --no-save
-      --no-restore "--args ${L} ${L%.aln.fasta.treefile}.mltree.png"
+    for L in *.aln.fasta.treefile; do echo "${L}"; R CMD BATCH --no-save \
+      --no-restore "--args ${L} ${L%.aln.fasta.treefile}.mltree.png" \
       mltreeplot.r; done
     # RAxML-NG
-    for L in *.aln.fasta.raxml.support; do echo "${L}"; R CMD BATCH --no-save
-      --no-restore "--args ${L} ${L%.aln.fasta.raxml.support}.mltree.png"
+    for L in *.aln.fasta.raxml.support; do echo "${L}"; R CMD BATCH --no-save \
+      --no-restore "--args ${L} ${L%.aln.fasta.raxml.support}.mltree.png" \
       mltreeplot.r; done
     # Note > " < around arguments to pass to R
 	\end{bashcode}
@@ -935,13 +936,12 @@
 	\end{itemize}
 	\begin{bashcode}
     # Move qsub logs to the 'trees' directory
-    mv HybSeq.genetree.* trees/
+    cd ~/hybseq_course_2023_zingibers/3_aligned/ && mv HybSeq.genetree.* trees/
     # Everything should be moved from XXX/2_seqs/aligned to XXX/3_aligned
-    mv trees ../4_gene_trees
+    mv trees ../4_gene_trees && cd ../
     # Post-process (sort into subdirectories and get lists of gene trees)
     # all gene trees - provide path to directory with gene trees files
-    ./hybseq/bin/hybseq_5_gene_trees_4_postprocess.sh
-      ~/hybseq_course_2023_zingibers/4_gene_trees | tee
+    ~/hybseq/bin/hybseq_5_gene_trees_4_postprocess.sh 4_gene_trees | tee \
       hybseq_gene_trees_postprocess.log
 	\end{bashcode}
 	\begin{itemize}
@@ -1059,7 +1059,7 @@
     library(phangorn)
     library(phytools)
     # Set working directory
-    setwd("~/dokumenty/vyuka/hybseq/")
+    setwd("~/dokumenty/vyuka/hybseq/") # For example
     # Load the list of trees
     trees <- read.tree(file="trees_ml_exons.nwk")
     trees # See it
@@ -1194,13 +1194,13 @@
     module add python/3.9.12-gcc-10.2.1-rg2lpmk r/4.1.3-gcc-10.2.1-6xt26dl
     cd ~/bin/ || { mkdir ~/bin && cd ~/bin/; } # Go to ~/bin directory
     git clone https://github.com/uym2/TreeShrink.git # Download TreeShrink
-    cd TreeShrink/ # Install it
-    python3 setup.py install --user
-    conda install -c smirarab treeshrink # Or if using conda
+    cd TreeShrink/
+    python3 setup.py install --user # Install it "classically"...
+    conda install -c smirarab treeshrink # ...or if using conda (if you use)
     # Go to directory with trees_good.nwk and run TreeShrink
     python3 ~/.local/bin/run_treeshrink.py -h # See help
-    run_treeshrink.py -t trees_good.nwk -o treeshrink_exons -O
-      treeshrink_exons | tee treeshrink.log
+    ~/.local/bin/run_treeshrink.py -t trees_good.nwk -o treeshrink_exons \
+      -O treeshrink_exons | tee treeshrink.log
     ls -lha treeshrink_exons/ # Results
 	\end{bashcode}
 \end{frame}
@@ -1215,7 +1215,7 @@
 	\begin{bashcode}
     # Find out how many times particular sample was removed from the list of
     # the trees
-    grep -o "\<[[:graph:]]\+\>" treeshrink_exons/treeshrink_exons.txt | sort
+    grep -o "\<[[:graph:]]\+\>" treeshrink_exons/treeshrink_exons.txt | sort \
       | uniq -c | sort -gr
 	\end{bashcode}
 \end{frame}
@@ -1285,11 +1285,11 @@
     # Trees lists exported from R and in dir. 4_gene_trees contain gene name
     # Assembly_10014 (Afr...eum_S118:0.0504,Afr...eta_S701:0.054,((((((Am...
     # Remove gene (contig) names from lists of trees
-    sed -i 's/^[[:graph:]]\+ //'
+    sed -i 's/^[[:graph:]]\+ //' \
       trees_{cons,ml}_{exons,introns,supercontigs}.nwk
     # Edit WORKDIR and DATADIR in ~/hybseq/bin/hybseq_6_sp_tree_1_qsub.sh and
     # path to ASTRAL in ~/hybseq/bin/hybseq_6_sp_tree_2_run.sh and submit job
-    qsub -l walltime=4:0:0 -l select=1:ncpus=1:mem=4gb:scratch_local=1gb -m
+    qsub -l walltime=4:0:0 -l select=1:ncpus=1:mem=4gb:scratch_local=1gb -m \
       abe ~/hybseq/bin/hybseq_6_sp_tree_1_qsub.sh
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
@@ -1356,7 +1356,7 @@
 	\end{itemize}
 	\begin{bashcode}
     module add r/4.1.3-gcc-10.2.1-6xt26dl # Load R. Packages: ape, scales
-    for L in sp_*.nwk; do echo "${L}"; R CMD BATCH --no-save --no-restore
+    for L in sp_*.nwk; do echo "${L}"; R CMD BATCH --no-save --no-restore \
       "--args ${L} ${L%.nwk}.png" treeplot.r; done
     # Note > " < around arguments to pass to R
 	\end{bashcode}
@@ -1402,7 +1402,8 @@
     BEGIN PHYLONET;
     InferNetwork_MP (all) 1 -b 50 -x 5 -pl 2 -di;
     END;
-
+	\end{bashcode}
+	\begin{bashcode}
     # Download binary JAR file (ready to run)
     wget https://phylogenomics.rice.edu/media/PhyloNet.jar
     java -Xmx8g -jar PhyloNet.jar trees_good.nex | tee phylonet_exons.log
@@ -1433,7 +1434,7 @@
 		\item Requires \texttt{maven} and several Python packages, installation can be complicated\ldots
 	\end{itemize}
 	\begin{bashcode}
-    cd ~/bin/
+    cd ~/bin/ || { mkdir ~/bin && cd ~/bin/; }
     # Install Phyparts
     git clone https://bitbucket.org/blackrim/phyparts.git
     cd phyparts/
@@ -1441,7 +1442,7 @@
     ./mvn_cmdline.sh
     # Install PhyParts_PieCharts
     git clone https://github.com/mossmatters/MJPythonNotebooks.git
-    # Or on MetaCentrum...
+    # Or on MetaCentrum (above steps are not needed then)...
     module add phyparts/0.0.1
     # Split list of trees into individual files
     mkdir trees_good
@@ -1456,19 +1457,19 @@
     # Remove IQTREE ultrafast bootstrap values from gene trees
     sed -i 's/\/[0-9]\{1,3\}//g' trees_good/trees_*
     # Analysis with phyparts
-    java -jar ~/bin/phyparts/target/phyparts-0.0.1-SNAPSHOT-
-      jar-with-dependencies.jar --help
-    java -jar ~/bin/phyparts/target/phyparts-0.0.1-SNAPSHOT-
-      jar-with-dependencies.jar -a 1 -d trees_good -m
-      parsimony_sp_tree.nwk -o trees_good_res -s 0.5 -v
+    java -jar \
+      ~/bin/phyparts/target/phyparts-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
+      --help
+    java -jar \
+      ~/bin/phyparts/target/phyparts-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
+      -a 1 -d trees_good -m parsimony_sp_tree.nwk -o trees_good_res -s 0.5 -v
     # Copy phypartspiecharts.py to directory with trees
     cp ~/bin/phyparts/MJPythonNotebooks/phypartspiecharts.py .
     # See help for phypartspiecharts.py
     python phypartspiecharts.py --help
-    # Pie chart: concordance (blue) top conflict (green),
-    # other conflict (red), no signal (gray)
-    # Run phypartspiecharts.py to get the graphical output
-    python phypartspiecharts.py --svg_name trees_good_res.svg
+    # Pie chart: concordance (blue) top conflict (green), other conflict
+    # (red), no signal (gray). Run phypartspiecharts.py to get the graphics:
+    python phypartspiecharts.py --svg_name trees_good_res.svg \
       parsimony_sp_tree.nwk trees_good_res 216
 	\end{bashcode}
 \end{frame}
