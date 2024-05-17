@@ -545,9 +545,6 @@
     # See your processes running the machine (from above list)
     ssh exec_host "ps ux" # Replace exec_host by hostname!
 	\end{bashcode}
-	\begin{itemize}
-		\item Wait for task to finish, or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_1_prepared.zip}{download} and inspect test data
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{Trimm and deduplicate all FASTQ files}
@@ -560,6 +557,17 @@
 				\item Can you run the task on your computer (desktop or notebook) without \texttt{qsub}? If so, how?
 		\end{enumerate}
 	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{When the pre-processing job is done}
+	\begin{itemize}
+		\item Wait for task to finish, or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_1_prepared.zip}{download} and inspect test data
+		\item Output directory \texttt{job\_123456789.pbs-m1.metacentrum.cz} will be in \texttt{DATADIR} (\texttt{0\_data}) --- go there and move directories \texttt{1\_trimmed}, \texttt{2\_dedup} and \texttt{3\_qual\_rep} and log file \texttt{hybseq\_prepare.log} to same level as \texttt{0\_data}, e.g. \texttt{mv 1\_trimmed 2\_dedup 3\_qual\_rep hybseq\_prepare.log ../../}
+		\item Check log files \texttt{hybseq\_prepare.log} and \texttt{hybseq\_1\_prep\_1\_qsub.sh.[eo]123456789}
+		\item Directory \texttt{1\_trimmed} contains statistics in \texttt{report\_trimming.tsv}
+		\item Directory \texttt{2\_dedup} contains statistics in \texttt{report\_filtering.tsv} and everything needed for HybSeq (see following chapter)
+		\item See HTML files with quality reports in directory \texttt{3\_qual\_rep}
+	\end{itemize}
 \end{frame}
 
 \section{HybPiper}
@@ -669,39 +677,57 @@
 	\begin{itemize}
 		\item Previous step processed by HybPiper every single sample individually and independently
 		\item HybPiper postprocessing will retrieve contigs for every exon, intron and supercontig containing all individuals where particular genetic region was found; and do some statistics
-		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} is submitted via \texttt{qsub} and it runs \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_2\_run.sh} which uses HybPiper to obtain table of contig lengths, some statistics, heatmaps, information about paralogs, and retrieves from individual directores contigs to be aligned
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} is submitted via \texttt{qsub} and it runs \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_2\_run.sh} which uses HybPiper to obtain table of contig lengths, some statistics, heatmaps, information about paralogs, and retrieves from individual directories contigs to be aligned
 		\item New list of samples for all samples (all libraries) must be prepared (next slide)
 		\item All outputs (a lot of files) are in same directory where HybPiper outputs are (typically \texttt{XXX/2\_seqs/})
 	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Sorting data after running HybPiper for all samples}
+	\begin{bashcode}
+    # Ensure You are in 2_dedup
+    cd ~/hybseq_course_zingibers/1_data/lib_01/2_dedup/
+    # Move MetaCentrum logs into output directories
+    while read L; do mv HybPiper."$L".[eo]* "$L"/; done < samples_list.txt
+    # Move from ~/hybseq_course_zingibers/1_data/lib_01/2_dedup all outputs of
+    # HybPiper to hybseq_course_zingibers/2_seqs/ for next steps
+    mkdir ../../../2_seqs # Create directory for HybPiper outputs
+    mv *.dedup ../../../2_seqs/ # Move all HybPiper output directories there
+    cd ../../../2_seqs/ # Go to that directory
+    # NOTE: The mkdir command is needed only once and directory 2_seqs can
+    # contain results from multiple sequencing libraries
+	\end{bashcode}
+	\begin{itemize}
+		\item In \texttt{$\sim$/hybseq\_course\_zingibers/1\_data/lib\_\#/2\_dedup/} can be multiple libraries --- all HybPiper outputs should be moved into \texttt{$\sim$/hybseq\_course\_zingibers/2\_seqs/} where HybPiper postprocessing will retrieve all sequences and statistics
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{HybPiper postprocessing --- retrieving of contigs and statistics}
 	\begin{itemize}
 		\item \alert{Code below is exemplary and requires edits, as well as script \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_1\_qsub.sh} --- change \texttt{WORKDIR}, \texttt{BAITFILE}, \texttt{DATADIR} and \texttt{SAMPLES}}
+		\item This process can be repeated every time new sequencing library is added
+		\item All outputs will be directly in \texttt{DATADIR} (\texttt{2\_seqs})
 	\end{itemize}
 	\begin{bashcode}
-    # Move MetaCentrum output files into output directories
-    while read L; do mv HybPiper."$L".[eo]* "$L"/; done < samples_list.txt
-    # Move from ~/hybseq_course_2023_zingibers/1_data/lib_01/2_dedup all outputs
-    # of HybPiper to hybseq_course_2023_zingibers/2_seqs/ for next steps
-    mkdir ../../../2_seqs && mv *.dedup ../../../2_seqs/
-    # Create in ~/hybseq_course_2023_zingiberss/2_seqs new samples_list.txt
+    # Create in ~/hybseq_course_zingiberss/2_seqs/ new samples_list.txt
     find . -maxdepth 1 -type d | sed 's/^\.\///' | sort | tail -n+2 > \
       samples_list.txt
     # Edit WORKDIR, BAITFILE and DATADIR in
-    # ~/hybseq/bin/hybseq_run_3_hybpiper_postprocess_1_qsub.sh
+    # ~/hybseq/bin/hybseq_3_hybpiper_postprocess_1_qsub.sh
     # When ready, submit task to post-process HybPiper results
-    qsub -l walltime=12:0:0 -l select=1:ncpus=1:mem=2gb:scratch_local=100gb \
+    qsub -l walltime=12:0:0 -l select=1:ncpus=1:mem=8gb:scratch_local=100gb \
        -m abe ~/hybseq/bin/hybseq_3_hybpiper_postprocess_1_qsub.sh
+    # Note that for large data (~1000 probes and hundreds of samples) the
+    # postprocessing can take long time and longer walltime can be needed
 	\end{bashcode}
 \end{frame}
 
 \begin{frame}{Post-processing HybPiper outputs and retrieving contig sequences I}
 	\begin{exampleblock}{Tasks to post-process HybPiper outputs I}
 		\begin{enumerate}
-			\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_2\_run.sh} and be sure to understand what the scripts do, including syntax used.
+			\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_2\_run.sh} and be sure to understand what the scripts do, including syntax used.
 			\item Edit declaration of variables \texttt{WORKDIR}, \texttt{BAITFILE} and \texttt{DATADIR} in \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} so that they point to correct locations.
-			\item Submit via \texttt{qsub} \texttt{$\sim$/hybseq/bin/hybseq\_run\_3\_hybpiper\_postprocess\_1\_qsub.sh} to post-process all HybPiper outputs.
+			\item Submit via \texttt{qsub} \texttt{$\sim$/hybseq/bin/hybseq\_3\_hybpiper\_postprocess\_1\_qsub.sh} to post-process all HybPiper outputs.
 			\item Inspect outputs, including statistics, heatmaps and log. What do they show?
 		\end{enumerate}
 	\end{exampleblock}
