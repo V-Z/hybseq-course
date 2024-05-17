@@ -297,9 +297,9 @@
 	\end{itemize}
 	\vfill
 	\begin{bashcode}
-    # Task in metacentrum.sh will run up to 4 days (4 h), require
-    # one physical computer with 8 CPU threads, 24 GB of RAM, 10
-    # GB of disk space and we get all information mails
+    # Task in metacentrum.sh script will run up to 4 days (96 h),
+    # require one physical computer with 8 CPU threads, 24 GB of
+    # RAM, 10 GB of disk space and we get all information mails
     qsub -l walltime=96:0:0 -l \
       select=1:ncpus=8:mem=24gb:scratch_local=10gb -m abe metacentrum.sh
     # Check how the task is running (above web) and
@@ -357,12 +357,12 @@
     I   ├── bin # Scripts themselves
     I   ├── ref # References for HybPiper
     I   ├── rpackages # R library with installed R packages
-    └── hybseq_course_2023_zingibers # Data
+    └── hybseq_course_zingibers # Data
         ├── 1_data # Sequencing libraries
         I   ├── lib_01 # Sequencing library 1
         I   I   ├── 0_data # Raw FASTQ sequences
         I   I   ├── 1_trimmed # Trimmed FASTQ sequences
-        I   I   ├── 2_dedup # Deduplicated FASTQ sequences
+        I   I   ├── 2_dedup # Deduplicated FASTQ sequences - for HybPiper
         I   I   └── 3_qual_rep # FastQC quality reports
         I   └── lib_02 # Possible sequencing library 2
         I       ├── 0_data # Raw FASTQ sequences
@@ -441,7 +441,7 @@
 
 \begin{frame}{Scripts and other resources to process the data}
 	\begin{itemize}
-		\item The archive \texttt{hybseq\_course\_zingibers\_0\_data.zip} contains directory \texttt{hybseq\_course\_2023\_zingibers} with\ldots
+		\item The archive \texttt{hybseq\_course\_zingibers\_0\_data.zip} contains directory \texttt{hybseq\_course\_zingibers} with\ldots
 		\begin{itemize}
 			\item Raw data \texttt{*.fastq.gz} in \texttt{1\_data/lib\_01/0\_data/}
 			\item Reference for HybPiper \texttt{curcuma\_HybSeqProbes\_first958\_concat.fasta} in \texttt{ref/}
@@ -513,9 +513,9 @@
 	\begin{itemize}
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_1\_qsub.sh}
 		\begin{itemize}
-			\item Submits via \texttt{qsub} script \texttt{$\sim$/bin/hybseq\_1\_prep\_2\_run.sh} for calculation
+			\item Submits via \texttt{qsub} script \texttt{$\sim$/bin/hybseq\_1\_prep\_2\_run.sh} FASTQ data for trimming, deduplication and quality checks
 			\item Variables \texttt{WORKDIR} (location of HybSeq scripts) and \texttt{DATADIR} (data to process) must point to correct existing location --- script contains settings for running following script
-			\item If changing parameters for \texttt{hybseq\_1\_prep\_2\_run.sh}, parameters for \texttt{qsub} must be changed accordingly
+			\item If changing parameters for \texttt{hybseq\_1\_prep\_2\_run.sh}, parameters for \texttt{qsub} must be changed here accordingly
 			\item The script is started multiple times to process all sequencing libraries
 		\end{itemize}
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_2\_run.sh}
@@ -534,9 +534,10 @@
 		\item After it runs for a while (everything had been copyied to the computing node), it is possible to change \texttt{DATADIR} and submit processing of the second library
 	\end{itemize}
 	\begin{bashcode}
-    # After edition of WORKDIR and DATADIR run
-    qsub -l walltime=12:0:0 -l \
-      select=1:ncpus=4:mem=48gb:scratch_local=100gb -m abe \
+    # After edition of WORKDIR and DATADIR, go to data directory...
+    cd ~/hybseq_course_zingibers/1_data/lib_01/ # ...and submit the job...
+    qsub -l walltime=24:0:0 -l \
+      select=1:ncpus=4:mem=64gb:scratch_local=100gb -m abe \
       ~/hybseq/bin/hybseq_1_prep_1_qsub.sh
     # Or similar command
     # Monitor running $USER's tasks with details
@@ -624,14 +625,15 @@
 \begin{frame}[fragile]{Submitting jobs to run HybPiper}
 	\begin{itemize}
 		\item To retrieve probe sequences from every input FASTQ file
-		\item \alert{\texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh} must be edited before running it --- change \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES}, \texttt{BAITFILE} and \texttt{NCPU}}
+		\item \alert{\texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh} must be edited before running it --- change \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES}, \texttt{BAITFILE} and \texttt{NCPU}} according to your needs
 		\item After submission of all input files is done, it is possible to change \texttt{DATADIR} and submit processing of the second library
 		\item It will start job for every sample, so that output of \texttt{qstat} will notably prolong\ldots
 	\end{itemize}
 	\begin{bashcode}
-    # After edition of WORKDIR, DATADIR, SAMPLES, BAITFILE and NCPU run simply
-    # NOTE: There are no further parameters on command line
-    ~/hybseq/bin/hybseq_run_2_hybpiper_1_submitter.sh
+    # After edition of WORKDIR, DATADIR, SAMPLES, BAITFILE and NCPU, go to
+    # DATADIR AND run simply (There are no further parameters on command line)
+    cd ~/hybseq_course_zingibers/1_data/lib_01/2_dedup/ # Go to DATADIR
+    ~/hybseq/bin/hybseq_2_hybpiper_1_submitter.sh # Submit all samples
     # Monitor running $USER's tasks with details
     qstat -w -n -1 -u $USER # Last column contains machine name
     # See your processes running the machine (from above list)
@@ -642,10 +644,10 @@
 \begin{frame}{Running HybPiper}
 	\begin{exampleblock}{Run HybPiper}
 		\begin{enumerate}
-			\item Inspect scripts \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}, \texttt{$\sim$/hybseq/bin/hybseq\_run\_2\_hybpiper\_2\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_3\_run.sh} and be sure to understand what they are doing, including syntax used.
+			\item Inspect scripts \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}, \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_2\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_3\_run.sh} and be sure to understand what they are doing, including syntax used.
 			\item Check \url{https://github.com/mossmatters/HybPiper/wiki/Full-pipeline-parameters\#10-hybpiper-assemble}
 			\item Edit declarations of variables \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES} and \texttt{BAITFILE} in \texttt{hybseq\_2\_hybpiper\_1\_submitter.sh} so that they point to correct locations.
-			\item Run \texttt{./hybseq\_2\_hybpiper\_1\_submitter.sh} to process sample data.
+			\item Run in directory \texttt{2\_dedup} script processing all samples, simply \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
@@ -952,7 +954,7 @@
 	\end{itemize}
 	\begin{bashcode}
     # Move qsub logs to the 'trees' directory
-    cd ~/hybseq_course_2023_zingibers/3_aligned/ && mv HybSeq.genetree.* trees/
+    cd ~/hybseq_course_zingibers/3_aligned/ && mv HybSeq.genetree.* trees/
     # Everything should be moved from XXX/2_seqs/aligned to XXX/3_aligned
     mv trees ../4_gene_trees && cd ../
     # Post-process (sort into subdirectories and get lists of gene trees)
@@ -1295,7 +1297,7 @@
 \begin{frame}[fragile]{Prepare lists of trees for ASTRAL and similar tools and submit job}
 	\begin{bashcode}
     # Create new directory and go there
-    cd ~/hybseq_course_2023_zingibers/ && mkdir 5_sp_trees && cd 5_sp_trees/
+    cd ~/hybseq_course_zingibers/ && mkdir 5_sp_trees && cd 5_sp_trees/
     # Upload to 5_sp_trees also results from R and TreeShrink
     cp ../4_gene_trees/trees_*.nwk .
     # Trees lists exported from R and in dir. 4_gene_trees contain gene name
