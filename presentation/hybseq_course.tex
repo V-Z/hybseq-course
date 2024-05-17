@@ -313,7 +313,7 @@
 \begin{frame}[fragile]{Key MetaCentrum commands}
 	\begin{itemize}
 		\item MetaCentrum is \enquote{just} normal Linux server --- work as usually
-		\item Command \texttt{module} loads/unloads selected \href{https://docs.metacentrum.cz/software/search-soft/}{application}
+		\item Command \texttt{module} loads/unloads selected \href{https://docs.metacentrum.cz/software/search-soft/}{application} (\texttt{module add r})
 		\item Tasks (BASH scripts) are submitted for computing by \texttt{qsub} --- the script must copy the data into \texttt{\$SCRATCHDIR} and do all calculations there
 		\begin{itemize}
 			\item It has plenty of options how to specify requirements (see \href{https://docs.metacentrum.cz/computing/run-basic-job/}{help})
@@ -326,24 +326,22 @@
     module add <TAB><TAB> # Load some module (or use 'module load XXX')
     module list # List of currently loaded modules
     module rm XXX # Unload selected module
-    qstat -w -n -1 -u $USER -t -p -a @cerit-pbs.cerit-sc.cz \
-      @elixir-pbs.elixir-czech.cz @meta-pbs.metacentrum.cz # All jobs for $USER
+    # All jobs for $USER ('-x' also shows tasks ended within last 24 h)
+    qstat -w -n -1 -u $USER -t -p -a @pbs-m1.metacentrum.cz -x
 	\end{bashcode}
 \end{frame}
 
 \begin{frame}{Running R tasks on MetaCentrum}
 	\begin{itemize}
-		\item There are only some R packages, to get more create own package library and use it in scripts (see e.g. \texttt{/software/R/4.0.0/gcc/lib/R/library/})
-		\item In the \texttt{metacentrum.sh} script load R \texttt{module add r/4.1.3-gcc-10.2.1-6xt26dl} and start there R script as usually \texttt{R CMD BATCH script.r}
+		\item There are only some R packages, to get more create own package library and use it in scripts (see e.g. \texttt{.libPaths()} within \texttt{R})
+		\item \alert{Be careful about paths!}
+		\item In the \texttt{metacentrum.sh} script load R, e.g. \texttt{module add r/4.1.3-gcc-10.2.1-6xt26dl} and start there R script as usually \texttt{R CMD BATCH script.r}
 	\end{itemize}
 	\begin{enumerate}
-		\item Login to selected front node via SSH
+		\item Login to selected front node via SSH and load \textbf{R} module
 		\item Create somewhere new directory for R packages \texttt{mkdir rpkgs} (or use default \texttt{$\sim$/R/})
-		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them into the \texttt{rpkgs} directory \texttt{install.packages(pkgs=\ldots, lib="rpkgs")}
-		\item In the R script \texttt{*.r} load the packages from the \texttt{rpkgs} directory \texttt{library(package=\ldots, lib.loc="/storage/\ldots/rpkgs")}
-		\begin{itemize}
-			\item \alert{Be careful about paths!}
-		\end{itemize}
+		\item Start R \texttt{R} and install \textbf{all} R packages needed for the task --- install them e.g. into the \texttt{rpkgs} directory \texttt{install.packages(pkgs=\ldots, \ldots, lib="rpkgs")}
+		\item In the R script \texttt{*.r} load the packages from the \texttt{rpkgs} directory \texttt{library(package=\ldots, lib.loc="/storage/\ldots/rpkgs")} or so
 		\item Ensure all needed outputs are saved from the R script
 	\end{enumerate}
 \end{frame}
@@ -459,21 +457,39 @@
 \begin{frame}[fragile]{Getting HybSeq scripts}
 	\begin{itemize}
 		\item See \url{https://github.com/V-Z/hybseq-scripts}
-		\item Install as follows:
+		\item Install the scripts as follows:
 	\end{itemize}
 	\begin{bashcode}
+    # Ensure to be in home folder
+    cd
     # Clone repository with scripts into "hybseq" directory
-    cd && git clone https://github.com/V-Z/hybseq-scripts.git hybseq
+    git clone https://github.com/V-Z/hybseq-scripts.git hybseq
     # Install all needed R packages
     cd hybseq/ # Go to hybseq directory
+    ls -lha # See content...
     module add r/4.1.3-gcc-10.2.1-6xt26dl # Load R module
-    R # Start R and install needed packages:
+    R # Start R and install needed packages (next slide)
 	\end{bashcode}
+	\end{frame}
+
+\begin{frame}[fragile]{Install needed R packages}
 	\begin{spluscode}
+    getwd() # Ensure to be in ~/hybseq/ And if not go there by
+    setwd("~/hybseq/") # Set path into HybSeq directory
+    dir() # Ensure to see directory "rpackages"
+    # Package Matrix (required by ips) requires R 4.4 and newer while we have
+    # 4.1.3 - we have to install its dependency lattice and older version of
+    # Matrix manually
+    install.packages(pkgs="lattice", lib="rpackages",
+      repos="https://mirrors.nic.cz/R/", dependencies="Imports")
+    install.packages(pkgs="https://cran.r-project.org/src/contrib/Archive/
+      Matrix/Matrix_1.6-5.tar.gz", lib="rpackages", repos=NULL,
+      dependencies="Imports")
     # Install needed packages in R
     install.packages(pkgs=c("ape", "codetools", "cpp11", "farver",
       "ips", "RcppArmadillo", "scales"), lib="rpackages",
       repos="https://mirrors.nic.cz/R/", dependencies="Imports")
+    dir("rpackages/") # Ensure all packages are correctly installed
 	\end{spluscode}
 \end{frame}
 
