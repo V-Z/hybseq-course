@@ -756,8 +756,8 @@
 		\item All sequences retrieved in the previous step with HybPiper must be aligned (by any aligner)
 		\item Alignments must be post-processed
 		\begin{itemize}
-			\item Rows (individuals) and/or colums (positions within alignment) with more than $\sim$10--30\% of missing data must be removed (e.g. beginning and the end of the alignment)
-			\item Too short alignments or alignments with too few variable sites or too few individuals should be removed
+			\item Rows (individuals) and/or colums (positions within alignment) with more than $\sim$10--50\% of missing data must be removed (e.g. beginning and the end of the alignment)
+			\item Too short alignments or alignments with too few variable sites or too few individuals could be removed (their usefulness is questionable)
 			\item Exact thresholds are to be discussed (according to purpose, phylogenetic scale etc.)\ldots
 		\end{itemize}
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_4\_alignment\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} variable and for every contig (all \texttt{*.fasta} or \texttt{*.FNA} files) in that directory (retrieved by \texttt{hybseq\_3\_hybpiper\_postprocess\_2\_run.sh}) submits via \texttt{qsub} individual alignment task
@@ -836,7 +836,7 @@
     # all alignments - provide path to directory with aligned files
     ~/hybseq/bin/hybseq_4_alignment_4_postprocess.sh -p 3_aligned \
       -s 2_seqs/samples_list.txt | tee hybseq_align_postprocess.log
-    mv hybseq_align_postprocess.log 3_aligned/
+    mv hybseq_align_postprocess.log 3_aligned/ && cd 3_aligned/
 	\end{bashcode}
 \end{frame}
 
@@ -922,7 +922,7 @@
 		\item Adjust code below and save it as \texttt{mltreeplot.r} in directory  with gene trees
 	\end{itemize}
 	\begin{spluscode}
-    library(ape)
+    library(ape, lib.loc="~/hybseq/rpackages")
     # [1] file.aln.fasta.treefile / file.aln.fasta.raxml.support
     fnames <- commandArgs(TRUE)
     tr <- read.tree(file=fnames[1])
