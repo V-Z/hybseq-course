@@ -1031,16 +1031,19 @@
 \begin{frame}[fragile]{Install needed R packages}
 	\begin{itemize}
 		\item The tasks will be done in \href{https://www.r-project.org/}{R} (use e.g. \href{https://posit.co/products/open-source/rstudio/}{RStudio} or \href{https://rkward.kde.org/}{RKWard})
-		\item Following R code is available at \url{https://github.com/V-Z/hybseq-course/blob/master/trees_filtration.r} --- download it and edit according to your needs
+		\item Use your notebook or e.g. MetaCentrum \href{https://docs.metacentrum.cz/software/ondemand/}{OnDemand} RStudio or \href{https://docs.metacentrum.cz/related/jupyter/}{Jupyter notebook}
+		\item Following R code is available at \url{https://github.com/V-Z/hybseq-course/blob/master/trees_filtration.r} --- \alert{\textbf{download} it and edit} according to your needs
 	\end{itemize}
 	\begin{spluscode}
     # Install R packages
     install.packages(pkgs=c("ape", "ade4", "distory", "gplots", "ggplot2",
       "phangorn", "phytools"), repos="https://mirrors.nic.cz/R/",
       dependencies="Imports")
-    # kdetrees is not availbale in CRAN, install it manually
-    install.packages(pkgs="https://cran.r-project.org/src/contrib/Archive/
-      kdetrees/kdetrees_0.1.5.tar.gz", repos=NULL)
+    # Install kdetrees package (removed from CRAN)
+    # Ensure package 'devtools' is installed
+    if( ! 'devtools' %in% installed.packages()) {install.packages('devtools')}
+    # Install 'kdetrees' from https://github.com/V-Z/kdetrees Git repository
+    devtools::install_github('V-Z/kdetrees')
 	\end{spluscode}
 \end{frame}
 
@@ -1121,7 +1124,8 @@
 	\end{itemize}
 	\begin{spluscode}
     # Compute distance of topological similarities
-    trees.d <- dist.topo(x=trees, method="score")
+    # Set number of cores according to your computer
+    trees.d <- dist.topo(x=trees, method="score", mc.cores=4)
     # Plot the heatmap (package gplots)
     png(filename="trees_dist.png", width=10000, height=10000)
       heatmap.2(x=as.matrix(trees.d), Rowv=FALSE, Colv="Rowv",
@@ -1150,7 +1154,7 @@
     # Plot PCoA
     s.label(dfxy=trees.pcoa$li)
     s.kde2d(dfxy=trees.pcoa$li, cpoint=0, add.plot=TRUE)
-    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomright")
+    add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="topright")
     title("PCoA of matrix of pairwise trees distances")
 	\end{spluscode}
 \end{frame}
@@ -1167,7 +1171,7 @@
 	\begin{spluscode}
     trees # See original trees
     # Remove trees identified in the PCoA plot
-    trees[c("Assembly_1556", "Assembly_13627")] <- NULL
+    trees[c("Assembly_12866", "Assembly_14143", "Assembly_1500")] <- NULL
     trees # See new object
     # Possibly remove trees with too few tips
     print(trees, details=TRUE)
@@ -1193,7 +1197,7 @@
 	\begin{spluscode}
     # Run kdetrees to detect outliers - play with k
     ?kdetrees # See options for kdetrees
-    trees.kde <- kdetrees(trees=trees, k=0.45 distance="dissimilarity",
+    trees.kde <- kdetrees(trees=trees, k=0.9 distance="dissimilarity",
       topo.only=FALSE, greedy=TRUE)
     # See text results with list of outlying trees
     trees.kde

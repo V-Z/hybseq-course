@@ -1,6 +1,10 @@
 # Install needed packages
 install.packages(pkgs=c("ape", "ade4", "distory", "gplots", "ggplot2", "phangorn", "phytools"), repos="https://mirrors.nic.cz/R/", dependencies="Imports")
-install.packages(pkgs="https://cran.r-project.org/src/contrib/Archive/kdetrees/kdetrees_0.1.5.tar.gz", repos=NULL)
+# Install kdetrees package (removed from CRAN)
+# Ensure package 'devtools' is installed
+if( ! 'devtools' %in% installed.packages() ) { install.packages('devtools') }
+# Install 'kdetrees' from https://github.com/V-Z/kdetrees Git repository
+devtools::install_github('V-Z/kdetrees')
 
 # Load libraries
 library(ape)
@@ -21,7 +25,7 @@ trees
 print(trees, details=TRUE)
 
 # Compute distance of topological similarities
-trees.d <- dist.topo(x=trees, method="score")
+trees.d <- dist.topo(x=trees, method="score", mc.cores=4) # Set number of cores according to your computer
 
 # Plot the heatmap (package gplots)
 png(filename="trees_dist.png", width=10000, height=10000)
@@ -38,12 +42,12 @@ trees.pcoa
 # Plot PCoA
 s.label(dfxy=trees.pcoa$li)
 s.kde2d(dfxy=trees.pcoa$li, cpoint=0, add.plot=TRUE)
-add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="bottomright")
+add.scatter.eig(trees.pcoa[["eig"]], 3,1,2, posi="topright")
 title("PCoA of matrix of pairwise trees distances")
 
 # Remove outlying trees
 trees
-trees[c("Assembly_1556", "Assembly_13627")] <- NULL
+trees[c("Assembly_12866", "Assembly_14143", "Assembly_1500")] <- NULL
 trees
 
 # Now you can repeat recalculation of distance matrix and PCoA and possibly remove more trees...
@@ -59,7 +63,7 @@ trees
 
 # Run kdetrees to detect outliers - play with k
 ?kdetrees # See options for kdetrees
-trees.kde <- kdetrees(trees=trees, k=0.45, distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
+trees.kde <- kdetrees(trees=trees, k=0.9, distance="dissimilarity", topo.only=FALSE, greedy=TRUE)
 # See text results with list of outlying trees
 trees.kde
 # See graphical results
