@@ -994,6 +994,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{Post-processing of gene trees}
+	\label{postgenetrees}
 	\begin{exampleblock}{Tasks to post-process gene trees}
 		\begin{enumerate}
 			\item Inspect \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_4\_postprocess.sh} and be sure to understand what the script does, including syntax used.
@@ -1050,6 +1051,7 @@
 \subsection{Visualizing differences among trees}
 
 \begin{frame}[allowframebreaks]{Distances comparing trees}
+	\label{treesdists}
 	\begin{alertblock}{Single number to compare each pair of complex topologies?}
 		\begin{itemize}
 			\item To compare topology of trees, we need some apropriate distance matrix
@@ -1233,39 +1235,54 @@
 
 \begin{frame}[fragile]{TreeShrink}
 	\begin{itemize}
-		\item Algorithm for detecting abnormally long branches in one or more phylogenetic trees \href{https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4620-2}{Mai et Mirarab 2018} (see \href{https://github.com/uym2/TreeShrink}{details})
-		\item Requires \href{https://www.r-project.org/}{R} 4.X to be installed (e.g. module \texttt{R-4.0.0-gcc})
+		\item Algorithm for detecting abnormally long branches in one or more phylogenetic trees \href{https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4620-2}{Mai et Mirarab 2018} (see \href{https://github.com/uym2/TreeShrink}{details and install instructions})
+		\item Requires Python 3.X (available on every Linux) and \href{https://www.r-project.org/}{R} 4.X to be installed
 		\item Work in command line of your notebook (Linux, macOS), or on MetaCentrum
 	\end{itemize}
 	\begin{bashcode}
     # On MetaCentrum load Python and R modules
     module add python/3.9.12-gcc-10.2.1-rg2lpmk r/4.1.3-gcc-10.2.1-6xt26dl
-    cd ~/bin/ || { mkdir ~/bin && cd ~/bin/; } # Go to ~/bin directory
     git clone https://github.com/uym2/TreeShrink.git # Download TreeShrink
     cd TreeShrink/
-    python3 setup.py install --user # Install it "classically"...
-    conda install -c smirarab treeshrink # ...or if using conda (if you use)
+    python3 setup.py install --user # Install it "classically"
     # Go to directory with trees_good.nwk and run TreeShrink
-    python3 ~/.local/bin/run_treeshrink.py -h # See help
-    ~/.local/bin/run_treeshrink.py -t trees_good.nwk -o treeshrink_exons \
-      -O treeshrink_exons | tee treeshrink.log
+    ~/.local/bin/run_treeshrink.py -h # See help
+    ~/.local/bin/run_treeshrink.py -t trees_good.nwk -o treeshrink_exons_good \
+      -O treeshrink_exons_good | tee treeshrink.log
     ls -lha treeshrink_exons/ # Results
 	\end{bashcode}
 \end{frame}
 
-\begin{frame} [fragile]{Outputs of TreeShrink}
+\begin{frame}[fragile]{Outputs of TreeShrink}
 	\begin{itemize}
-		\item Output (2 files) is saved into directory (in our case) \texttt{treeshrink\_exons}
-		\item File \texttt{treeshrink\_exons.nwk} contains new list of phylogenetic trees in \texttt{NEWICK} which can be then used as an input for any species tree reconstruction software (ASTRAL,~\ldots)
-		\item \texttt{treeshrink\_exons.txt} can be bit hard to read --- it has one line for every tree in the input list and every line contains list of removed tips --- if there is an empty line, no tip was removed from that particular tree; trees are not named, only in same order as in the original input file
-		\item \texttt{treeshrink\_exons\_summary.txt} contains statistics for affected taxa
+		\item Output (3 files) is saved into directory (in our case) \texttt{treeshrink\_exons\_good}
+		\item File \texttt{treeshrink\_exons\_good.nwk} contains new list of phylogenetic trees in \texttt{NEWICK} which can be then used as an input for any species tree reconstruction software (ASTRAL,~\ldots)
+		\item \texttt{treeshrink\_exons\_good.txt} can be bit hard to read --- it has one line for every tree in the input list and every line contains list of removed tips --- if there is an empty line, no tip was removed from that particular tree; trees are not named, only in same order as in the original input file
+		\item \texttt{treeshrink\_exons\_good\_summary.txt} contains statistics for affected taxa
 	\end{itemize}
 	\begin{bashcode}
     # Find out how many times particular sample was removed from the list of
     # the trees
-    grep -o "\<[[:graph:]]\+\>" treeshrink_exons/treeshrink_exons.txt | sort \
-      | uniq -c | sort -gr
+    grep -o "\<[[:graph:]]\+\>" treeshrink_exons_good/treeshrink_exons_good.txt \
+      | sort | uniq -c | sort -gr
 	\end{bashcode}
+\end{frame}
+
+\begin{frame}{Filtration tasks}
+	\begin{exampleblock}{Practice filtration of gene trees}
+		\begin{enumerate}
+			\item Create PCoA at least from \texttt{trees\_ml\_exons.nwk}. Consider repeated running of PCoA for same input set of trees.
+			\begin{itemize}
+				\item Try several different distance matrices (see slide~\ref{treesdists}). What are differences? Are all appropriate for all cases?
+			\end{itemize}
+			\item Run kdetrees on list of trees after removal of outliers detected by PCoA and create \texttt{trees\_good.nwk} (or more similar files).
+			\item Process by TreeShrink at least \texttt{trees\_ml\_exons.nwk} and \texttt{trees\_good.nwk}. Compare differences.
+			\begin{itemize}
+				\item See also slide~\ref{postgenetrees} for differences between both input files, i.e. prior running TreeShrink run: \texttt{sed -i \textquotesingle s/\^{}[[:graph:]]\textbackslash{}+{ }//\textquotesingle{ }trees\_ml\_exons.nwk}
+			\end{itemize}
+			\item What are main differences between PCoA/kdetrees and TreeShrink?
+		\end{enumerate}
+	\end{exampleblock}
 \end{frame}
 
 \subsection{Species trees}
@@ -1328,8 +1345,8 @@
 	\begin{bashcode}
     # Create new directory and go there
     cd ~/hybseq_course_zingibers/ && mkdir 5_sp_trees && cd 5_sp_trees/
-    # Upload to 5_sp_trees also results from R and TreeShrink
-    cp ../4_gene_trees/trees_*.nwk .
+    # Copy to 5_sp_trees also results from R and TreeShrink, e.g.
+    cp ../4_gene_trees/trees_*.nwk ../4_gene_trees/treeshrink_*/*.nwk .
     # Trees lists exported from R and in dir. 4_gene_trees contain gene name
     # Assembly_10014 (Afr...eum_S118:0.0504,Afr...eta_S701:0.054,((((((Am...
     # Remove gene (contig) names from lists of trees
