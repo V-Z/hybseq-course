@@ -1427,6 +1427,12 @@
 	\end{bashcode}
 \end{frame}
 
+\begin{frame}{Final species tree}
+	\begin{center}
+		\includegraphics[height=6.5cm]{sp_treeshrink_exons_good.png}
+	\end{center}
+\end{frame}
+
 \subsection{Phylogenetic networks}
 
 \begin{frame}[fragile]{Consensus network}
@@ -1456,14 +1462,12 @@
 	\begin{spluscode}
     ape::write.nexus(trees.good, file="trees_good.nex", translate=FALSE)
 	\end{spluscode}
+	\begin{itemize}
+		\item Take \texttt{trees\_good.nex} and append following code (or another \href{https://wiki.rice.edu/confluence/display/PHYLONET/List+of+PhyloNet+Commands}{command}) to its end:
+	\end{itemize}
 	\begin{bashcode}
-    #NEXUS
-    BEGIN TREES;
-    ... list of trees from trees_good.nwk newick file ...
-    # Ever tree starts with:
-    Tree TreeID = (tree in NWK)
-    ... # All other trees ...
-    END;
+    ... # End of content of trees_good.nex
+    END; # Last fine of trees_good.nex - append the PHYLONET block below:
     BEGIN PHYLONET;
     InferNetwork_MP (all) 1 -b 50 -x 5 -pl 2 -di;
     END;
