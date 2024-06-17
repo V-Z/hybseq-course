@@ -710,8 +710,8 @@
 	\end{itemize}
 	\begin{bashcode}
     # Create in ~/hybseq_course_zingiberss/2_seqs/ new samples_list.txt
-    find . -maxdepth 1 -type d | sed 's/^\.\///' | sort | tail -n+2 > \
-      samples_list.txt
+    find . -maxdepth 1 -type d | sed 's/^\.\///' | grep dedup | sort | \
+      tail -n+2 > samples_list.txt
     # Edit WORKDIR, BAITFILE and DATADIR in
     # ~/hybseq/bin/hybseq_3_hybpiper_postprocess_1_qsub.sh
     # When ready, submit task to post-process HybPiper results
