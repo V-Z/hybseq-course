@@ -92,7 +92,7 @@
 \title{HybSeq course --- from raw data to species trees}
 \subtitle{Practical processing of HybSeq target enrichment sequencing data on computing grids like MetaCentrum --- pre-processing, HybPiper, alignments, gene trees, species trees}
 \titlegraphic{\includegraphics[width=1cm]{konsole.png}}
-\date{June 10--18, 2024}
+\date{June 9--17, 2025}
 
 \begin{document}
 
@@ -653,7 +653,7 @@
 	\begin{exampleblock}{Run HybPiper}
 		\begin{enumerate}
 			\item Inspect scripts \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}, \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_2\_qsub.sh} and \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_3\_run.sh} and be sure to understand what they are doing, including syntax used.
-			\item Check \url{https://github.com/mossmatters/HybPiper/wiki/Full-pipeline-parameters\#10-hybpiper-assemble}
+			\item Check \href{https://github.com/mossmatters/HybPiper/wiki/Full-pipeline-parameters\#10-hybpiper-assemble}{HybPiper parameters}
 			\item Edit declarations of variables \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES} and \texttt{BAITFILE} in \texttt{hybseq\_2\_hybpiper\_1\_submitter.sh} so that they point to correct locations.
 			\item Run in directory \texttt{2\_dedup} script processing all samples, simply \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}
 		\end{enumerate}
