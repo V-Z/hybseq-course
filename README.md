@@ -1,8 +1,8 @@
-# HybSeq course 2024
+# HybSeq course 2025
 
 Course to learn all theory about HybSeq and practically learn how to analyze HybSeq data, how to solve all problems, and how to evaluate differences among gene trees. Important part is enough time to discuss everything, including practical problems and projects of individual participants.
 
-* Information about the course: <https://trapa.cz/en/hybseq-course-2024>
+* Information about the course: <https://trapa.cz/en/hybseq-course-2025>
 * Contact author: <https://trapa.cz/en/contact>
 
 ## License
