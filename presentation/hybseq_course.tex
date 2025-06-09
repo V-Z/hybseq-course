@@ -110,7 +110,7 @@
 	\begin{itemize}
 		\item Course \href{https://github.com/V-Z/hybseq-course}{Git (slides with all links)} and \href{https://is.cuni.cz/studium/eng/predmety/index.php?do=predmet&kod=MB120C117}{information in SIS} (\href{https://is.cuni.cz/studium/predmety/index.php?do=predmet&kod=MB120C117}{česky})
 		\item \alert{Scripts} \url{https://github.com/V-Z/hybseq-scripts} \textbf{shown in the course} --- clone the Git repository and adapt to your needs
-		\item Download presentation from \url{https://trapa.cz/en/hybseq-course-2024}
+		\item Download presentation from \url{https://trapa.cz/en/hybseq-course-2025}
 		\item Most of the work is done in Linux/UNIX (macOS,~\ldots) command line, so that good knowledge of work in command line is essential, good starting point can be my Linux and MetaCentrum course \url{https://soubory.trapa.cz/linuxcourse/}
 		\item Many tasks are done in R, so that at least basic knowledge of R is needed, good starting point can be my R course \url{https://soubory.trapa.cz/rcourse/}
 		\item Processing HybSeq data is computationally demanding (it requires plenty of resources), during the course we use \href{https://www.metacentrum.cz/en/Sluzby/Grid/}{MetaCentrum, Czech National Grid Infrastructure} (\href{https://www.metacentrum.cz/cs/Sluzby/Grid/}{česky}) (slide~\ref{CESNET}), but any computing cluster or powerful desktop (for patient users;-) can be used
@@ -216,7 +216,7 @@
 		\item \href{https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html\#downloadblastdata}{BLAST+} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
 		\item \href{https://github.com/lh3/bwa}{BWA} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
 		\item \href{https://www.wsi.uni-tuebingen.de/lehrstuehle/algorithms-in-bioinformatics/software/dendroscope/}{Dendroscope} --- visualize outputs of \href{https://phylogenomics.rice.edu/html/phylonet.html}{PhyloNet}
-		\item \href{https://www.ebi.ac.uk/about/vertebrate-genomics/software/exonerate}{Exonerate} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
+		\item \href{https://github.com/nathanweeks/exonerate}{Exonerate} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
 		\item \href{https://www.gnu.org/software/parallel/}{GNU Parallel} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} and in BASH scripts)
 		\item \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} --- recovering genes from targeted sequence capture data
 		\item \href{http://www.iqtree.org/}{IQ-TREE} --- gene trees
@@ -252,10 +252,7 @@
 		\item Information about data storage \url{https://du.cesnet.cz/en/start} (\href{https://du.cesnet.cz/cs/start}{česky}) contains detailed usage instructions
 		\item Information about MetaCentrum \url{https://www.metacentrum.cz/en/} (\href{https://www.metacentrum.cz/cs/}{česky})
 		\item Most of practical information for users are at \url{https://docs.metacentrum.cz/}
-		\begin{itemize}
-			\item Old \href{https://wiki.metacentrum.cz/}{wiki} is deprecated
-		\end{itemize}
-		\item To start work see at least \href{https://docs.metacentrum.cz/access/log-in/}{access}, \href{https://docs.metacentrum.cz/computing/}{computing}, \href{https://docs.metacentrum.cz/data/data-within/}{work with data} and some \href{https://docs.metacentrum.cz/tutorials/}{tutorial}
+		\item To start work see at least \href{https://docs.metacentrum.cz/en/docs/access/log-in}{access}, \href{https://docs.metacentrum.cz/en/docs/computing/concepts}{computing}, \href{https://docs.metacentrum.cz/en/docs/data/large-data}{work with data} and some \href{https://docs.metacentrum.cz/en/docs/tutorials}{tutorial}
 		\item Of course, good knowledge of work in Linux command line (BASH) is needed\ldots
 	\end{itemize}
 	\vfill
@@ -275,8 +272,8 @@
 		\item Current state and usage as available at \url{https://metavo.metacentrum.cz/}
 		\item Manage your user account at \url{http://metavo.metacentrum.cz/en/myaccount/} (\href{https://metavo.metacentrum.cz/cs/myaccount/}{česky})
 		\item Personal view on actual resources and running tasks is at \url{https://metavo.metacentrum.cz/pbsmon2/person}
-		\item Listing of available applications \url{https://docs.metacentrum.cz/software/search-soft/}
-		\item It has several \href{https://docs.metacentrum.cz/access/log-in/}{front ends} where users log, various \href{https://docs.metacentrum.cz/data/data-within/}{storages}, and thousands of computers (nodes) doing the calculations --- they are not accessed directly to run task
+		\item Listing of available applications \url{https://docs.metacentrum.cz/en/docs/software/alphabet}
+		\item It has several \href{https://docs.metacentrum.cz/en/docs/access/log-in}{front ends} where users log, various \href{https://docs.metacentrum.cz/en/docs/data/large-data}{storages}, and thousands of computers (nodes) doing the calculations --- they are not accessed directly to run task
 		\begin{itemize}
 			\item Distributed nature and number of front ends and storages may be confusing for beginners
 		\end{itemize}
@@ -292,7 +289,7 @@
 
 \begin{frame}[fragile]{Launching of tasks}
 	\begin{itemize}
-		\item \url{https://docs.metacentrum.cz/computing/run-basic-job/}
+		\item \url{https://docs.metacentrum.cz/en/docs/computing/run-basic-job}
 		\item Personal view \url{https://metavo.metacentrum.cz/pbsmon2/person} has nice overview of available resources and tasks and allows comfortable construction of submission command
 	\end{itemize}
 	\vfill
@@ -313,10 +310,10 @@
 \begin{frame}[fragile]{Key MetaCentrum commands}
 	\begin{itemize}
 		\item MetaCentrum is \enquote{just} normal Linux server --- work as usually
-		\item Command \texttt{module} loads/unloads selected \href{https://docs.metacentrum.cz/software/search-soft/}{application} (\texttt{module add r})
+		\item Command \texttt{module} loads/unloads selected \href{https://docs.metacentrum.cz/en/docs/software/alphabet}{application} (\texttt{module add r})
 		\item Tasks (BASH scripts) are submitted for computing by \texttt{qsub} --- the script must copy the data into \texttt{\$SCRATCHDIR} and do all calculations there
 		\begin{itemize}
-			\item It has plenty of options how to specify requirements (see \href{https://docs.metacentrum.cz/computing/run-basic-job/}{help})
+			\item It has plenty of options how to specify requirements (see \href{https://docs.metacentrum.cz/en/docs/computing/run-basic-job}{help})
 		\end{itemize}
 		\item Queued and running jobs can be seen by \texttt{qstat -u \$USER} (\texttt{qstat} has much more options) and any job can be terminated by \texttt{qdel 123456789} (number from \texttt{qstat})
 	\end{itemize}
@@ -419,7 +416,7 @@
 \begin{frame}[fragile]{Data download}
 	\label{datadownload}
 	\begin{itemize}
-		\item MetaCentrum storages have sometimes too limited quota for such a large data --- see your \href{https://metavo.metacentrum.cz/en/myaccount/kvoty}{quotas} (\href{http://metavo.metacentrum.cz/cs/myaccount/kvoty}{česky}), see \href{https://docs.metacentrum.cz/data/quotas/}{details}
+		\item MetaCentrum storages have sometimes too limited quota for such a large data --- see your \href{https://metavo.metacentrum.cz/en/myaccount/kvoty}{quotas} (\href{http://metavo.metacentrum.cz/cs/myaccount/kvoty}{česky}), see \href{https://docs.metacentrum.cz/en/docs/data/quotas}{details}
 		\item The \href{https://github.com/V-Z/hybseq-scripts}{pipeline} produce a lot of data (especially \href{https://github.com/mossmatters/HybPiper/}{HybPiper}; gene trees can be also large) --- ensure to have enough space to store everything
 		\begin{itemize}
 			\item Especially \textbf{HybPiper produces a lot of files} --- \alert{user may reach quota for number of files}, not necessarily (only) amount of data
@@ -1173,7 +1170,7 @@
 	\begin{spluscode}
     trees # See original trees
     # Remove trees identified in the PCoA plot
-    trees[c("Assembly_12866", "Assembly_14143", "Assembly_1500")] <- NULL
+    trees[c("Assembly_1033", "Assembly_10103", "Assembly_10222")] <- NULL
     trees # See new object
     # Possibly remove trees with too few tips
     print(trees, details=TRUE)
@@ -1539,7 +1536,7 @@
     # Pie chart: concordance (blue) top conflict (green), other conflict
     # (red), no signal (gray). Run phypartspiecharts.py to get the graphics:
     python phypartspiecharts.py --svg_name trees_good_res.svg \
-      parsimony_sp_tree.nwk trees_good_res 219
+      parsimony_sp_tree.nwk trees_good_res 20
 	\end{bashcode}
 \end{frame}
 
