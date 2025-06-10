@@ -49,7 +49,7 @@ title("PCoA of matrix of pairwise trees distances")
 
 # Remove outlying trees
 trees
-trees[c("Assembly_1033", "Assembly_10103", "Assembly_10222")] <- NULL
+trees[c("Assembly_1033", "Assembly_13627", "Assembly_15852")] <- NULL
 trees
 
 # Now you can repeat recalculation of distance matrix and PCoA and possibly remove more trees...
@@ -111,12 +111,12 @@ plot.phylo(x = tree.sp2, type = "phylogram", edge.width = 2, label.offset = 0.01
 
 # # Consensus networks
 # # Requires all trees to have same set of tips (no missing data)
-# # ?consensusNet
+# ?consensusNet
 # # Compute consensus network
-# # tree.net <- consensusNet(obj = trees.good, prob = 0.25)
+# tree.net <- consensusNet(obj = trees.good, prob = 0.25)
 # # Plot 2D or 3D
-# # plot(x = tree.net, planar = FALSE, type = "2D", use.edge.length = TRUE, show.tip.label = TRUE, show.edge.label = TRUE, show.node.label = TRUE, show.nodes = TRUE, edge.color = "black", tip.color = "blue") # 2D
-# # plot(x = tree.net, planar = FALSE, type = "3D", use.edge.length = TRUE, show.tip.label = TRUE, show.edge.label = TRUE, show.node.label = TRUE, show.nodes = TRUE, edge.color = "black", tip.color = "blue") # 3D
+# plot(x = tree.net, planar = FALSE, type = "2D", use.edge.length = TRUE, show.tip.label = TRUE, show.edge.label = TRUE, show.node.label = TRUE, show.nodes = TRUE, edge.color = "black", tip.color = "blue") # 2D
+# plot(x = tree.net, planar = FALSE, type = "3D", use.edge.length = TRUE, show.tip.label = TRUE, show.edge.label = TRUE, show.node.label = TRUE, show.nodes = TRUE, edge.color = "black", tip.color = "blue") # 3D
 
 # Save trees.good in NEXUS for PhyloNet
 write.nexus(trees.good, file = "trees_good.nex", translate = FALSE)
@@ -146,6 +146,6 @@ densiTree(x = trees.ultra[1:10], scaleX = TRUE, width = 5, cex = 1.25)
 ?phytools::densityTree
 # Plotting density trees
 densityTree(trees = c(tree.sp, tree.sp2), fix.depth = TRUE, lwd = 4)
-densityTree(trees = trees.ultra, fix.depth = TRUE, use.gradient = TRUE, alpha = 0.5, lwd = 4)
+# densityTree(trees = trees.ultra, fix.depth = TRUE, use.gradient = TRUE, alpha = 0.5, lwd = 4)
 # densityTree(trees = trees.ultra[1:3], fix.depth = TRUE, use.gradient = TRUE, alpha = 0.5, lwd = 4)
 # densityTree(trees = trees.ultra[c(2, 4, 6)], fix.depth = TRUE, use.gradient = TRUE, alpha = 0.5, lwd = 4)

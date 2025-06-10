@@ -67,10 +67,10 @@
 	}
 
 % Fixing space before and after block of code higlight
-\BeforeBeginEnvironment{bashcode}{\vspace{-0.5em}}
-\AfterEndEnvironment{bashcode}{\par\vspace{-0.5em}}
-\BeforeBeginEnvironment{spluscode}{\vspace{-0.5em}}
-\AfterEndEnvironment{spluscode}{\par\vspace{-0.5em}}
+\BeforeBeginEnvironment{bashcode}{\vspace{-0.25em}}
+\AfterEndEnvironment{bashcode}{\par\vspace{-0.25em}}
+\BeforeBeginEnvironment{spluscode}{\vspace{-0.25em}}
+\AfterEndEnvironment{spluscode}{\par\vspace{-0.25em}}
 
 % % Fixing space before and after multicols region
 % \BeforeBeginEnvironment{multicols}{\vspace{-0.5em}}
@@ -381,7 +381,7 @@
         I       ├── Assembly_1 # Gene output directory
         I       ├── ... # More gene output directories...
         I       └── Assembly_16358 # Gene output directory...
-        I    # Plenty of reconstructed contigs, statistics, etc.
+        I   ... # Plenty of reconstructed contigs, statistics, etc.
         ├── 3_aligned # Aligned contigs
         I   ├── exons # Aligned exons
         I   ├── introns # Aligned introns
@@ -429,6 +429,7 @@
     wget https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_0_data.zip
     # Unpack it
     unzip hybseq_course_zingibers_0_data.zip
+    ls -lha hybseq_course_zingibers/ # See it
 	\end{bashcode}
 	\begin{itemize}
 		 \item The archive contains input raw data and reference
@@ -977,13 +978,16 @@
 	\end{itemize}
 	\begin{bashcode}
     # Move qsub logs to the 'trees' directory
-    cd ~/hybseq_course_zingibers/3_aligned/ && mv HybSeq.genetree.* trees/
+    cd ~/hybseq_course_zingibers/3_aligned/ # Ensure to be in 3_aligned
+    mv HybSeq.genetree.* trees/ # Move...
     # Everything should be moved from XXX/2_seqs/aligned to XXX/3_aligned
-    mv trees ../4_gene_trees && cd ../
+    mv trees ../4_gene_trees
+    cd ../ && ls -lha
     # Post-process (sort into subdirectories and get lists of gene trees)
     # all gene trees - provide path to directory with gene trees files
     ~/hybseq/bin/hybseq_5_gene_trees_4_postprocess.sh 4_gene_trees | tee \
       hybseq_gene_trees_postprocess.log
+    mv hybseq_gene_trees_postprocess.log 4_gene_trees/ && ls -lha 4_gene_trees/
 	\end{bashcode}
 	\begin{itemize}
 		\item Wait for tasks to finish, or \href{https://botany.natur.cuni.cz/zeisek/hybseq_course_zingibers_4_gene_trees.zip}{download} and inspect test data
@@ -1029,7 +1033,7 @@
 \begin{frame}[fragile]{Install needed R packages}
 	\begin{itemize}
 		\item The tasks will be done in \href{https://www.r-project.org/}{R} (use e.g. \href{https://posit.co/products/open-source/rstudio/}{RStudio} or \href{https://rkward.kde.org/}{RKWard})
-		\item Use your notebook or e.g. MetaCentrum \href{https://docs.metacentrum.cz/software/ondemand/}{OnDemand} RStudio or \href{https://docs.metacentrum.cz/related/jupyter/}{Jupyter notebook}
+		\item Use your notebook or e.g. MetaCentrum \href{https://docs.metacentrum.cz/en/docs/ondemand}{OnDemand} RStudio or \href{https://docs.metacentrum.cz/en/docs/related/jupyter}{Jupyter notebook}
 		\item Following R code is available at \url{https://github.com/V-Z/hybseq-course/blob/master/trees_filtration.r} --- \alert{\textbf{download} it and edit} according to your needs
 	\end{itemize}
 	\begin{spluscode}
@@ -1170,7 +1174,7 @@
 	\begin{spluscode}
     trees # See original trees
     # Remove trees identified in the PCoA plot
-    trees[c("Assembly_1033", "Assembly_10103", "Assembly_10222")] <- NULL
+    trees[c("Assembly_1033", "Assembly_13627", "Assembly_15852")] <- NULL
     trees # See new object
     # Possibly remove trees with too few tips
     print(trees, details=TRUE)
@@ -1536,7 +1540,7 @@
     # Pie chart: concordance (blue) top conflict (green), other conflict
     # (red), no signal (gray). Run phypartspiecharts.py to get the graphics:
     python phypartspiecharts.py --svg_name trees_good_res.svg \
-      parsimony_sp_tree.nwk trees_good_res 20
+      parsimony_sp_tree.nwk trees_good_res 221
 	\end{bashcode}
 \end{frame}
 
