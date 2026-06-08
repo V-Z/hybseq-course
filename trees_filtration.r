@@ -1,5 +1,5 @@
 # Install needed packages
-install.packages(pkgs = c("ape", "ade4", "distory", "gplots", "ggplot2", "phangorn", "phytools"), repos = "https://mirrors.nic.cz/R/", dependencies = "Imports")
+install.packages(pkgs = c("ape", "ade4", "distory", "gplots", "ggplot2", "phangorn", "phytools"), repos = "https://cloud.r-project.org/", dependencies = "Imports")
 # Install kdetrees package (removed from CRAN)
 # Ensure package 'devtools' is installed
 if (!"devtools" %in% installed.packages()) {

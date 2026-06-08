@@ -110,7 +110,7 @@
 	\begin{itemize}
 		\item Course \href{https://github.com/V-Z/hybseq-course}{Git (slides with all links)} and \href{https://is.cuni.cz/studium/eng/predmety/index.php?do=predmet&kod=MB120C117}{information in SIS} (\href{https://is.cuni.cz/studium/predmety/index.php?do=predmet&kod=MB120C117}{česky})
 		\item \alert{Scripts} \url{https://github.com/V-Z/hybseq-scripts} \textbf{shown in the course} --- clone the Git repository and adapt to your needs
-		\item Download presentation from \url{https://trapa.cz/en/hybseq-course-2025}
+		\item Download presentation from \url{https://trapa.cz/en/hybseq-course-2026}
 		\item Most of the work is done in Linux/UNIX (macOS,~\ldots) command line, so that good knowledge of work in command line is essential, good starting point can be my Linux and MetaCentrum course \url{https://soubory.trapa.cz/linuxcourse/}
 		\item Many tasks are done in R, so that at least basic knowledge of R is needed, good starting point can be my R course \url{https://soubory.trapa.cz/rcourse/}
 		\item Processing HybSeq data is computationally demanding (it requires plenty of resources), during the course we use \href{https://www.metacentrum.cz/en/Sluzby/Grid/}{MetaCentrum, Czech National Grid Infrastructure} (\href{https://www.metacentrum.cz/cs/Sluzby/Grid/}{česky}) (slide~\ref{CESNET}), but any computing cluster or powerful desktop (for patient users;-) can be used
@@ -181,7 +181,7 @@
 			\item It is also useful to create simple NJ tree graphical check of alignment (e.g. using \href{https://www.r-project.org/}{R} and package \href{https://cran.r-project.org/package=ape}{ape})
 		\end{itemize}
 		\item Sorting of alignments, statistics of their length and quality, discarding of poor (too short, too few individuals, too few variable positions,~\ldots) alignments
-		\item Reconstruction of gene trees from all aligned contigs (e.g. using \href{http://www.iqtree.org/}{IQ-TREE}, or \href{https://github.com/stamatak/ExaML}{ExaML}, \href{https://nbisweden.github.io/MrBayes/}{MrBayes}, \href{https://github.com/stephaneguindon/phyml}{PhyML}, \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG},~\ldots)
+		\item Reconstruction of gene trees from all aligned contigs (e.g. using \href{https://iqtree.github.io/}{IQ-TREE}, or \href{https://github.com/stamatak/ExaML}{ExaML}, \href{https://nbisweden.github.io/MrBayes/}{MrBayes}, \href{https://github.com/stephaneguindon/phyml}{PhyML}, \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG},~\ldots)
 		\item Post-processing of gene trees
 		\begin{itemize}
 			\item Identification, inspection and possible removal of gene trees with significantly different topology (e.g. by \href{https://www.r-project.org/}{R} and packages \href{https://cran.r-project.org/package=ape}{ape} and \href{https://github.com/V-Z/kdetrees}{kdetrees}; \href{https://github.com/uym2/TreeShrink}{TreeShrink}, etc.)
@@ -219,13 +219,13 @@
 		\item \href{https://github.com/nathanweeks/exonerate}{Exonerate} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
 		\item \href{https://www.gnu.org/software/parallel/}{GNU Parallel} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} and in BASH scripts)
 		\item \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper} --- recovering genes from targeted sequence capture data
-		\item \href{http://www.iqtree.org/}{IQ-TREE} --- gene trees
+		\item \href{https://iqtree.github.io/}{IQ-TREE} --- gene trees
 		\item \href{https://mafft.cbrc.jp/alignment/software/}{MAFFT} --- alignment
 		\item \href{https://github.com/mossmatters/MJPythonNotebooks}{MJPythonNotebooks} (used by \href{https://bitbucket.org/blackrim/phyparts}{phyparts})
 		\item \href{https://phylogenomics.rice.edu/html/phylonet.html}{PhyloNet} --- phylogenetic networks
 		\item \href{https://bitbucket.org/blackrim/phyparts}{phyparts} --- comparison of species tree vs. gene trees
 		\item \href{https://www.python.org/}{Python 3.7 or later} and \href{https://biopython.org/}{Biopython 1.80 or later} (used by \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper})
-		\item \href{https://www.r-project.org/}{R 4.0 or later} and packages \href{https://cran.r-project.org/package=ade4}{ade4}, \href{https://cran.r-project.org/package=adegenet}{adegenet}, \href{https://cran.r-project.org/package=ape}{ape}, \href{https://cran.r-project.org/package=corrplot}{corrplot}, \href{https://cran.r-project.org/package=distory}{distory}, \href{https://cran.r-project.org/package=ggplot2}{ggplot2}, \href{https://cran.r-project.org/package=gplots}{gplots}, \href{https://cran.r-project.org/package=ips}{ips}, \href{https://github.com/V-Z/kdetrees}{kdetrees}, \href{https://cran.r-project.org/package=pegas}{pegas}, \href{https://cran.r-project.org/package=phangorn}{phangorn}, \href{https://cran.r-project.org/package=phytools}{phytools} and \href{https://cran.r-project.org/package=scales}{scales}
+		\item \href{https://www.r-project.org/}{R 4.5 or later} and packages \href{https://cran.r-project.org/package=ade4}{ade4}, \href{https://cran.r-project.org/package=adegenet}{adegenet}, \href{https://cran.r-project.org/package=ape}{ape}, \href{https://cran.r-project.org/package=corrplot}{corrplot}, \href{https://cran.r-project.org/package=distory}{distory}, \href{https://cran.r-project.org/package=ggplot2}{ggplot2}, \href{https://cran.r-project.org/package=gplots}{gplots}, \href{https://cran.r-project.org/package=ips}{ips}, \href{https://github.com/V-Z/kdetrees}{kdetrees}, \href{https://cran.r-project.org/package=pegas}{pegas}, \href{https://cran.r-project.org/package=phangorn}{phangorn}, \href{https://cran.r-project.org/package=phytools}{phytools} and \href{https://cran.r-project.org/package=scales}{scales}
 		\begin{itemize}
 			\item Used for alignment of contigs, post-processing of alignments, post-processing and comparison of gene trees, etc.
 		\end{itemize}
@@ -252,7 +252,7 @@
 		\item Information about data storage \url{https://du.cesnet.cz/en/start} (\href{https://du.cesnet.cz/cs/start}{česky}) contains detailed usage instructions
 		\item Information about MetaCentrum \url{https://www.metacentrum.cz/en/} (\href{https://www.metacentrum.cz/cs/}{česky})
 		\item Most of practical information for users are at \url{https://docs.metacentrum.cz/}
-		\item To start work see at least \href{https://docs.metacentrum.cz/en/docs/access/log-in}{access}, \href{https://docs.metacentrum.cz/en/docs/computing/concepts}{computing}, \href{https://docs.metacentrum.cz/en/docs/data/large-data}{work with data} and some \href{https://docs.metacentrum.cz/en/docs/tutorials}{tutorial}
+		\item To start work see at least \href{https://docs.metacentrum.cz/en/docs/access/log-in}{access}, \href{https://docs.metacentrum.cz/en/docs/computing/run-basic-job}{computing}, \href{https://docs.metacentrum.cz/en/docs/data/large-data}{work with data} and some \href{https://docs.metacentrum.cz/en/docs/tutorials}{tutorial}
 		\item Of course, good knowledge of work in Linux command line (BASH) is needed\ldots
 	\end{itemize}
 	\vfill
@@ -871,7 +871,7 @@
 		\end{itemize}
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_1\_submitter.sh} goes to directory set by \texttt{DATADIR} and for every aligned contig (all \texttt{*.aln.fasta} files) in that directory (created in previous step) submits via \texttt{qsub} individual task to reconstruct gene tree
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_2\_qsub.sh} drives submission and manipulation of processing of each individual file --- it checks if all required data are provided, copy input files to \texttt{SCRATCHDIR}, loads required software modules, runs processing itself by \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} and copy results back
-		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_3\_run.sh} computes gene tree for every input file with \href{http://www.iqtree.org/}{IQ-TREE 2} (see how easily it can be converted for another tree builder, e.g. \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG})
+		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_3\_run.sh} computes gene tree for every input file with \href{https://iqtree.github.io/}{IQ-TREE 3} (see how easily it can be converted for another tree builder, e.g. \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG})
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_4\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
 	\end{itemize}
 \end{frame}
@@ -911,10 +911,10 @@
 \begin{frame}{Other tasks with gene trees}{For interested students}
 	\begin{exampleblock}{Gene trees tasks for advanced users}
 		\begin{enumerate}
-			\item See \href{http://www.iqtree.org/doc/Command-Reference}{IQ-TREE help}, check its parameters in \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} and think about possible changes to fit better your needs.
+			\item See \href{https://iqtree.github.io/doc/Command-Reference}{IQ-TREE help}, check its parameters in \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} and think about possible changes to fit better your needs.
 			\item Think how to process all samples on single computer. Use \texttt{find} to list all \texttt{*.aln.fasta} files and pass them to \href{https://www.gnu.org/software/parallel/}{GNU Parallel}. How would such script look like? What had to be changed?
-			\item Check requirements of \href{http://www.iqtree.org/}{IQ-TREE} and/or another tree builder and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
-			\item Replace usage of \href{http://www.iqtree.org/}{IQ-TREE} in \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} by another tree builder like e.g. \href{https://github.com/stamatak/ExaML}{ExaML}, \href{https://nbisweden.github.io/MrBayes/}{MrBayes}, \href{https://github.com/stephaneguindon/phyml}{PhyML} or \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG}.
+			\item Check requirements of \href{https://iqtree.github.io/}{IQ-TREE} and/or another tree builder and think if changing of number of CPU threads and memory would significantly speed up processing of individual files.
+			\item Replace usage of \href{https://iqtree.github.io/}{IQ-TREE} in \texttt{hybseq\_5\_gene\_trees\_3\_run.sh} by another tree builder like e.g. \href{https://github.com/stamatak/ExaML}{ExaML}, \href{https://nbisweden.github.io/MrBayes/}{MrBayes}, \href{https://github.com/stephaneguindon/phyml}{PhyML} or \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG}.
 		\end{enumerate}
 	\end{exampleblock}
 \end{frame}
@@ -1038,13 +1038,13 @@
 \begin{frame}[fragile]{Install needed R packages}
 	\begin{itemize}
 		\item The tasks will be done in \href{https://www.r-project.org/}{R} (use e.g. \href{https://posit.co/products/open-source/rstudio/}{RStudio} or \href{https://rkward.kde.org/}{RKWard})
-		\item Use your notebook or e.g. MetaCentrum \href{https://docs.metacentrum.cz/en/docs/ondemand}{OnDemand} RStudio or \href{https://docs.metacentrum.cz/en/docs/related/jupyter}{Jupyter notebook}
+		\item Use your notebook or e.g. MetaCentrum \href{https://docs.metacentrum.cz/en/docs/graphical/ondemand}{OnDemand} RStudio or \href{https://docs.metacentrum.cz/en/docs/software/sw-list/jupyter}{Jupyter notebook}
 		\item Following R code is available at \url{https://github.com/V-Z/hybseq-course/blob/master/trees_filtration.r} --- \alert{\textbf{download} it and edit} according to your needs
 	\end{itemize}
 	\begin{spluscode}
     # Install R packages
     install.packages(pkgs=c("ape", "ade4", "distory", "gplots", "ggplot2",
-      "phangorn", "phytools"), repos="https://mirrors.nic.cz/R/",
+      "phangorn", "phytools"), repos="https://cloud.r-project.org/",
       dependencies="Imports")
     # Install kdetrees package (removed from CRAN)
     # Ensure package 'devtools' is installed
