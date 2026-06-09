@@ -136,7 +136,7 @@
 	\begin{itemize}
 		\item Family Zingiberaceae has altogether ca. 1600 species throughout tropical Africa, Asia, and the Americas
 		\item We selected 35 members from TF's dataset as test data
-		\item The probes used for sequencing were introduced in \href{https://journals.sagepub.com/doi/full/10.1177/1176934317742613}{Fér et Schmickl 2018} (reduced to 250 probes)
+		\item The probes used for sequencing were introduced in \href{https://journals.sagepub.com/doi/full/10.1177/1176934317742613}{Fér et Schmickl 2018} (reduced to 30 probes)
 		\item For data structure see slide~\ref{datastructure}
 		\item If you did not yet do so, download data (slide~\ref{datadownload}) --- it can take some time\ldots
 	\end{itemize}
@@ -372,16 +372,14 @@
 	\begin{bashcode}
         ... # Previous slide...
         ├── 2_seqs # Outputs of HybPiper
-        I   ├── Aframomum-alboviolaceum_S118_L001.dedup # Sample output dir
-        I   I   ├── Assembly_1 # Gene output directory
-        I   I   ├── ... # More gene output directories...
-        I   I   └── Assembly_16358 # Gene output directory
+        I   ├── Aframomum-alboviolaceum_S118_L001.dedup.tar.gz # Sample output
         I   ├── ... # More samples...
-        I   └── Zingiber-officinale_S242_L001.dedup # Sample output dir
-        I       ├── Assembly_1 # Gene output directory
-        I       ├── ... # More gene output directories...
-        I       └── Assembly_16358 # Gene output directory...
-        I   ... # Plenty of reconstructed contigs, statistics, etc.
+        I   ├── Zingiber-officinale_S242_L001.dedup # Sample output file
+        I   ├── exons # Directory with exons
+        I   ├── introns # Directory with introns
+        I   ├── supercontigs # Directory with supercontigs
+        I   ... # Plenty of statistics, etc...
+        I   ... # TSV and PNG files and logs
         ├── 3_aligned # Aligned contigs
         I   ├── exons # Aligned exons
         I   ├── introns # Aligned introns
@@ -442,7 +440,7 @@
 		\item The archive \texttt{hybseq\_course\_zingibers\_0\_data.zip} contains directory \texttt{hybseq\_course\_zingibers} with\ldots
 		\begin{itemize}
 			\item Raw data \texttt{*.fastq.gz} in \texttt{1\_data/lib\_01/0\_data/}
-			\item Reference for HybPiper \texttt{curcuma\_HybSeqProbes\_first958\_concat.fasta} in \texttt{ref/}
+			\item Reference for HybPiper \texttt{curcuma\_hybpiper\_renamed\_concat.fasta} in \texttt{ref/}
 		\end{itemize}
 	\end{itemize}
 	\begin{alertblock}{Do not blindly copy-paste commands\ldots}
@@ -509,7 +507,7 @@
 	\begin{itemize}
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_1\_qsub.sh}
 		\begin{itemize}
-			\item Submits via \texttt{qsub} script \texttt{$\sim$/bin/hybseq\_1\_prep\_2\_run.sh} FASTQ data for trimming, deduplication and quality checks
+			\item Submits via \texttt{qsub} script \texttt{$\sim$/bin/hybseq\_1\_prep\_2\_run.sh} which trims, deduplicates and quality checks the FASTQ data
 			\item Variables \texttt{WORKDIR} (location of HybSeq scripts) and \texttt{DATADIR} (data to process) must point to correct existing location --- script contains settings for running following script
 			\item If changing parameters for \texttt{hybseq\_1\_prep\_2\_run.sh}, parameters for \texttt{qsub} must be changed here accordingly
 			\item The script is started multiple times to process all sequencing libraries
@@ -598,7 +596,7 @@
 
 \begin{frame}{Before running HybPiper}
 	\begin{itemize}
-		\item Directory \texttt{$\sim$/hybseq/ref/} contains prepared reduced bait file \texttt{curcuma\_HybSeqProbes\_first958\_concat.fasta} (it will be used to process test data)
+		\item Directory \texttt{$\sim$/hybseq/ref/} contains prepared reduced bait file \texttt{curcuma\_hybpiper\_renamed\_concat.fasta} (it will be used to process test data)
 		\item To run \href{https://github.com/mossmatters/HybPiper}{HybPiper} we need the target reference file above and all required software, and BASH script to process all input files in batch --- see \texttt{hybseq\_2\_hybpiper\_1\_submitter.sh} (submitting via \texttt{qsub} all input files), \texttt{hybseq\_2\_hybpiper\_2\_qsub.sh} (preparing individual job to run) and \texttt{hybseq\_2\_hybpiper\_3\_run.sh} (processing every input file --- doing the job)
 		\item \alert{Settings} \texttt{WORKDIR}, \texttt{DATADIR}, \texttt{SAMPLES}, \texttt{BAITFILE} and \texttt{NCPU} \textbf{must be changed} in \texttt{$\sim$/hybseq/bin/hybseq\_2\_hybpiper\_1\_submitter.sh}
 	\end{itemize}
@@ -608,7 +606,7 @@
 	\begin{exampleblock}{Tasks before running HybPiper}
 		\begin{enumerate}
 			\item Check \texttt{samples\_list.txt} in \texttt{2\_dedup} output directory of the test data after running \texttt{$\sim$/hybseq/bin/hybseq\_1\_prep\_1\_qsub.sh}, and check how it was created.
-			\item Compare \url{https://github.com/tomas-fer/HybPhyloMaker/blob/master/HybSeqSource/curcuma_HybSeqProbes_test.fa} (output of Geneious assembler) and \texttt{curcuma\_HybSeqProbes\_first958\_concat.fasta} --- see form required by \href{https://github.com/mossmatters/HybPiper/wiki\#12-target-file}{HybPiper}
+			\item Compare \url{https://github.com/tomas-fer/HybPhyloMaker/blob/master/HybSeqSource/curcuma_HybSeqProbes_test.fa} (output of Geneious assembler) and \texttt{curcuma\_hybpiper\_renamed\_concat.fasta} --- see form required by \href{https://github.com/mossmatters/HybPiper/wiki\#12-target-file}{HybPiper}
 			\item Do we have everything needed to run \href{https://github.com/mossmatters/HybPiper/wiki}{HybPiper}?
 		\end{enumerate}
 	\end{exampleblock}
@@ -687,7 +685,7 @@
     # HybPiper to hybseq_course_zingibers/2_seqs/ for next steps
     mkdir ../../../2_seqs # Create directory for HybPiper outputs
     # Move all HybPiper output directories there
-    mv *.dedup.tar.gz HybPiper.* ../../../2_seqs/
+    mv *.dedup.tar.gz HybPiper.* hybseq_hybpiper.*.log ../../../2_seqs/
     cd ../../../2_seqs/ # Go to that directory
     # NOTE: The mkdir command is needed only once and directory 2_seqs can
     # contain results from multiple sequencing libraries
@@ -874,6 +872,25 @@
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_3\_run.sh} computes gene tree for every input file with \href{https://iqtree.github.io/}{IQ-TREE 3} (see how easily it can be converted for another tree builder, e.g. \href{https://github.com/amkozlov/raxml-ng}{RAxML-NG})
 		\item Script \texttt{$\sim$/hybseq/bin/hybseq\_5\_gene\_trees\_4\_postprocess.sh} is short, can be runned on the front end, it will sort outputs into subdirectories for exons, intron and supercontigs and create lists of maximum likelihood and consensus (after bootstrapping) gene trees
 	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Install IQ-TREE 3}
+	\begin{itemize}
+		\item Newest standalone version of IQ-TREE 3 is not installed on MetaCentrum, so we can download it and set path to it in \texttt{hybseq\_5\_gene\_trees\_2\_qsub.sh} --- \alert{Edit it!}
+		\item See \url{https://iqtree.github.io/} to copy download URL
+	\end{itemize}
+	\begin{bashcode}
+    cd # Ensure to be at home directory
+    # Download the archive
+    wget https://github.com/iqtree/iqtree3/releases/download/v3.1.2/
+      iqtree-3.1.2-Linux.tar.gz # NOTE that whole URL is on a single line
+    # Unpack it
+    tar xzvf iqtree-3.1.2-Linux.tar.gz
+    # Move the binaries into ~/bin (NOTE create the dir if it doesn't exist)
+    mv iqtree-3.1.2-Linux/bin/* ~/bin/
+    # Note the path for hybseq_5_gene_trees_2_qsub.sh
+    realpath ~/bin/iqtree3
+	\end{bashcode}
 \end{frame}
 
 \subsection{Gene trees from all alignments}
